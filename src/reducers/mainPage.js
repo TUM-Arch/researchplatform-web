@@ -1,9 +1,21 @@
-export default function mainPage(state = 10, action) {
+import { ENGLISH, GERMAN } from '../actions/mainPage';
+
+let initialState = { 
+  language: "en",
+}
+
+export default function mainPage(state = initialState, action) {
     switch (action.type) {
-      case 'INCREMENT':
-        return state + 1
-      case 'DECREMENT':
-        return state - 1
+      case ENGLISH:
+        return {
+          ...state,
+          language: "en"
+         };
+      case GERMAN:
+        return {
+          ...state,
+          language: "de"
+         };
       default:
         return state
     }
