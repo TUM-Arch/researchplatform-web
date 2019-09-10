@@ -1,4 +1,5 @@
 {
-    "departmentName" : "Department of Architecture"
+    "departmentName" : "Department of Architecture",
+    "searchPlaceholder" : "Search Project..."
 }
 
