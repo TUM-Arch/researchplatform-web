@@ -1,5 +1,9 @@
 import React from 'react';
 import Header from './Header';
+import { connect } from 'react-redux';
+import en from '../translations/en.json';
+import de from '../translations/de.json';
+
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -31,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     projectTitle: {
         textDecoration: 'underline'
     },
+    projectSubtitle: {
+        marginLeft: theme.spacing(7),
+    },
     timeTitle: {
         padding: theme.spacing(6, 1, 1, 7),
         textAlign: 'left',
@@ -38,9 +45,10 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function MainPage() {
+function MainPage(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const { language } = props;
 
     function handleClickOpen() {
         setOpen(true);
@@ -54,46 +62,53 @@ function MainPage() {
                 <Header />
                 <div className={classes.root}>
                 <Box display="flex" flexDirection="row" p={0} m={2} bgcolor="background.paper">
-                    <Box p={0} m={2} flexGrow={2}>    
+                    <Box p={0} m={2} flex={6}>    
                         <Paper className={classes.paper}>
                             <Box display="flex" flexDirection="row" justifyContent="space-between" p={5} bgcolor="background.paper">
                                 <Typography variant="h4" color="secondary" className={classes.projectTitle}>
-                                Research Projects
+                                    { language === 'en' ? ( en.leftPaneTitle ) : ( de.leftPaneTitle ) }
                                 </Typography>
                                 <Button  onClick={handleClickOpen} variant="contained" color="secondary">
-                                    Create Project
+                                { language === 'en' ? ( en.createProject ) : ( de.createProject ) }
                                 </Button>
                                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                                    <DialogTitle id="form-dialog-title">New Project</DialogTitle>
+                                    <DialogTitle id="form-dialog-title">
+                                        { language === 'en' ? ( en.newProject ) : ( de.newProject ) }
+                                    </DialogTitle>
                                     <DialogContent>
                                     <DialogContentText>
-                                        To craete a new project, please enter your all the project details here.
+                                        { language === 'en' ? ( en.newProjectSubtitle ) : ( de.newProjectSubtitle ) } 
                                     </DialogContentText>
                                     <TextField
                                         autoFocus
                                         margin="dense"
                                         id="name"
-                                        label="Project Name"
+                                        label= { language === 'en' ? ( en.fieldProjectName ) : ( de.fieldProjectName ) } 
                                         type="text"
                                         fullWidth
                                     />
                                     </DialogContent>
                                     <DialogActions>
-                                    <Button onClick={handleClose} color="primary">
-                                        Cancel
+                                    <Button onClick={handleClose} color="secondary">
+                                        { language === 'en' ? ( en.cancel ) : ( de.cancel ) } 
                                     </Button>
-                                    <Button onClick={handleClose} color="primary">
-                                        Subscribe
+                                    <Button onClick={handleClose} color="secondary">
+                                        { language === 'en' ? ( en.submit ) : ( de.submit ) } 
                                     </Button>
                                     </DialogActions>
                                 </Dialog>
+                            </Box>
+                            <Box display="flex" flexDirection="column">
+                                <Typography variant="body1" className={classes.projectSubtitle}>
+                                        { language === 'en' ? ( en.projectSubtitle ) : ( de.projectSubtitle ) }
+                                </Typography>
                             </Box>
                         </Paper>
                     </Box>
                     <Box p={0} m={2} flexGrow={1}>
                         <Paper className={classes.paper}>
                             <Typography variant="h6" className={classes.timeTitle} color="secondary">
-                                Time
+                            { language === 'en' ? ( en.time ) : ( de.time ) }
                             </Typography>
                         </Paper>
                     </Box>
@@ -103,4 +118,12 @@ function MainPage() {
     );
 }
 
-export default MainPage;
+const mapStateToProps = ({
+    mainPage: {
+        language
+    }}  
+) => ({
+    language
+});
+
+export default connect(mapStateToProps) (MainPage);

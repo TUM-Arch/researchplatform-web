@@ -1,5 +1,14 @@
 {
     "departmentName" : "Department of Architecture",
-    "searchPlaceholder" : "Search Project..."
+    "searchPlaceholder" : "Search Project...",
+    "leftPaneTitle": "Projects from research and development",
+    "createProject": "Create Project",
+    "time": "Time",
+    "projectSubtitle": "Here you will find a summary of all completed and ongoing research and development projects at the Faculty of Architecture in chronological order of their beginning.",
+    "newProject": "New Project",
+    "newProjectSubtitle": "To create a new project, please enter your all the project details here.",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "fieldProjectName": "Project Name"
 }
 

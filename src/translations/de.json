@@ -1,4 +1,13 @@
 {
     "departmentName" : "Fakultät für Architektur",
-    "searchPlaceholder" : "Projekt suchen..."
+    "searchPlaceholder" : "Projekt suchen...",
+    "leftPaneTitle": "Projekte aus Forschung und Entwicklung",
+    "createProject": "Projekt erstellen",
+    "time": "Zeit",
+    "projectSubtitle": "Hier finden Sie eine Zusammenstellung aller abgeschlossenen und laufenden Forschung- und Entwicklungsprojekte an der Fakultät für Architektur in chronologischer Reihenfolge ihres Beginns.",
+    "newProject": "Neues Projekt",
+    "newProjectSubtitle": "Um ein neues Projekt zu erstellen, geben Sie bitte hier Ihre vollständigen Projektdaten ein.",
+    "submit": "Absenden",
+    "cancel": "Abbrechen",
+    "fieldProjectName": "Projektname" 
 }
