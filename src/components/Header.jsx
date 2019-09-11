@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import en from '../translations/en.json';
 import de from '../translations/de.json';
 import { changeToEnglish, changeToGerman } from '../actions/mainPage';
-import TUMLogo from '../theme/TUM.gif'
+import TUMLogo from '../resources/tum-logo.svg'
 import Downshift from 'downshift';
 import deburr from 'lodash/deburr';
 import PropTypes from 'prop-types';
