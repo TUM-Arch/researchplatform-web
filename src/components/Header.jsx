@@ -13,12 +13,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { fade } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import SearchIcon from '@material-ui/icons/Search';
+import Link from '@material-ui/core/Link'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -203,12 +203,11 @@ function Header(props) {
             }}
             </Downshift>
             {  isAdmin &&
-                <Button className={classes.menuButton} variant= "contained" onClick={ () => changeToEn() }>Admin</Button>
+                <Button className={classes.menuButton} color="inherit" onClick={ () => changeToEn() }>Admin</Button>
             }
-            <ButtonGroup variant="contained">
-                <Button onClick={ () => changeToEn() }>en</Button>
-                <Button onClick={ () => changeToDe() }>de</Button>
-            </ButtonGroup>
+            <Link component="button" onClick={ () => changeToEn() }><Typography variant="body1">en</Typography></Link>
+            <Typography variant="h6"> <span>&nbsp;|&nbsp;</span> </Typography>
+            <Link component="button" onClick={ () => changeToDe() }><Typography variant="body1">de</Typography></Link>
         </Toolbar>
       </AppBar>
     </div>
