@@ -1,7 +1,8 @@
-import { ENGLISH, GERMAN } from '../actions/mainPage';
+import { ENGLISH, GERMAN, VIEWALL, VIEWMY } from '../actions/mainPage';
 
 let initialState = { 
   language: "en",
+  viewProjects: "my"
 }
 
 export default function mainPage(state = initialState, action) {
@@ -16,6 +17,16 @@ export default function mainPage(state = initialState, action) {
           ...state,
           language: "de"
          };
+      case VIEWALL:
+        return {
+          ...state,
+          viewProjects: "all"
+        };
+      case VIEWMY:
+        return {
+          ...state,
+          viewProjects: "my"
+        }
       default:
         return state
     }

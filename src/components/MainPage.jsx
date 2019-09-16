@@ -3,6 +3,8 @@ import Header from './Header';
 import { connect } from 'react-redux';
 import en from '../translations/en.json';
 import de from '../translations/de.json';
+import DisplayProjects from './DisplayProjects';
+import { viewAllProjects, viewMyProjects } from '../actions/mainPage'
 
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +17,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,25 +36,38 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         color: theme.palette.text.secondary,
-        height: 1000
+        minHeight: 600
     },
     projectTitle: {
         textDecoration: 'underline'
     },
     projectSubtitle: {
-        marginLeft: theme.spacing(7),
+        marginLeft: theme.spacing(6)
     },
     timeTitle: {
         padding: theme.spacing(6, 1, 1, 7),
         textAlign: 'left',
         textDecoration: 'underline'
-    }
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 150,
+        paddingRight: theme.spacing(5)
+      },
 }));
 
 function MainPage(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const { language } = props;
+    const { language, viewProjects, viewAllProj, viewMyProj } = props;
+
+    function handleView(event) {
+        if (event.target.value === "all")
+            viewAllProj()
+        else
+            viewMyProj () 
+    } 
+    
 
     function handleClickOpen() {
         setOpen(true);
@@ -57,6 +76,7 @@ function MainPage(props) {
     function handleClose() {
         setOpen(false);
     }
+
     return (
             <div>
                 <Header />
@@ -103,6 +123,18 @@ function MainPage(props) {
                                         { language === 'en' ? ( en.projectSubtitle ) : ( de.projectSubtitle ) }
                                 </Typography>
                             </Box>
+                            <Box display="flex" justifyContent="flex-end">
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel>View Projects</InputLabel>
+                                    <Select value={viewProjects} onChange={handleView}>
+                                        <MenuItem value="all">All Projects</MenuItem>
+                                        <MenuItem value="my">My Projects</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <DisplayProjects />
+                            </Box>
                         </Paper>
                     </Box>
                     <Box p={0} m={2} flexGrow={1}>
@@ -120,10 +152,16 @@ function MainPage(props) {
 
 const mapStateToProps = ({
     mainPage: {
-        language
+        language,
+        viewProjects
     }}  
 ) => ({
-    language
+    language,
+    viewProjects
 });
 
-export default connect(mapStateToProps) (MainPage);
+const mapDispatchToProps = {
+    viewAllProj: viewAllProjects , viewMyProj: viewMyProjects
+};
+
+export default connect(mapStateToProps, mapDispatchToProps) (MainPage);
