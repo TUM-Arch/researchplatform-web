@@ -51,7 +51,7 @@ export default function Project(props) {
         <ListItemText primary={projName} secondary={
             <React.Fragment>
               <Typography
-                component="span"
+                component="div"
                 variant="body2"
                 className={classes.desc}
               >
@@ -86,7 +86,7 @@ function DeptChips(props) {
     var dept= []
     const classes=useStyles();
     for(var i=0;i<props.value.length;i++){
-        dept.push(<Chip variant="outlined" color="secondary" size="small" label={ props.value[i] } className={classes.chip}/>);
+        dept.push(<Chip key={i} variant="outlined" color="secondary" size="small" label={ props.value[i] } className={classes.chip}/>);
     }
 
     return(
