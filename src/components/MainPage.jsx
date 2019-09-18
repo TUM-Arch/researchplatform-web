@@ -4,23 +4,18 @@ import { connect } from 'react-redux';
 import en from '../translations/en.json';
 import de from '../translations/de.json';
 import DisplayProjects from './DisplayProjects';
-import { viewAllProjects, viewMyProjects } from '../actions/mainPage'
+import { viewAllProjects, viewMyProjects, createProject } from '../actions/mainPage'
 
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import CreateViewDeleteProject from './CreateViewEditProject';
 
 
 const useStyles = makeStyles(theme => ({
@@ -58,8 +53,7 @@ const useStyles = makeStyles(theme => ({
 
 function MainPage(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    const { language, viewProjects, viewAllProj, viewMyProj, allProjects, myProjects } = props;
+    const { language, viewProjects, viewAllProj, viewMyProj, allProjects, myProjects, isProjectDialogOpen, createProject } = props;
 
     function handleView(event) {
         if (event.target.value === "all")
@@ -69,12 +63,8 @@ function MainPage(props) {
     } 
     
 
-    function handleClickOpen() {
-        setOpen(true);
-    }
-
-    function handleClose() {
-        setOpen(false);
+    function handleCreateProject() {
+        createProject()
     }
 
     return (
@@ -88,35 +78,10 @@ function MainPage(props) {
                                 <Typography variant="h4" color="secondary" className={classes.projectTitle}>
                                     { language === 'en' ? ( en.leftPaneTitle ) : ( de.leftPaneTitle ) }
                                 </Typography>
-                                <Button  onClick={handleClickOpen} variant="contained" color="secondary">
+                                <Button  onClick={handleCreateProject} variant="contained" color="secondary">
                                 { language === 'en' ? ( en.createProject ) : ( de.createProject ) }
                                 </Button>
-                                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                                    <DialogTitle id="form-dialog-title">
-                                        { language === 'en' ? ( en.newProject ) : ( de.newProject ) }
-                                    </DialogTitle>
-                                    <DialogContent>
-                                    <DialogContentText>
-                                        { language === 'en' ? ( en.newProjectSubtitle ) : ( de.newProjectSubtitle ) } 
-                                    </DialogContentText>
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        label= { language === 'en' ? ( en.fieldProjectName ) : ( de.fieldProjectName ) } 
-                                        type="text"
-                                        fullWidth
-                                    />
-                                    </DialogContent>
-                                    <DialogActions>
-                                    <Button onClick={handleClose} color="secondary">
-                                        { language === 'en' ? ( en.cancel ) : ( de.cancel ) } 
-                                    </Button>
-                                    <Button onClick={handleClose} color="secondary">
-                                        { language === 'en' ? ( en.submit ) : ( de.submit ) } 
-                                    </Button>
-                                    </DialogActions>
-                                </Dialog>
+                                <CreateViewDeleteProject open={ isProjectDialogOpen } language= { language } />
                             </Box>
                             <Box display="flex" flexDirection="column">
                                 <Typography variant="body1" className={classes.projectSubtitle}>
@@ -155,17 +120,19 @@ const mapStateToProps = ({
         language,
         viewProjects,
         allProjects,
-        myProjects
+        myProjects,
+        isProjectDialogOpen
     }}  
 ) => ({
     language,
     viewProjects,
     allProjects,
-    myProjects
+    myProjects,
+    isProjectDialogOpen
 });
 
 const mapDispatchToProps = {
-    viewAllProj: viewAllProjects , viewMyProj: viewMyProjects
+    viewAllProj: viewAllProjects , viewMyProj: viewMyProjects, createProject: createProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps) (MainPage);

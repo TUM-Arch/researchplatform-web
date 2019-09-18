@@ -3,15 +3,11 @@ import Project from './Project';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
 
-class DisplayProjects extends React.Component {
-
-    function 
+class DisplayProjects extends React.Component { 
     
     render() {
-        
         const projects = this.props.projects;
-        console.log(projects);
-        let prevCreatedOn = projects[0].createdOn + 1;
+        var prevCreatedOn = projects[0].createdOn + 1;
 
         const styles = {
             TextStyle: {

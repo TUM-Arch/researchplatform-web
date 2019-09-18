@@ -12,6 +12,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import Tooltip from '@material-ui/core/Tooltip'
 import Chip from '@material-ui/core/Chip'
 import Typography from '@material-ui/core/Typography'
+import { connect } from 'react-redux';
+import { editProject, viewProject } from '../actions/mainPage'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,14 +40,22 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function Project(props) {
+function Project(props) {
   const classes = useStyles();
   const projName = props.name;
   const projDept = props.dept;
   const projDesc = props.desc;
+  const viewProject = props.viewProject;
+  const editProject = props.editProject;
 
-  function handleOnClick(){
-    console.log(props.id)
+  function handleViewProject(){
+    viewProject();
+    //console.log(props.id)
+  }
+
+  function handleEditProject(){
+    editProject();
+    //console.log(props.id)
   }
 
   return (
@@ -65,12 +75,12 @@ export default function Project(props) {
             </React.Fragment>} />
         <ListItemSecondaryAction>
         <Tooltip placement="top" title="View">
-            <IconButton edge="end" aria-label="search" onClick={handleOnClick} className={classes.icon}>
+            <IconButton edge="end" aria-label="search" onClick={handleViewProject} className={classes.icon}>
                 <SearchIcon />
             </IconButton>
         </Tooltip>
         <Tooltip placement="top" title="Edit">
-            <IconButton edge="end" aria-label="edit" className={classes.icon}>
+            <IconButton edge="end" aria-label="edit" onClick={handleEditProject} className={classes.icon}>
                 <EditIcon />
             </IconButton>
         </Tooltip>
@@ -99,3 +109,9 @@ function DeptChips(props) {
         </div>
     )
 }
+
+const mapDispatchToProps = ({
+  editProject: editProject, viewProject: viewProject
+})
+
+export default connect(null, mapDispatchToProps) (Project);
