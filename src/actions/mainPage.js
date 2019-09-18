@@ -18,7 +18,7 @@ export const viewAllProjects = () => dispatch =>
         type: VIEWALL
     });
 
-    export const viewMyProjects = () => dispatch =>
+export const viewMyProjects = () => dispatch =>
     dispatch({
         type: VIEWMY
-    })
+    });

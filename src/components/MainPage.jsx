@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 function MainPage(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const { language, viewProjects, viewAllProj, viewMyProj } = props;
+    const { language, viewProjects, viewAllProj, viewMyProj, allProjects, myProjects } = props;
 
     function handleView(event) {
         if (event.target.value === "all")
@@ -133,7 +133,7 @@ function MainPage(props) {
                                 </FormControl>
                             </Box>
                             <Box>
-                                <DisplayProjects />
+                                <DisplayProjects projects={viewProjects ==="all"? allProjects:myProjects} />
                             </Box>
                         </Paper>
                     </Box>
@@ -153,11 +153,15 @@ function MainPage(props) {
 const mapStateToProps = ({
     mainPage: {
         language,
-        viewProjects
+        viewProjects,
+        allProjects,
+        myProjects
     }}  
 ) => ({
     language,
-    viewProjects
+    viewProjects,
+    allProjects,
+    myProjects
 });
 
 const mapDispatchToProps = {

@@ -15,13 +15,11 @@ import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
     maxWidth: '90%',
     marginTop: theme.spacing(1),
     marginLeft: theme.spacing(6),
     marginBottom: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
-
   },
   icon: {
       margin: theme.spacing(1)
@@ -31,18 +29,24 @@ const useStyles = makeStyles(theme => ({
   },
   desc: {
     display: 'block',
-    width: 700, //Todo: Needs to change
+    maxWidth: 700, //Todo: Needs to change
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   }
 }));
 
+
+
 export default function Project(props) {
   const classes = useStyles();
   const projName = props.name;
   const projDept = props.dept;
   const projDesc = props.desc;
+
+  function handleOnClick(){
+    console.log(props.id)
+  }
 
   return (
     <List className={classes.root}>
@@ -61,7 +65,7 @@ export default function Project(props) {
             </React.Fragment>} />
         <ListItemSecondaryAction>
         <Tooltip placement="top" title="View">
-            <IconButton edge="end" aria-label="search" className={classes.icon}>
+            <IconButton edge="end" aria-label="search" onClick={handleOnClick} className={classes.icon}>
                 <SearchIcon />
             </IconButton>
         </Tooltip>
