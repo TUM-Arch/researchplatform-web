@@ -10,12 +10,24 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
 
 function CreateViewDeleteProject(props) {
-    const { open, language, dialogClose, projectDialogState } = props;
+    const { open, language, dialogClose, projectDialogState, projectFields, allProjects, selectedProject } = props;
 
     function handleClose() {
         dialogClose();
+    }
+
+    function displayContent(field) {
+        switch(field.name) {
+            case "Project Name":
+                return allProjects.filter(function(project){ return project.id === selectedProject })[0].name
+            case "Project Description":
+                return allProjects.filter(function(project){ return project.id === selectedProject })[0].desc
+            default:
+                return null
+        }
     }
 
     return(
@@ -35,16 +47,38 @@ function CreateViewDeleteProject(props) {
                 </DialogTitle>
                 <DialogContent>
                 <DialogContentText>
-                    { language === 'en' ? ( en.newProjectSubtitle ) : ( de.newProjectSubtitle ) } 
+                    { projectDialogState === "create" ? (language === 'en' ? ( en.newProjectSubtitle ) : ( de.newProjectSubtitle )) : (language === 'en' ? ( en.oldProjectSubtitle ) : ( de.oldProjectSubtitle )) } 
                 </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label= { language === 'en' ? ( en.fieldProjectName ) : ( de.fieldProjectName ) } 
-                    type="text"
-                    fullWidth
-                />
+                { projectDialogState === "view" ? <ViewProjectFields displayContent={displayContent} projectFields={projectFields} projectDialogState={projectDialogState} /> :
+                projectFields.map(({ id, name, type }) => (
+                    <div key={id}>
+                        {( () => { switch (type) {
+                            case "text":
+                                return <TextField
+                                    id="text"
+                                    autoFocus
+                                    margin="dense"
+                                    label= { name }
+                                    defaultValue= { projectDialogState === "edit" ? (displayContent({name})) : null } 
+                                    type="text"
+                                    fullWidth
+                                />
+                            case "multiline":
+                                return <TextField
+                                    id="outlined-multiline-static"
+                                    label= { name }
+                                    multiline
+                                    defaultValue= { projectDialogState === "edit" ? (displayContent({name})) : null }
+                                    rows="4"
+                                    margin="dense"
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                            default: 
+                                return null
+                        }})()}
+                    </div>
+                ))}
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={handleClose} color="secondary">
@@ -59,12 +93,43 @@ function CreateViewDeleteProject(props) {
     )
 }
 
+function ViewProjectFields(props) {
+    const { displayContent, projectFields, projectDialogState } = props;
+    return(
+        <div>
+            {projectFields.map(({ id, name, type }) => (
+                    <div key={id}>
+                        {( () => { switch (type) {
+                            case "text":
+                                return <Typography >
+                                    { projectDialogState === "view" ? (name + " : " + displayContent({name})) : null } 
+                                    </Typography>
+                                
+                            case "multiline":
+                                return <Typography>
+                                     { projectDialogState === "view" ? (name + " : " + displayContent({name})) : null }
+                                     </Typography>
+                            default: 
+                                return null
+                        }})()}
+                    </div>
+                ))}
+        </div>
+    )
+}
+
 const mapStateToProps = ({
     mainPage: {
-        projectDialogState
+        projectDialogState,
+        projectFields,
+        allProjects,
+        selectedProject
     }
 }) => ({
-    projectDialogState
+    projectDialogState,
+    projectFields,
+    allProjects,
+    selectedProject
 });
 
 const mapDispatchToProps = {

@@ -1,4 +1,4 @@
-import { ENGLISH, GERMAN, VIEWALL, VIEWMY, PROJECTDIALOGCLOSE, CREATEPROJECT, VIEWPROJECT, EDITPROJECT } from '../actions/mainPage';
+import { ENGLISH, GERMAN, VIEWALL, VIEWMY, PROJECTDIALOGCLOSE, CREATEPROJECT, VIEWPROJECT, EDITPROJECT, SETSELECTEDPROJECT } from '../actions/mainPage';
 
 let initialState = { 
   language: "en",
@@ -12,7 +12,12 @@ let initialState = {
   myProjects: [],
   currentUser: "raypinto",
   isProjectDialogOpen: false,
-  projectDialogState: ""
+  projectDialogState: "",
+  projectFields: [
+    { "id": 1, "name": "Project Name", "type": "text"  },
+    { "id": 2, "name": "Project Description", "type": "multiline"  }
+  ],
+  selectedProject: ""
 }
 
 export default function mainPage(state = initialState, action) {
@@ -62,6 +67,11 @@ export default function mainPage(state = initialState, action) {
           projectDialogState: "edit",
           isProjectDialogOpen: true
         };
+      case SETSELECTEDPROJECT:
+        return {
+          ...state,
+          selectedProject: action.value
+        }
       default:
         return state
     }

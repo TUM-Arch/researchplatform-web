@@ -6,6 +6,7 @@ export const PROJECTDIALOGCLOSE="PROJECTDIALOGCLOSE";
 export const CREATEPROJECT="CREATEPROJECT";
 export const EDITPROJECT="EDITPROJECT";
 export const VIEWPROJECT="VIEWPROJECT";
+export const SETSELECTEDPROJECT="SETSELECTEDPROJECT"
 
 export const changeToEnglish = () => dispatch => 
     dispatch({
@@ -45,4 +46,10 @@ dispatch({
 export const viewProject = () => dispatch =>
 dispatch({
     type: VIEWPROJECT
+});
+
+export const setSelectedProject = (value) => dispatch =>
+dispatch({
+    type: SETSELECTEDPROJECT,
+    value
 });

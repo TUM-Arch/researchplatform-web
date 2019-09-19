@@ -13,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Chip from '@material-ui/core/Chip'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux';
-import { editProject, viewProject } from '../actions/mainPage'
+import { editProject, viewProject, setSelectedProject } from '../actions/mainPage'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,15 +47,17 @@ function Project(props) {
   const projDesc = props.desc;
   const viewProject = props.viewProject;
   const editProject = props.editProject;
+  const setSelectedProject = props.setSelectedProject;
+  const viewProjects = props.viewProjects;
 
   function handleViewProject(){
     viewProject();
-    //console.log(props.id)
+    setSelectedProject(props.id)
   }
 
   function handleEditProject(){
     editProject();
-    //console.log(props.id)
+    setSelectedProject(props.id)
   }
 
   return (
@@ -84,11 +86,12 @@ function Project(props) {
                 <EditIcon />
             </IconButton>
         </Tooltip>
+        { viewProjects === "my" ?
         <Tooltip placement="top" title="Delete">
             <IconButton edge="end" aria-label="delete" className={classes.icon}>
                 <DeleteIcon />
             </IconButton>
-        </Tooltip>
+        </Tooltip> : null }
         </ListItemSecondaryAction>
       </ListItem>
       </Paper>
@@ -110,8 +113,16 @@ function DeptChips(props) {
     )
 }
 
+const mapStateToProps = ({
+  mainPage: {
+    viewProjects
+  }}  
+) => ({
+  viewProjects
+});
+
 const mapDispatchToProps = ({
-  editProject: editProject, viewProject: viewProject
+  editProject: editProject, viewProject: viewProject, setSelectedProject: setSelectedProject
 })
 
-export default connect(null, mapDispatchToProps) (Project);
+export default connect(mapStateToProps, mapDispatchToProps) (Project);

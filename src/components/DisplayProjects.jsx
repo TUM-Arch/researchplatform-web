@@ -28,7 +28,7 @@ class DisplayProjects extends React.Component {
         return (
             <div style={styles.divStyle}> 
                 {projects.map(({id, name,dept, desc, createdBy, createdOn}) => (
-            <div>
+            <div key={id}>
                 <Typography style={styles.TextStyle} color="secondary">{createdOn < prevCreatedOn? createdOn : null}</Typography>
                 <Project id= {id} name={name } desc= { desc } dept={ dept } createdBy= { createdBy } createdOn = { createdOn } />
                 {setPrevCreatedOn(createdOn)}
