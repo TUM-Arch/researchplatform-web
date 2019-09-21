@@ -1,44 +1,42 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Paper from '@material-ui/core/Paper';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
-import Tooltip from '@material-ui/core/Tooltip'
-import Chip from '@material-ui/core/Chip'
-import Typography from '@material-ui/core/Typography'
-import { connect } from 'react-redux';
-import { editProject, viewProject, setSelectedProject } from '../actions/mainPage'
+import React from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Paper from "@material-ui/core/Paper";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import SearchIcon from "@material-ui/icons/Search";
+import Tooltip from "@material-ui/core/Tooltip";
+import Chip from "@material-ui/core/Chip";
+import Typography from "@material-ui/core/Typography";
+import {connect} from "react-redux";
+import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: '90%',
+    maxWidth: "90%",
     marginTop: theme.spacing(1),
     marginLeft: theme.spacing(6),
     marginBottom: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
   },
   icon: {
-      margin: theme.spacing(1)
-  }, 
+    margin: theme.spacing(1),
+  },
   chip: {
     margin: theme.spacing(1),
   },
   desc: {
-    display: 'block',
+    display: "block",
     maxWidth: 700, //Todo: Needs to change
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  }
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+  },
 }));
-
-
 
 function Project(props) {
   const classes = useStyles();
@@ -50,79 +48,96 @@ function Project(props) {
   const setSelectedProject = props.setSelectedProject;
   const viewProjects = props.viewProjects;
 
-  function handleViewProject(){
+  function handleViewProject() {
     viewProject();
-    setSelectedProject(props.id)
+    setSelectedProject(props.id);
   }
 
-  function handleEditProject(){
+  function handleEditProject() {
     editProject();
-    setSelectedProject(props.id)
+    setSelectedProject(props.id);
   }
 
   return (
     <List className={classes.root}>
-        <Paper>
-      <ListItem alignItems="flex-start"> 
-        <ListItemText primary={projName} secondary={
-            <React.Fragment>
-              <Typography
-                component="div"
-                variant="body2"
-                className={classes.desc}
+      <Paper>
+        <ListItem alignItems="flex-start">
+          <ListItemText
+            primary={projName}
+            secondary={
+              <React.Fragment>
+                <Typography component="div" variant="body2" className={classes.desc}>
+                  {projDesc}
+                </Typography>
+                <DeptChips value={projDept} />
+              </React.Fragment>
+            }
+          />
+          <ListItemSecondaryAction>
+            <Tooltip placement="top" title="View">
+              <IconButton
+                edge="end"
+                aria-label="search"
+                onClick={handleViewProject}
+                className={classes.icon}
               >
-                { projDesc } 
-              </Typography>
-              <DeptChips value={ projDept } />
-            </React.Fragment>} />
-        <ListItemSecondaryAction>
-        <Tooltip placement="top" title="View">
-            <IconButton edge="end" aria-label="search" onClick={handleViewProject} className={classes.icon}>
                 <SearchIcon />
-            </IconButton>
-        </Tooltip>
-        <Tooltip placement="top" title="Edit">
-            <IconButton edge="end" aria-label="edit" onClick={handleEditProject} className={classes.icon}>
+              </IconButton>
+            </Tooltip>
+            <Tooltip placement="top" title="Edit">
+              <IconButton
+                edge="end"
+                aria-label="edit"
+                onClick={handleEditProject}
+                className={classes.icon}
+              >
                 <EditIcon />
-            </IconButton>
-        </Tooltip>
-        { viewProjects === "my" ?
-        <Tooltip placement="top" title="Delete">
-            <IconButton edge="end" aria-label="delete" className={classes.icon}>
-                <DeleteIcon />
-            </IconButton>
-        </Tooltip> : null }
-        </ListItemSecondaryAction>
-      </ListItem>
+              </IconButton>
+            </Tooltip>
+            {viewProjects === "my" ? (
+              <Tooltip placement="top" title="Delete">
+                <IconButton edge="end" aria-label="delete" className={classes.icon}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+          </ListItemSecondaryAction>
+        </ListItem>
       </Paper>
     </List>
   );
 }
 
 function DeptChips(props) {
-    var dept= []
-    const classes=useStyles();
-    for(var i=0;i<props.value.length;i++){
-        dept.push(<Chip key={i} variant="outlined" color="secondary" size="small" label={ props.value[i] } className={classes.chip}/>);
-    }
+  var dept = [];
+  const classes = useStyles();
+  for (var i = 0; i < props.value.length; i++) {
+    dept.push(
+      <Chip
+        key={i}
+        variant="outlined"
+        color="secondary"
+        size="small"
+        label={props.value[i]}
+        className={classes.chip}
+      />
+    );
+  }
 
-    return(
-        <div>
-            {dept}
-        </div>
-    )
+  return <div>{dept}</div>;
 }
 
-const mapStateToProps = ({
-  mainPage: {
-    viewProjects
-  }}  
-) => ({
-  viewProjects
+const mapStateToProps = ({mainPage: {viewProjects}}) => ({
+  viewProjects,
 });
 
-const mapDispatchToProps = ({
-  editProject: editProject, viewProject: viewProject, setSelectedProject: setSelectedProject
-})
+const mapDispatchToProps = {
+  editProject: editProject,
+  viewProject: viewProject,
+  setSelectedProject: setSelectedProject,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps) (Project);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Project);
