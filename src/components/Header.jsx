@@ -15,12 +15,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import {fade, makeStyles} from "@material-ui/core/styles";
+import {fade} from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/styles";
 import Downshift from "downshift";
 import deburr from "lodash/deburr";
 import {changeToEnglish, changeToGerman} from "../actions/mainPage";
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -47,14 +48,10 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
     width: "100%",
-    marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
       width: "auto",
     },
   },
@@ -63,14 +60,6 @@ const useStyles = makeStyles(theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: 120,
-      "&:focus": {
-        width: 200,
-      },
-    },
   },
   paper: {
     position: "absolute",
@@ -79,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     right: 0,
   },
-}));
+});
 
 const isAdmin = true; //TODO: Map this to user isAdmin property
 
@@ -146,8 +135,7 @@ function getSuggestions(value, {showEmpty = false} = {}) {
 }
 
 function Header(props) {
-  const classes = useStyles();
-  const {changeToEn, changeToDe, language} = props;
+  const {classes, changeToEn, changeToDe, language} = props;
   return (
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
@@ -249,4 +237,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Header);
+)(withStyles(styles, {withTheme: true})(Header));

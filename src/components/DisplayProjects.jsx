@@ -2,33 +2,36 @@ import React from "react";
 import {connect} from "react-redux";
 import {Typography} from "@material-ui/core";
 import Project from "./Project";
+import {withStyles} from "@material-ui/styles";
+
+const styles = theme => ({
+  TextStyle: {
+    Component: "div",
+    textAlign: "left",
+    fontSize: 22,
+    paddingLeft: 48,
+    fontWeight: "bold",
+  },
+  divStyle: {
+    paddingBottom: 10,
+  },
+});
 
 class DisplayProjects extends React.Component {
   render() {
+    const {classes} = this.props;
     const projects = this.props.projects;
     var prevCreatedOn = projects[0].createdOn + 1;
 
-    const styles = {
-      TextStyle: {
-        Component: "div",
-        textAlign: "left",
-        fontSize: 22,
-        paddingLeft: 48,
-        fontWeight: "bold",
-      },
-      divStyle: {
-        paddingBottom: 10,
-      },
-    };
     function setPrevCreatedOn(createdOn) {
       prevCreatedOn = createdOn;
     }
 
     return (
-      <div style={styles.divStyle}>
+      <div className={classes.divStyle}>
         {projects.map(({id, name, dept, desc, createdBy, createdOn}) => (
           <div key={id}>
-            <Typography style={styles.TextStyle} color="secondary">
+            <Typography className={classes.TextStyle} color="secondary">
               {createdOn < prevCreatedOn ? createdOn : null}
             </Typography>
             <Project
@@ -51,4 +54,6 @@ const mapStateToProps = ({mainPage: {viewProjects}}) => ({
   viewProjects,
 });
 
-export default connect(mapStateToProps)(DisplayProjects);
+export default connect(mapStateToProps)(
+  withStyles(styles, {withTheme: true})(DisplayProjects)
+);

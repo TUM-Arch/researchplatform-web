@@ -12,6 +12,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import {withStyles} from "@material-ui/styles";
 import {projectDialogClose} from "../actions/mainPage";
 
 function CreateViewDeleteProject(props) {
@@ -183,4 +184,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CreateViewDeleteProject);
+)(withStyles({withTheme: true})(CreateViewDeleteProject));

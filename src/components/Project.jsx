@@ -14,10 +14,10 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
-import {makeStyles} from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/styles";
 import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     maxWidth: "90%",
     marginTop: theme.spacing(1),
@@ -38,10 +38,10 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
   },
-}));
+});
 
 function Project(props) {
-  const classes = useStyles();
+  const {classes} = props;
   const projName = props.name;
   const projDept = props.dept;
   const projDesc = props.desc;
@@ -71,7 +71,7 @@ function Project(props) {
                 <Typography component="div" variant="body2" className={classes.desc}>
                   {projDesc}
                 </Typography>
-                <DeptChips value={projDept} />
+                <DeptChips value={projDept} classes={classes} />
               </React.Fragment>
             }
           />
@@ -112,7 +112,7 @@ function Project(props) {
 
 function DeptChips(props) {
   var dept = [];
-  const classes = useStyles();
+  const {classes} = props;
   for (var i = 0; i < props.value.length; i++) {
     dept.push(
       <Chip
@@ -142,4 +142,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Project);
+)(withStyles(styles, {withTheme: true})(Project));

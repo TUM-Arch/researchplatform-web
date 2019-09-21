@@ -12,13 +12,13 @@ import {
   Select,
   Typography,
 } from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/styles";
 import Header from "./Header";
 import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
 import {viewAllProjects, viewMyProjects, createProject} from "../actions/mainPage";
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -49,11 +49,11 @@ const useStyles = makeStyles(theme => ({
     minWidth: 150,
     paddingRight: theme.spacing(5),
   },
-}));
+});
 
 function MainPage(props) {
-  const classes = useStyles();
   const {
+    classes,
     language,
     viewProjects,
     viewAllProj,
@@ -156,4 +156,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MainPage);
+)(withStyles(styles, {withTheme: true})(MainPage));

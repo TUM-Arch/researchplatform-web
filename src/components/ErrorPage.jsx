@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router";
+import {withStyles} from "@material-ui/styles";
 
 import {
   Button,
@@ -37,4 +38,4 @@ ErrorPage.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withRouter(ErrorPage);
+export default withStyles({withTheme: true})(withRouter(ErrorPage));
