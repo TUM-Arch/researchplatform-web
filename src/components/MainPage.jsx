@@ -1,21 +1,22 @@
 import React from "react";
-import Header from "./Header";
 import {connect} from "react-redux";
 import en from "../translations/en.json";
 import de from "../translations/de.json";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Typography,
+} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import Header from "./Header";
+import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
 import {viewAllProjects, viewMyProjects, createProject} from "../actions/mainPage";
-
-import Paper from "@material-ui/core/Paper";
-import {makeStyles} from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import CreateViewDeleteProject from "./CreateViewEditProject";
 
 const useStyles = makeStyles(theme => ({
   root: {

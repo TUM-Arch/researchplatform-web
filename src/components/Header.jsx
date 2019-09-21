@@ -1,23 +1,24 @@
 import React from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 import en from "../translations/en.json";
 import de from "../translations/de.json";
-import {changeToEnglish, changeToGerman} from "../actions/mainPage";
 import TUMLogo from "../resources/tum-logo.svg";
+import {
+  AppBar,
+  Button,
+  Link,
+  MenuItem,
+  Paper,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import {fade, makeStyles} from "@material-ui/core/styles";
 import Downshift from "downshift";
 import deburr from "lodash/deburr";
-import PropTypes from "prop-types";
-import {makeStyles} from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import {Button} from "@material-ui/core";
-import {fade} from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import SearchIcon from "@material-ui/icons/Search";
-import Link from "@material-ui/core/Link";
+import {changeToEnglish, changeToGerman} from "../actions/mainPage";
 
 const useStyles = makeStyles(theme => ({
   root: {

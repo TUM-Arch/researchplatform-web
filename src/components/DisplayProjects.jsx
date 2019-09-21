@@ -1,7 +1,7 @@
 import React from "react";
-import Project from "./Project";
 import {connect} from "react-redux";
 import {Typography} from "@material-ui/core";
+import Project from "./Project";
 
 class DisplayProjects extends React.Component {
   render() {

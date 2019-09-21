@@ -1,18 +1,20 @@
 import React from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import IconButton from "@material-ui/core/IconButton";
+import {connect} from "react-redux";
+import {
+  Chip,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
-import Tooltip from "@material-ui/core/Tooltip";
-import Chip from "@material-ui/core/Chip";
-import Typography from "@material-ui/core/Typography";
-import {connect} from "react-redux";
+import {makeStyles} from "@material-ui/core/styles";
 import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
 
 const useStyles = makeStyles(theme => ({
