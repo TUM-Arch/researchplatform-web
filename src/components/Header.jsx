@@ -7,7 +7,6 @@ import TUMLogo from "../resources/tum-logo.svg";
 import Downshift from "downshift";
 import deburr from "lodash/deburr";
 import PropTypes from "prop-types";
-//UI material imports
 import {makeStyles} from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
