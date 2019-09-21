@@ -1,4 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
+import {withRouter} from "react-router";
+
 import {
   Button,
   Dialog,
@@ -10,21 +13,17 @@ import {
 
 class ErrorPage extends React.Component {
   render() {
+    const history = this.props.history;
+
     return (
       <div>
-        <Dialog
-          open="true"
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Error 404: Page not found"}</DialogTitle>
+        <Dialog open={true}>
+          <DialogTitle>{"Error 404: Page not found"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              The requested page does not exist. Please try again later.
-            </DialogContentText>
+            <DialogContentText>The requested page does not exist.</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.props.history.push("/main")} color="secondary">
+            <Button onClick={() => history.push("/")} color="secondary">
               OK
             </Button>
           </DialogActions>
@@ -34,4 +33,8 @@ class ErrorPage extends React.Component {
   }
 }
 
-export default ErrorPage;
+ErrorPage.propTypes = {
+  history: PropTypes.object.isRequired,
+};
+
+export default withRouter(ErrorPage);

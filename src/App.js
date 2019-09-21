@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {createBrowserHistory} from "history";
 import {ThemeProvider} from "@material-ui/styles";
 import theme from "./theme/index";
@@ -14,12 +14,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <Route
-          exact
-          path="/"
-          render={() => (Auth() ? <MainPage /> : <LoginPage history={history} />)}
-        />
-        <Route exact path="/error" render={() => <ErrorPage />} />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (Auth() ? <MainPage /> : <LoginPage history={history} />)}
+          />
+          <Route exact path="/error" render={() => <ErrorPage history={history} />} />
+          <Route path="*" render={() => <ErrorPage history={history} />} />
+        </Switch>
       </Router>
     </ThemeProvider>
   );
