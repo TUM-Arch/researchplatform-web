@@ -1,16 +1,18 @@
 {
-    "departmentName" : "Department of Architecture",
-    "searchPlaceholder" : "Search Project...",
-    "leftPaneTitle": "Projects from research and development",
-    "createProject": "Create Project",
-    "editProject": "Edit Project",
-    "viewProject": "View Project",
-    "time": "Time",
-    "projectSubtitle": "Here you will find a summary of all completed and ongoing research and development projects at the Faculty of Architecture in chronological order of their beginning.",
-    "newProjectSubtitle": "To create a new project, please enter your all the project details here.",
-    "oldProjectSubtitle": "You can view/edit the details of the selected research project here.",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "fieldProjectName": "Project Name"
+  "departmentName": "Department of Architecture",
+  "searchPlaceholder": "Search",
+  "leftPaneTitle": "Projects from research and development",
+  "createProject": "New Project",
+  "editProject": "Edit Project",
+  "viewProject": "View Project",
+  "allProjects": "All Projects",
+  "myProjects": "My Projects",
+  "view": "View",
+  "time": "Time",
+  "projectSubtitle": "Here you will find a summary of all completed and ongoing research and development projects at the Faculty of Architecture in chronological order of their beginning.",
+  "newProjectSubtitle": "To create a new project, please enter your all the project details here.",
+  "oldProjectSubtitle": "You can view/edit the details of the selected research project here.",
+  "submit": "Submit",
+  "cancel": "Cancel",
+  "fieldProjectName": "Project Name"
 }
-

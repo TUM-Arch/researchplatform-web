@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router";
 import {withStyles} from "@material-ui/styles";
-
 import {
   Button,
   Dialog,
@@ -14,8 +13,7 @@ import {
 
 class ErrorPage extends React.Component {
   render() {
-    const history = this.props.history;
-
+    const {history} = this.props;
     return (
       <div>
         <Dialog open={true}>

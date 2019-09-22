@@ -1,16 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {
-  Chip,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  Paper,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
+import {Chip, Divider, IconButton, Paper, Tooltip, Typography} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
@@ -19,118 +9,148 @@ import {editProject, viewProject, setSelectedProject} from "../actions/mainPage"
 
 const styles = theme => ({
   root: {
-    maxWidth: "90%",
-    marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(6),
-    marginBottom: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
-  icon: {
-    margin: theme.spacing(1),
+  projectItemsName: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
   },
-  chip: {
-    margin: theme.spacing(1),
-  },
-  desc: {
-    display: "block",
-    maxWidth: 700, //Todo: Needs to change
+  projectItemsText: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
   },
+  divider: {
+    marginTop: theme.spacing(2),
+  },
+  projectActionItems: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  chips: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+  },
+  chip: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  },
+  actions: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    flexWrap: "wrap",
+  },
+  icon: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  },
 });
 
 function Project(props) {
-  const {classes} = props;
-  const projName = props.name;
-  const projDept = props.dept;
-  const projDesc = props.desc;
-  const viewProject = props.viewProject;
-  const editProject = props.editProject;
-  const setSelectedProject = props.setSelectedProject;
-  const viewProjects = props.viewProjects;
+  const {
+    classes,
+    project,
+    viewProject,
+    editProject,
+    setSelectedProject,
+    windowDims,
+  } = props;
 
-  function handleViewProject() {
+  // Get current user
+  const currentUserId = sessionStorage.getItem("userId");
+  // Window width supplied as style for project description to wrap properly on window resize
+  const projectDescStyle = {
+    width: windowDims.width * 0.7,
+  };
+
+  function handleViewProject(id) {
     viewProject();
-    setSelectedProject(props.id);
+    setSelectedProject(id);
   }
 
-  function handleEditProject() {
+  function handleEditProject(id) {
     editProject();
-    setSelectedProject(props.id);
+    setSelectedProject(id);
   }
 
   return (
-    <List className={classes.root}>
-      <Paper>
-        <ListItem alignItems="flex-start">
-          <ListItemText
-            primary={projName}
-            secondary={
-              <React.Fragment>
-                <Typography component="div" variant="body2" className={classes.desc}>
-                  {projDesc}
-                </Typography>
-                <DeptChips value={projDept} classes={classes} />
-              </React.Fragment>
-            }
+    <Paper className={classes.root}>
+      <Typography variant="h6" className={classes.projectItemsName}>
+        {project.name}
+      </Typography>
+      <Typography
+        variant="body2"
+        className={classes.projectItemsText}
+        style={projectDescStyle}
+      >
+        {project.description}
+      </Typography>
+      <Divider variant="middle" className={classes.divider} />
+      <div className={classes.projectActionItems}>
+        <div className={classes.chips}>
+          <Chip
+            variant="outlined"
+            color="secondary"
+            size="small"
+            label={project.chairName}
+            className={classes.chip}
           />
-          <ListItemSecondaryAction>
-            <Tooltip placement="top" title="View">
-              <IconButton
-                edge="end"
-                aria-label="search"
-                onClick={handleViewProject}
-                className={classes.icon}
-              >
-                <SearchIcon />
+        </div>
+        <div className={classes.actions}>
+          <Tooltip placement="top" title="View">
+            <IconButton
+              edge="end"
+              aria-label="search"
+              onClick={() => handleViewProject(project.id)}
+              className={classes.icon}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip placement="top" title="Edit">
+            <IconButton
+              edge="end"
+              aria-label="edit"
+              onClick={() => handleEditProject(project.id)}
+              className={classes.icon}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          {project.userId === currentUserId ? (
+            <Tooltip placement="top" title="Delete">
+              <IconButton edge="end" aria-label="delete" className={classes.icon}>
+                <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip placement="top" title="Edit">
-              <IconButton
-                edge="end"
-                aria-label="edit"
-                onClick={handleEditProject}
-                className={classes.icon}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-            {viewProjects === "my" ? (
-              <Tooltip placement="top" title="Delete">
-                <IconButton edge="end" aria-label="delete" className={classes.icon}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            ) : null}
-          </ListItemSecondaryAction>
-        </ListItem>
-      </Paper>
-    </List>
+          ) : null}
+        </div>
+      </div>
+    </Paper>
   );
 }
 
-function DeptChips(props) {
-  var dept = [];
-  const {classes} = props;
-  for (var i = 0; i < props.value.length; i++) {
-    dept.push(
-      <Chip
-        key={i}
-        variant="outlined"
-        color="secondary"
-        size="small"
-        label={props.value[i]}
-        className={classes.chip}
-      />
-    );
-  }
-
-  return <div>{dept}</div>;
-}
-
-const mapStateToProps = ({mainPage: {viewProjects}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects, windowDims}}) => ({
   viewProjects,
+  windowDims,
 });
 
 const mapDispatchToProps = {

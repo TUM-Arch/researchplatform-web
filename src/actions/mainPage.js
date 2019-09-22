@@ -7,6 +7,8 @@ export const CREATEPROJECT = "CREATEPROJECT";
 export const EDITPROJECT = "EDITPROJECT";
 export const VIEWPROJECT = "VIEWPROJECT";
 export const SETSELECTEDPROJECT = "SETSELECTEDPROJECT";
+export const SETWINDOWDIMS = "SETWINDOWDIMS";
+export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -53,3 +55,14 @@ export const setSelectedProject = value => dispatch =>
     type: SETSELECTEDPROJECT,
     value,
   });
+
+export const setWindowDimensions = values => dispatch =>
+  dispatch({
+    type: SETWINDOWDIMS,
+    values,
+  });
+
+export const updateProjects = values => ({
+  type: UPDATE_PROJECTS,
+  values,
+});

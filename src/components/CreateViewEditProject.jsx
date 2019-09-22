@@ -39,7 +39,7 @@ function CreateViewDeleteProject(props) {
       case "Project Description":
         return allProjects.filter(function(project) {
           return project.id === selectedProject;
-        })[0].desc;
+        })[0].description;
       default:
         return null;
     }
@@ -47,7 +47,13 @@ function CreateViewDeleteProject(props) {
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">
           {(() => {
             switch (projectDialogState) {
@@ -87,8 +93,8 @@ function CreateViewDeleteProject(props) {
                       return (
                         <TextField
                           id="text"
-                          autoFocus
                           margin="dense"
+                          variant="outlined"
                           label={name}
                           defaultValue={
                             projectDialogState === "edit" ? displayContent({name}) : null
@@ -124,7 +130,7 @@ function CreateViewDeleteProject(props) {
           <Button onClick={handleClose} color="secondary">
             {language === "en" ? en.cancel : de.cancel}
           </Button>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={handleClose} color="secondary" variant="contained">
             {language === "en" ? en.submit : de.submit}
           </Button>
         </DialogActions>

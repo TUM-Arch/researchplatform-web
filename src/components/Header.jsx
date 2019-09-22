@@ -6,7 +6,7 @@ import de from "../translations/de.json";
 import TUMLogo from "../resources/tum-logo.svg";
 import {
   AppBar,
-  Button,
+  IconButton,
   Link,
   MenuItem,
   Paper,
@@ -15,18 +15,25 @@ import {
   Typography,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import SettingsIcon from "@material-ui/icons/SettingsApplications";
 import {fade} from "@material-ui/core/styles";
 import {withStyles} from "@material-ui/styles";
+import {isMobile} from "react-device-detect";
 import Downshift from "downshift";
 import deburr from "lodash/deburr";
 import {changeToEnglish, changeToGerman} from "../actions/mainPage";
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
+  headerActions: {
+    marginLeft: theme.spacing(1),
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     flexGrow: 5,
@@ -141,9 +148,11 @@ function Header(props) {
       <AppBar position="static" color="secondary">
         <Toolbar>
           <img src={TUMLogo} alt="TUM logo" className={classes.image} />
-          <Typography variant="h6" className={classes.title}>
-            {language === "en" ? en.departmentName : de.departmentName}
-          </Typography>
+          {isMobile === false ? (
+            <Typography variant="body1" className={classes.title}>
+              {language === "en" ? en.departmentName : de.departmentName}
+            </Typography>
+          ) : null}
 
           <Downshift id="downshift-simple">
             {({
@@ -194,25 +203,23 @@ function Header(props) {
               );
             }}
           </Downshift>
-          {isAdmin && (
-            <Button
-              className={classes.menuButton}
-              color="inherit"
-              onClick={() => changeToEn()}
-            >
-              Admin
-            </Button>
-          )}
-          <Link component="button" onClick={() => changeToEn()}>
-            <Typography variant="body1">en</Typography>
-          </Link>
-          <Typography variant="h6">
-            {" "}
-            <span>&nbsp;|&nbsp;</span>{" "}
-          </Typography>
-          <Link component="button" onClick={() => changeToDe()}>
-            <Typography variant="body1">de</Typography>
-          </Link>
+          <div className={classes.headerActions}>
+            <Link component="button" onClick={() => changeToEn()}>
+              <Typography>en</Typography>
+            </Link>
+            <Typography>
+              {" "}
+              <span>&nbsp;|&nbsp;</span>{" "}
+            </Typography>
+            <Link component="button" onClick={() => changeToDe()}>
+              <Typography>de</Typography>
+            </Link>
+            {isAdmin && (
+              <IconButton color="inherit">
+                <SettingsIcon />
+              </IconButton>
+            )}
+          </div>
         </Toolbar>
       </AppBar>
     </div>

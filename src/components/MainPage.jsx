@@ -3,138 +3,167 @@ import {connect} from "react-redux";
 import en from "../translations/en.json";
 import de from "../translations/de.json";
 import {
-  Box,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Typography,
 } from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
+import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
-import {viewAllProjects, viewMyProjects, createProject} from "../actions/mainPage";
+import {grey100} from "../util/constants";
+import {
+  viewAllProjects,
+  viewMyProjects,
+  createProject,
+  setWindowDimensions,
+} from "../actions/mainPage";
+import {getAllProjects} from "../reducers/mainPage";
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
   },
-  appBar: {
-    position: "relative",
+  rootMobile: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
+  projectsLayout: {
+    display: "flex",
+    flexDirection: "column",
+    margin: theme.spacing(2),
   },
-  paper: {
-    color: theme.palette.text.secondary,
-    minHeight: 600,
+  projectsLayoutText: {
+    margin: theme.spacing(2),
   },
-  projectTitle: {
-    textDecoration: "underline",
+  timelineLayout: {
+    display: "flex",
+    flexDirection: "column",
+    width: "50%",
+    maxWidth: "50%",
+    margin: theme.spacing(2),
+    backgroundColor: grey100,
   },
-  projectSubtitle: {
-    marginLeft: theme.spacing(6),
+  timelineLayoutText: {
+    margin: theme.spacing(2),
   },
-  timeTitle: {
-    padding: theme.spacing(6, 1, 1, 7),
-    textAlign: "left",
-    textDecoration: "underline",
+  buttonInputs: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 150,
-    paddingRight: theme.spacing(5),
+  specificButtonInputs: {
+    margin: theme.spacing(2),
   },
 });
 
-function MainPage(props) {
-  const {
-    classes,
-    language,
-    viewProjects,
-    viewAllProj,
-    viewMyProj,
-    allProjects,
-    myProjects,
-    isProjectDialogOpen,
-    createProject,
-  } = props;
+class MainPage extends React.Component {
+  componentWillMount = () => {
+    this.props.getAllProjects();
+    this.updateDimensions();
+  };
+  componentDidMount = () => {
+    window.addEventListener("resize", this.updateDimensions);
+  };
+  componentWillUnmount = () => {
+    window.removeEventListener("resize", this.updateDimensions);
+  };
+  updateDimensions = () => {
+    const {setWindowDimensions} = this.props;
+    const values = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+    setWindowDimensions(values);
+  };
 
-  function handleView(event) {
-    if (event.target.value === "all") viewAllProj();
-    else viewMyProj();
-  }
+  render() {
+    const {
+      classes,
+      language,
+      viewProjects,
+      viewAllProj,
+      viewMyProj,
+      allProjects,
+      myProjects,
+      isProjectDialogOpen,
+      createProject,
+    } = this.props;
 
-  function handleCreateProject() {
-    createProject();
-  }
+    function handleView(event) {
+      if (event.target.value === "all") viewAllProj();
+      else viewMyProj();
+    }
 
-  return (
-    <div>
-      <Header />
-      <div className={classes.root}>
-        <Box display="flex" flexDirection="row" p={0} m={2} bgcolor="background.paper">
-          <Box p={0} m={2} flex={6}>
-            <Paper className={classes.paper}>
-              <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                p={5}
-                bgcolor="background.paper"
+    function handleCreateProject() {
+      createProject();
+    }
+
+    return (
+      <div>
+        <Header />
+        <div className={isMobile === true ? classes.rootMobile : classes.root}>
+          <div className={classes.projectsLayout}>
+            <Typography
+              variant="h5"
+              color="secondary"
+              className={classes.projectsLayoutText}
+            >
+              {language === "en" ? en.leftPaneTitle : de.leftPaneTitle}
+            </Typography>
+            <Typography variant="body1" className={classes.projectsLayoutText}>
+              {language === "en" ? en.projectSubtitle : de.projectSubtitle}
+            </Typography>
+            <div className={classes.buttonInputs}>
+              <Button
+                onClick={handleCreateProject}
+                variant="contained"
+                size="small"
+                color="secondary"
+                className={classes.specificButtonInputs}
               >
-                <Typography
-                  variant="h4"
-                  color="secondary"
-                  className={classes.projectTitle}
-                >
-                  {language === "en" ? en.leftPaneTitle : de.leftPaneTitle}
-                </Typography>
-                <Button
-                  onClick={handleCreateProject}
-                  variant="contained"
-                  color="secondary"
-                >
-                  {language === "en" ? en.createProject : de.createProject}
-                </Button>
-                <CreateViewDeleteProject open={isProjectDialogOpen} language={language} />
-              </Box>
-              <Box display="flex" flexDirection="column">
-                <Typography variant="body1" className={classes.projectSubtitle}>
-                  {language === "en" ? en.projectSubtitle : de.projectSubtitle}
-                </Typography>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <FormControl className={classes.formControl}>
-                  <InputLabel>View Projects</InputLabel>
-                  <Select value={viewProjects} onChange={handleView}>
-                    <MenuItem value="all">All Projects</MenuItem>
-                    <MenuItem value="my">My Projects</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box>
-                <DisplayProjects
-                  projects={viewProjects === "all" ? allProjects : myProjects}
-                />
-              </Box>
-            </Paper>
-          </Box>
-          <Box p={0} m={2} flexGrow={1}>
-            <Paper className={classes.paper}>
-              <Typography variant="h6" className={classes.timeTitle} color="secondary">
+                {language === "en" ? en.createProject : de.createProject}
+              </Button>
+              <FormControl className={classes.specificButtonInputs}>
+                <InputLabel>{language === "en" ? en.view : de.view}</InputLabel>
+                <Select value={viewProjects} onChange={handleView}>
+                  <MenuItem value="all">
+                    {language === "en" ? en.allProjects : de.allProjects}
+                  </MenuItem>
+                  <MenuItem value="my">
+                    {language === "en" ? en.myProjects : de.myProjects}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <DisplayProjects
+              projects={viewProjects === "all" ? allProjects : myProjects}
+            />
+          </div>
+
+          {isMobile === false ? (
+            <div className={classes.timelineLayout}>
+              <Typography
+                variant="h5"
+                color="secondary"
+                className={classes.timelineLayoutText}
+              >
                 {language === "en" ? en.time : de.time}
               </Typography>
-            </Paper>
-          </Box>
-        </Box>
+            </div>
+          ) : null}
+        </div>
+        <CreateViewDeleteProject open={isProjectDialogOpen} language={language} />
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 const mapStateToProps = ({
@@ -151,6 +180,8 @@ const mapDispatchToProps = {
   viewAllProj: viewAllProjects,
   viewMyProj: viewMyProjects,
   createProject: createProject,
+  setWindowDimensions: setWindowDimensions,
+  getAllProjects: getAllProjects,
 };
 
 export default connect(

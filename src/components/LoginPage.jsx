@@ -14,14 +14,13 @@ const styles = theme => ({
 });
 
 function login(history) {
-  sessionStorage.setItem("userid", "tempuser");
+  sessionStorage.setItem("userId", "tempuser");
   history.push("/");
 }
 
 class LoginPage extends React.Component {
   render() {
-    const history = this.props.history;
-    const {classes} = this.props;
+    const {classes, history} = this.props;
     return (
       <div className={classes.root}>
         <Button variant="contained" color="secondary" onClick={() => login(history)}>
