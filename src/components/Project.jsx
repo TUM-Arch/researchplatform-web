@@ -78,7 +78,7 @@ function Project(props) {
   const currentUserId = sessionStorage.getItem("userId");
   // Window width supplied as style for project description to wrap properly on window resize
   const projectDescStyle = {
-    width: windowDims.width * 0.7,
+    width: windowDims.width * 0.75,
   };
 
   function handleViewProject(id) {

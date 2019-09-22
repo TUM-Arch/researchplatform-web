@@ -1,6 +1,9 @@
 // URLs
-export const serverURL = "http://localhost:3000";
-export const errorURL = `${serverURL}/error`;
+export const webURL = "http://localhost:3000";
+export const errorURL = `${webURL}/error`;
+
+export const serverURL = "http://localhost:5000/api";
+export const projectsURL = `${serverURL}/projects`;
 
 // COLORS
 export const grey50 = "#fafafa";

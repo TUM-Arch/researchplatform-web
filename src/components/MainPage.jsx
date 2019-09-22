@@ -15,6 +15,7 @@ import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
+import DisplayTimeline from "./DisplayTimeline";
 import {grey100} from "../util/constants";
 import {
   viewAllProjects,
@@ -97,6 +98,8 @@ class MainPage extends React.Component {
       createProject,
     } = this.props;
 
+    const projectsRefs = [];
+
     function handleView(event) {
       if (event.target.value === "all") viewAllProj();
       else viewMyProj();
@@ -145,6 +148,7 @@ class MainPage extends React.Component {
             </div>
             <DisplayProjects
               projects={viewProjects === "all" ? allProjects : myProjects}
+              projectsRefs={projectsRefs}
             />
           </div>
 
@@ -157,6 +161,10 @@ class MainPage extends React.Component {
               >
                 {language === "en" ? en.time : de.time}
               </Typography>
+              <DisplayTimeline
+                projects={viewProjects === "all" ? allProjects : myProjects}
+                projectsRefs={projectsRefs}
+              />
             </div>
           ) : null}
         </div>

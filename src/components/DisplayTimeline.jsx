@@ -1,21 +1,24 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Typography} from "@material-ui/core";
-import Project from "./Project";
+import {Link, Typography} from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
+import scrollToComponent from "react-scroll-to-component";
 
 const styles = theme => ({
   root: {
     display: "flex",
     flexDirection: "column",
+    margin: theme.spacing(1),
+  },
+  linkText: {
     margin: theme.spacing(2),
+    textDecoration: "underline",
   },
 });
 
-class DisplayProjects extends React.Component {
+class DisplayTimeline extends React.Component {
   render() {
     const {classes, projects, projectsRefs} = this.props;
-    projects.map(() => projectsRefs.push(React.createRef()));
     var prevCreatedOn = 0;
     if (!Array.isArray(projects) || !projects.length) {
       prevCreatedOn = 0;
@@ -32,13 +35,22 @@ class DisplayProjects extends React.Component {
         {projects.map((project, i) => (
           <div key={project.id}>
             {project.yearOfCreation < prevCreatedOn ? (
-              <div ref={projectsRefs[i]}>
-                <Typography variant="h6" color="secondary">
-                  {project.yearOfCreation}
-                </Typography>
-              </div>
+              <Link
+                component="button"
+                color="secondary"
+                onClick={() =>
+                  scrollToComponent(projectsRefs[i].current, {
+                    offset: 0,
+                    align: "top",
+                    duration: 750,
+                  })
+                }
+                className={classes.linkText}
+              >
+                <Typography>{project.yearOfCreation}</Typography>
+              </Link>
             ) : null}
-            <Project project={project} />
+
             {setPrevCreatedOn(project.yearOfCreation)}
           </div>
         ))}
@@ -47,10 +59,10 @@ class DisplayProjects extends React.Component {
   }
 }
 
-const mapStateToProps = ({mainPage: {viewProjects}}) => ({
-  viewProjects,
+const mapStateToProps = ({mainPage: {sortByYear}}) => ({
+  sortByYear,
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles, {withTheme: true})(DisplayProjects)
+  withStyles(styles, {withTheme: true})(DisplayTimeline)
 );

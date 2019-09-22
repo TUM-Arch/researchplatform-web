@@ -13,6 +13,7 @@ import {
   UPDATE_PROJECTS,
   updateProjects,
 } from "../actions/mainPage";
+import {projectsURL} from "../util/constants";
 
 let initialState = {
   language: "en",
@@ -31,6 +32,7 @@ let initialState = {
     width: "",
     height: "",
   },
+  sortByYear: "",
 };
 
 export default function mainPage(state = initialState, action) {
@@ -116,12 +118,11 @@ export default function mainPage(state = initialState, action) {
 export function getAllProjects() {
   let values = {};
   return dispatch => {
-    return fetch("http://localhost:5000/api/projects", {
+    return fetch(projectsURL, {
       method: "GET",
     })
       .then(response => response.json())
       .then(result => {
-        console.log(result);
         values = {
           numberOfProjects: result.numberOfProjects,
           projectsList: result.projectsList,
