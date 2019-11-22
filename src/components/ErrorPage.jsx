@@ -14,6 +14,7 @@ import {
 class ErrorPage extends React.Component {
   render() {
     const {history} = this.props;
+    console.log("Error");
     return (
       <div>
         <Dialog open={true}>
