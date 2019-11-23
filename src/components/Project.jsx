@@ -3,9 +3,11 @@ import {connect} from "react-redux";
 import {Chip, Divider, IconButton, Paper, Tooltip, Typography} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import GetAppIcon from "@material-ui/icons/GetApp";
 import SearchIcon from "@material-ui/icons/Search";
 import {withStyles} from "@material-ui/styles";
 import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
+import jsPDF from "jspdf";
 
 const styles = theme => ({
   root: {
@@ -91,6 +93,16 @@ function Project(props) {
     setSelectedProject(id);
   }
 
+  function handleDownloadProject() {
+    var doc = new jsPDF();
+    doc.setFontSize(22);
+    doc.text(20, 20, project.name);
+    doc.setFontSize(13);
+    var desc = doc.splitTextToSize(project.description, 170);
+    doc.text(20, 30, desc);
+    doc.save(project.name + ".pdf");
+  }
+
   return (
     <Paper className={classes.root}>
       <Typography variant="h6" className={classes.projectItemsName}>
@@ -133,6 +145,16 @@ function Project(props) {
               className={classes.icon}
             >
               <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip placement="top" title="Download">
+            <IconButton
+              edge="end"
+              aria-label="download"
+              onClick={() => handleDownloadProject()}
+              className={classes.icon}
+            >
+              <GetAppIcon />
             </IconButton>
           </Tooltip>
           {project.userId === currentUserId ? (
