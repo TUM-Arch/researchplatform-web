@@ -1,0 +1,12 @@
+version: '3.7'
+
+# Define services
+services:
+  # React app
+  app-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80" # Forward the exposed port 80 on the container to port 3000 on the host machine
+    restart: always
