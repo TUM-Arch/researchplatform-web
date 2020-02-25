@@ -17,7 +17,7 @@ import {projectsURL} from "../util/constants";
 
 let initialState = {
   language: "en",
-  viewProjects: "all",
+  viewProjects: "my",
   allProjects: [],
   myProjects: [],
   userId: "tempuser",
@@ -51,9 +51,6 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "all",
-        projects: state.allProjects.sort(function(a, b) {
-          return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-        }),
       };
     case VIEWMY:
       return {
@@ -109,6 +106,13 @@ export default function mainPage(state = initialState, action) {
         allProjects: action.values.projectsList.sort(function(a, b) {
           return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
         }),
+        myProjects: action.values.projectsList
+          .filter(function(project) {
+            return project.userId === state.userId;
+          })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
       };
     default:
       return state;
