@@ -1,6 +1,18 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Chip, Divider, IconButton, Paper, Tooltip, Typography} from "@material-ui/core";
+import {
+  IconButton,
+  Tooltip,
+  Typography,
+  Card,
+  CardHeader,
+  Avatar,
+  CardMedia,
+  CardContent,
+  CardActions,
+} from "@material-ui/core";
+import {red} from "@material-ui/core/colors";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import GetAppIcon from "@material-ui/icons/GetApp";
@@ -11,18 +23,17 @@ import jsPDF from "jspdf";
 
 const styles = theme => ({
   root: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    width: 300,
+    maxWidth: 325,
   },
-  projectItemsName: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
   },
-  projectItemsText: {
+  avatar: {
+    backgroundColor: red[500],
+  },
+  projectDescText: {
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
@@ -30,58 +41,13 @@ const styles = theme => ({
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
   },
-  divider: {
-    marginTop: theme.spacing(2),
-  },
-  projectActionItems: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  chips: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    flexWrap: "wrap",
-  },
-  chip: {
-    marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  },
-  actions: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    flexWrap: "wrap",
-  },
-  icon: {
-    marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  },
 });
 
 function Project(props) {
-  const {
-    classes,
-    project,
-    viewProject,
-    editProject,
-    setSelectedProject,
-    windowDims,
-  } = props;
+  const {classes, project, viewProject, editProject, setSelectedProject} = props;
 
   // Get current user
   const currentUserId = sessionStorage.getItem("userId");
-  // Window width supplied as style for project description to wrap properly on window resize
-  const projectDescStyle = {
-    width: windowDims.width * 0.75,
-  };
 
   function handleViewProject(id) {
     viewProject();
@@ -103,76 +69,96 @@ function Project(props) {
     doc.save(project.name + ".pdf");
   }
 
+  function convertTimeStampToDate(timestamp) {
+    var dateFormat = new Date(timestamp);
+    var year = dateFormat.getFullYear();
+    var month = dateFormat.getMonth() + 1;
+    var date = dateFormat.getDate();
+    if (date < 10) {
+      date = "0" + date;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+    return date + "-" + month + "-" + year;
+  }
+
   return (
-    <Paper className={classes.root}>
-      <Typography variant="h6" className={classes.projectItemsName}>
-        {project.name}
-      </Typography>
-      <Typography
-        variant="body2"
-        className={classes.projectItemsText}
-        style={projectDescStyle}
-      >
-        {project.description}
-      </Typography>
-      <Divider variant="middle" className={classes.divider} />
-      <div className={classes.projectActionItems}>
-        <div className={classes.chips}>
-          <Chip
-            variant="outlined"
-            color="secondary"
-            size="small"
-            label={project.chairName}
-            className={classes.chip}
-          />
-        </div>
-        <div className={classes.actions}>
-          <Tooltip placement="top" title="View">
-            <IconButton
-              edge="end"
-              aria-label="search"
-              onClick={() => handleViewProject(project.id)}
-              className={classes.icon}
-            >
-              <SearchIcon />
+    <Card className={classes.root}>
+      <CardHeader
+        avatar={
+          <Avatar aria-label="recipe" className={classes.avatar}>
+            R
+          </Avatar>
+        }
+        action={
+          <IconButton aria-label="settings">
+            <MoreVertIcon />
+          </IconButton>
+        }
+        title={project.name}
+        subheader={convertTimeStampToDate(project.createdAt)}
+      />
+      <CardMedia
+        className={classes.media}
+        image="/static/images/cards/paella.jpg"
+        title="Paella dish"
+      />
+      <CardContent>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          className={classes.projectDescText}
+        >
+          {project.description}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Tooltip placement="top" title="View">
+          <IconButton
+            edge="end"
+            aria-label="search"
+            onClick={() => handleViewProject(project.id)}
+            className={classes.icon}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip placement="top" title="Edit">
+          <IconButton
+            edge="end"
+            aria-label="edit"
+            onClick={() => handleEditProject(project.id)}
+            className={classes.icon}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip placement="top" title="Download">
+          <IconButton
+            edge="end"
+            aria-label="download"
+            onClick={() => handleDownloadProject()}
+            className={classes.icon}
+          >
+            <GetAppIcon />
+          </IconButton>
+        </Tooltip>
+        {project.userId === currentUserId ? (
+          <Tooltip placement="top" title="Delete">
+            <IconButton edge="end" aria-label="delete" className={classes.icon}>
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip placement="top" title="Edit">
-            <IconButton
-              edge="end"
-              aria-label="edit"
-              onClick={() => handleEditProject(project.id)}
-              className={classes.icon}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip placement="top" title="Download">
-            <IconButton
-              edge="end"
-              aria-label="download"
-              onClick={() => handleDownloadProject()}
-              className={classes.icon}
-            >
-              <GetAppIcon />
-            </IconButton>
-          </Tooltip>
-          {project.userId === currentUserId ? (
-            <Tooltip placement="top" title="Delete">
-              <IconButton edge="end" aria-label="delete" className={classes.icon}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-        </div>
-      </div>
-    </Paper>
+        ) : null}
+      </CardActions>
+    </Card>
   );
 }
 
-const mapStateToProps = ({mainPage: {viewProjects, windowDims}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects}}) => ({
   viewProjects,
-  windowDims,
 });
 
 const mapDispatchToProps = {

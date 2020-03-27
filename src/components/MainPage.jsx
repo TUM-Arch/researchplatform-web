@@ -47,8 +47,8 @@ const styles = theme => ({
   timelineLayout: {
     display: "flex",
     flexDirection: "column",
-    width: "50%",
-    maxWidth: "50%",
+    width: "25%",
+    maxWidth: "30%",
     margin: theme.spacing(2),
     backgroundColor: grey100,
   },
