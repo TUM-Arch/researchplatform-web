@@ -30,6 +30,16 @@ function CreateViewDeleteProject(props) {
     dialogClose();
   }
 
+  function handleSave() {
+    console.log("Save");
+    dialogClose();
+  }
+
+  function handleSubmit() {
+    console.log("Submit");
+    dialogClose();
+  }
+
   function displayContent(field) {
     switch (field.name) {
       case "Project Name":
@@ -130,7 +140,10 @@ function CreateViewDeleteProject(props) {
           <Button onClick={handleClose} color="secondary">
             {language === "en" ? en.cancel : de.cancel}
           </Button>
-          <Button onClick={handleClose} color="secondary" variant="contained">
+          <Button onClick={handleSave} color="secondary" variant="outlined">
+            {language === "en" ? en.save : de.save}
+          </Button>
+          <Button onClick={handleSubmit} color="secondary" variant="contained">
             {language === "en" ? en.submit : de.submit}
           </Button>
         </DialogActions>

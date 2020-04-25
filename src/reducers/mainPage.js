@@ -21,6 +21,7 @@ let initialState = {
   allProjects: [],
   myProjects: [],
   userId: "tempuser",
+  isAdmin: true, //TODO: Map this to user isAdmin property
   isProjectDialogOpen: false,
   projectDialogState: "",
   projectFields: [
@@ -133,5 +134,13 @@ export function getAllProjects() {
         };
         dispatch(updateProjects(values));
       });
+  };
+}
+
+export function deleteProject(id) {
+  return dispatch => {
+    return fetch(projectsURL + "/" + id, {
+      method: "DELETE",
+    });
   };
 }

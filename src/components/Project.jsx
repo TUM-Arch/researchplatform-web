@@ -17,8 +17,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import SearchIcon from "@material-ui/icons/Search";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import {withStyles} from "@material-ui/styles";
 import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
+import {deleteProject} from "../reducers/mainPage";
 import jsPDF from "jspdf";
 
 const styles = theme => ({
@@ -34,9 +37,9 @@ const styles = theme => ({
     backgroundColor: red[500],
   },
   projectDescText: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
@@ -44,7 +47,15 @@ const styles = theme => ({
 });
 
 function Project(props) {
-  const {classes, project, viewProject, editProject, setSelectedProject} = props;
+  const {
+    classes,
+    project,
+    viewProject,
+    editProject,
+    deleteProject,
+    setSelectedProject,
+    isAdmin,
+  } = props;
 
   // Get current user
   const currentUserId = sessionStorage.getItem("userId");
@@ -57,6 +68,10 @@ function Project(props) {
   function handleEditProject(id) {
     editProject();
     setSelectedProject(id);
+  }
+
+  function handleDeleteProject(id) {
+    deleteProject(id);
   }
 
   function handleDownloadProject() {
@@ -83,8 +98,14 @@ function Project(props) {
     return date + "-" + month + "-" + year;
   }
 
+  function setBackgroundColor() {
+    if (project.status === "NOTSUBMITTED") return "";
+    else if (project.status === "SUBMITTED") return "#CDCDCD";
+    else return "#D0F0C0";
+  }
+
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} style={{background: setBackgroundColor()}}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
@@ -147,8 +168,27 @@ function Project(props) {
         </Tooltip>
         {project.userId === currentUserId ? (
           <Tooltip placement="top" title="Delete">
-            <IconButton edge="end" aria-label="delete" className={classes.icon}>
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => handleDeleteProject(project.id)}
+              className={classes.icon}
+            >
               <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {project.status === "SUBMITTED" && isAdmin ? (
+          <Tooltip placement="top" title="Approve">
+            <IconButton edge="end" aria-label="approve" className={classes.icon}>
+              <ThumbUpIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {project.status === "SUBMITTED" && isAdmin ? (
+          <Tooltip placement="top" title="Disapprove">
+            <IconButton edge="end" aria-label="disapprove" className={classes.icon}>
+              <ThumbDownIcon />
             </IconButton>
           </Tooltip>
         ) : null}
@@ -157,13 +197,15 @@ function Project(props) {
   );
 }
 
-const mapStateToProps = ({mainPage: {viewProjects}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects, isAdmin}}) => ({
   viewProjects,
+  isAdmin,
 });
 
 const mapDispatchToProps = {
   editProject: editProject,
   viewProject: viewProject,
+  deleteProject: deleteProject,
   setSelectedProject: setSelectedProject,
 };
 

@@ -14,5 +14,7 @@
   "oldProjectSubtitle": "You can view/edit the details of the selected research project here.",
   "submit": "Submit",
   "cancel": "Cancel",
-  "fieldProjectName": "Project Name"
+  "save": "Save",
+  "fieldProjectName": "Project Name",
+  "manageFields": "Manage Fields"
 }

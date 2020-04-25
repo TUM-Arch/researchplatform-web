@@ -55,10 +55,14 @@ const styles = theme => ({
   timelineLayoutText: {
     margin: theme.spacing(2),
   },
-  buttonInputs: {
+  rowAboveProjects: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  buttonInputs: {
+    display: "flex",
+    flexDirection: "row",
   },
   specificButtonInputs: {
     margin: theme.spacing(2),
@@ -73,6 +77,14 @@ class MainPage extends React.Component {
   componentDidMount = () => {
     window.addEventListener("resize", this.updateDimensions);
   };
+
+  componentDidUpdate(prevProps) {
+    if (this.props.allProjects !== prevProps.allProjects) {
+      this.props.getAllProjects();
+      this.updateDimensions();
+    }
+  }
+
   componentWillUnmount = () => {
     window.removeEventListener("resize", this.updateDimensions);
   };
@@ -109,6 +121,10 @@ class MainPage extends React.Component {
       createProject();
     }
 
+    function handleManageFields() {
+      console.log("Manage Fields");
+    }
+
     return (
       <div>
         <Header />
@@ -124,16 +140,27 @@ class MainPage extends React.Component {
             <Typography variant="body1" className={classes.projectsLayoutText}>
               {language === "en" ? en.projectSubtitle : de.projectSubtitle}
             </Typography>
-            <div className={classes.buttonInputs}>
-              <Button
-                onClick={handleCreateProject}
-                variant="contained"
-                size="small"
-                color="secondary"
-                className={classes.specificButtonInputs}
-              >
-                {language === "en" ? en.createProject : de.createProject}
-              </Button>
+            <div className={classes.rowAboveProjects}>
+              <div className={classes.buttonInputs}>
+                <Button
+                  onClick={handleCreateProject}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  className={classes.specificButtonInputs}
+                >
+                  {language === "en" ? en.createProject : de.createProject}
+                </Button>
+                <Button
+                  onClick={handleManageFields}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  className={classes.specificButtonInputs}
+                >
+                  {language === "en" ? en.manageFields : de.manageFields}
+                </Button>
+              </div>
               <FormControl className={classes.specificButtonInputs}>
                 <InputLabel>{language === "en" ? en.view : de.view}</InputLabel>
                 <Select value={viewProjects} onChange={handleView}>

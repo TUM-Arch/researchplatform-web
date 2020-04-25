@@ -14,7 +14,7 @@ const styles = theme => ({
   paper: {
     padding: theme.spacing(2),
     justifyContent: "space-between",
-    color: theme.palette.text.secondary,
+    color: "theme.palette.text.secondary",
   },
   margin: {
     marginLeft: "16px",

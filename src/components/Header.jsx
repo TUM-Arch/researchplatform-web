@@ -77,8 +77,6 @@ const styles = theme => ({
   },
 });
 
-const isAdmin = true; //TODO: Map this to user isAdmin property
-
 //TODO: Replace this with project indexes
 const suggestions = [
   {label: "Afghanistan"},
@@ -142,7 +140,7 @@ function getSuggestions(value, {showEmpty = false} = {}) {
 }
 
 function Header(props) {
-  const {classes, changeToEn, changeToDe, language} = props;
+  const {classes, changeToEn, changeToDe, language, isAdmin} = props;
   return (
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
@@ -232,7 +230,7 @@ Header.propTypes = {
   language: PropTypes.string,
 };
 
-const mapStateToProps = ({mainPage: {language}}) => ({
+const mapStateToProps = ({mainPage: {language, isAdmin}}) => ({
   language,
 });
 
