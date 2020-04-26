@@ -23,8 +23,7 @@ const styles = theme => ({
 
 class DisplayProjects extends React.Component {
   render() {
-    const {classes, projects, projectsRefs} = this.props;
-    projects.map(() => projectsRefs.push(React.createRef()));
+    const {classes, projects} = this.props;
     var prevCreatedOn = 0;
     if (!Array.isArray(projects) || !projects.length) {
       prevCreatedOn = 0;
@@ -42,7 +41,7 @@ class DisplayProjects extends React.Component {
           {projects.map((project, i) => (
             <div key={project.id}>
               {project.yearOfCreation < prevCreatedOn ? (
-                <div ref={projectsRefs[i]}>
+                <div>
                   <Grid item xs={12}>
                     <Typography variant="h6" color="secondary">
                       {project.yearOfCreation}

@@ -15,7 +15,6 @@ import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
-import DisplayTimeline from "./DisplayTimeline";
 import {grey100} from "../util/constants";
 import {
   viewAllProjects,
@@ -40,19 +39,9 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     margin: theme.spacing(2),
+    width: "80%",
   },
   projectsLayoutText: {
-    margin: theme.spacing(2),
-  },
-  timelineLayout: {
-    display: "flex",
-    flexDirection: "column",
-    width: "25%",
-    maxWidth: "30%",
-    margin: theme.spacing(2),
-    backgroundColor: grey100,
-  },
-  timelineLayoutText: {
     margin: theme.spacing(2),
   },
   rowAboveProjects: {
@@ -103,8 +92,6 @@ class UserPage extends React.Component {
       createProject,
       history,
     } = this.props;
-
-    const projectsRefs = [];
 
     function handleView(event) {
       if (event.target.value === "all") viewAllProj();
@@ -169,25 +156,8 @@ class UserPage extends React.Component {
             </div>
             <DisplayProjects
               projects={viewProjects === "all" ? allProjects : myProjects}
-              projectsRefs={projectsRefs}
             />
           </div>
-
-          {isMobile === false ? (
-            <div className={classes.timelineLayout}>
-              <Typography
-                variant="h5"
-                color="secondary"
-                className={classes.timelineLayoutText}
-              >
-                {language === "en" ? en.time : de.time}
-              </Typography>
-              <DisplayTimeline
-                projects={viewProjects === "all" ? allProjects : myProjects}
-                projectsRefs={projectsRefs}
-              />
-            </div>
-          ) : null}
         </div>
         <CreateViewDeleteProject open={isProjectDialogOpen} language={language} />
       </div>
