@@ -6,6 +6,8 @@ export const PROJECTDIALOGCLOSE = "PROJECTDIALOGCLOSE";
 export const CREATEPROJECT = "CREATEPROJECT";
 export const EDITPROJECT = "EDITPROJECT";
 export const VIEWPROJECT = "VIEWPROJECT";
+export const DELETEPROJECT = "DELETEPROJECT";
+export const SUBMITREJECTPROJECT = "SUBMITREJECTPROJECT";
 export const SETSELECTEDPROJECT = "SETSELECTEDPROJECT";
 export const SETWINDOWDIMS = "SETWINDOWDIMS";
 export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
@@ -48,6 +50,24 @@ export const editProject = () => dispatch =>
 export const viewProject = () => dispatch =>
   dispatch({
     type: VIEWPROJECT,
+  });
+
+export const deleteProject = id => dispatch =>
+  dispatch({
+    type: DELETEPROJECT,
+    id,
+  });
+
+export const submitProject = result => dispatch =>
+  dispatch({
+    type: SUBMITREJECTPROJECT,
+    result,
+  });
+
+export const rejectProject = result => dispatch =>
+  dispatch({
+    type: SUBMITREJECTPROJECT,
+    result,
   });
 
 export const setSelectedProject = value => dispatch =>

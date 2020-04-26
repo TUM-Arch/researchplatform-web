@@ -19,10 +19,16 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import SearchIcon from "@material-ui/icons/Search";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import SendIcon from "@material-ui/icons/Send";
 import {withStyles} from "@material-ui/styles";
 import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
-import {deleteProject} from "../reducers/mainPage";
+import {
+  handledeleteProject,
+  handleSubmitProject,
+  handleRejectProject,
+} from "../reducers/mainPage";
 import jsPDF from "jspdf";
+import AuthAdmin from "./AuthAdmin";
 
 const styles = theme => ({
   root: {
@@ -52,13 +58,15 @@ function Project(props) {
     project,
     viewProject,
     editProject,
-    deleteProject,
+    handledeleteProject,
+    handlesubmitProject,
+    handlerejectProject,
     setSelectedProject,
-    isAdmin,
   } = props;
 
   // Get current user
   const currentUserId = sessionStorage.getItem("userId");
+  const isAdmin = AuthAdmin();
 
   function handleViewProject(id) {
     viewProject();
@@ -71,8 +79,19 @@ function Project(props) {
   }
 
   function handleDeleteProject(id) {
-    deleteProject(id);
-    window.location.reload();
+    handledeleteProject(id);
+  }
+
+  function handleSubmitProject(id) {
+    handlesubmitProject(id);
+  }
+
+  function handleApproveProject(id) {
+    handlesubmitProject(id);
+  }
+
+  function handleRejectProject(id) {
+    handlerejectProject(id);
   }
 
   function handleDownloadProject() {
@@ -102,6 +121,7 @@ function Project(props) {
   function setBackgroundColor() {
     if (project.status === "NOTSUBMITTED") return "";
     else if (project.status === "SUBMITTED") return "#CDCDCD";
+    else if (project.status === "REJECTED") return "#FF726F";
     else return "#D0F0C0";
   }
 
@@ -167,7 +187,7 @@ function Project(props) {
             <GetAppIcon />
           </IconButton>
         </Tooltip>
-        {project.userId === currentUserId ? (
+        {project.userId === currentUserId || isAdmin ? (
           <Tooltip placement="top" title="Delete">
             <IconButton
               edge="end"
@@ -179,16 +199,38 @@ function Project(props) {
             </IconButton>
           </Tooltip>
         ) : null}
+        {project.userId === currentUserId && project.status === "NOTSUBMITTED" ? (
+          <Tooltip placement="top" title="Submit">
+            <IconButton
+              edge="end"
+              aria-label="submit"
+              onClick={() => handleSubmitProject(project.id)}
+              className={classes.icon}
+            >
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
         {project.status === "SUBMITTED" && isAdmin ? (
           <Tooltip placement="top" title="Approve">
-            <IconButton edge="end" aria-label="approve" className={classes.icon}>
+            <IconButton
+              edge="end"
+              aria-label="approve"
+              onClick={() => handleApproveProject(project.id)}
+              className={classes.icon}
+            >
               <ThumbUpIcon />
             </IconButton>
           </Tooltip>
         ) : null}
         {project.status === "SUBMITTED" && isAdmin ? (
-          <Tooltip placement="top" title="Disapprove">
-            <IconButton edge="end" aria-label="disapprove" className={classes.icon}>
+          <Tooltip placement="top" title="Reject">
+            <IconButton
+              edge="end"
+              aria-label="reject"
+              onClick={() => handleRejectProject(project.id)}
+              className={classes.icon}
+            >
               <ThumbDownIcon />
             </IconButton>
           </Tooltip>
@@ -198,15 +240,16 @@ function Project(props) {
   );
 }
 
-const mapStateToProps = ({mainPage: {viewProjects, isAdmin}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects}}) => ({
   viewProjects,
-  isAdmin,
 });
 
 const mapDispatchToProps = {
   editProject: editProject,
   viewProject: viewProject,
-  deleteProject: deleteProject,
+  handledeleteProject: handledeleteProject,
+  handlesubmitProject: handleSubmitProject,
+  handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
 };
 

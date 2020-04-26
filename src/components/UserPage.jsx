@@ -15,7 +15,6 @@ import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewDeleteProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
-import {grey100} from "../util/constants";
 import {
   viewAllProjects,
   viewMyProjects,
@@ -48,10 +47,6 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  buttonInputs: {
-    display: "flex",
-    flexDirection: "row",
   },
   specificButtonInputs: {
     margin: theme.spacing(2),
@@ -102,10 +97,6 @@ class UserPage extends React.Component {
       createProject();
     }
 
-    function handleManageFields() {
-      console.log("Manage Fields");
-    }
-
     return (
       <div>
         <Header history={history} searchEnabled={true} settingsEnabled={true} />
@@ -122,26 +113,15 @@ class UserPage extends React.Component {
               {language === "en" ? en.projectSubtitle : de.projectSubtitle}
             </Typography>
             <div className={classes.rowAboveProjects}>
-              <div className={classes.buttonInputs}>
-                <Button
-                  onClick={handleCreateProject}
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  className={classes.specificButtonInputs}
-                >
-                  {language === "en" ? en.createProject : de.createProject}
-                </Button>
-                <Button
-                  onClick={handleManageFields}
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  className={classes.specificButtonInputs}
-                >
-                  {language === "en" ? en.manageFields : de.manageFields}
-                </Button>
-              </div>
+              <Button
+                onClick={handleCreateProject}
+                variant="contained"
+                size="small"
+                color="secondary"
+                className={classes.specificButtonInputs}
+              >
+                {language === "en" ? en.createProject : de.createProject}
+              </Button>
               <FormControl className={classes.specificButtonInputs}>
                 <InputLabel>{language === "en" ? en.view : de.view}</InputLabel>
                 <Select value={viewProjects} onChange={handleView}>

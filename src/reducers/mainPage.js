@@ -8,10 +8,16 @@ import {
   CREATEPROJECT,
   VIEWPROJECT,
   EDITPROJECT,
+  DELETEPROJECT,
+  SUBMITREJECTPROJECT,
   SETSELECTEDPROJECT,
   SETWINDOWDIMS,
   UPDATE_PROJECTS,
+  createProject,
   updateProjects,
+  deleteProject,
+  submitProject,
+  rejectProject,
 } from "../actions/mainPage";
 import {projectsURL} from "../util/constants";
 
@@ -21,7 +27,6 @@ let initialState = {
   allProjects: [],
   myProjects: [],
   userId: "tempuser",
-  isAdmin: true, //TODO: Map this to user isAdmin property
   isProjectDialogOpen: false,
   projectDialogState: "",
   projectFields: [
@@ -74,7 +79,7 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectDialogState: "create",
-        isProjectDialogOpen: true,
+        isProjectDialogOpen: !state.isProjectDialogOpen,
       };
     case VIEWPROJECT:
       return {
@@ -87,6 +92,26 @@ export default function mainPage(state = initialState, action) {
         ...state,
         projectDialogState: "edit",
         isProjectDialogOpen: true,
+      };
+    case DELETEPROJECT:
+      return {
+        ...state,
+        myProjects: state.myProjects.filter(project => project.id !== action.id),
+        allProjects: state.allProjects.filter(project => project.id !== action.id),
+      };
+    case SUBMITREJECTPROJECT:
+      return {
+        ...state,
+        myProjects: state.myProjects.map(project =>
+          project.id === action.result.id
+            ? {...project, status: action.result.status}
+            : project
+        ),
+        allProjects: state.allProjects.map(project =>
+          project.id === action.result.id
+            ? {...project, status: action.result.status}
+            : project
+        ),
       };
     case SETSELECTEDPROJECT:
       return {
@@ -137,10 +162,67 @@ export function getAllProjects() {
   };
 }
 
-export function deleteProject(id) {
+export function handledeleteProject(id) {
   return dispatch => {
     return fetch(projectsURL + "/" + id, {
       method: "DELETE",
-    });
+    }).then(response =>
+      response.status === 200 ? dispatch(deleteProject(id)) : console.log("Failed")
+    );
+  };
+}
+
+export function createNewProject() {
+  const body = {
+    name: "ABCD",
+    chairName: "",
+    description: "asdadasdasdasd",
+    imageId: "",
+    userId: "tempuser",
+    tags: [],
+    fields: [],
+  };
+  return dispatch => {
+    return fetch(projectsURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(createProject());
+      });
+  };
+}
+
+export function handleSubmitProject(id) {
+  return dispatch => {
+    return fetch(projectsURL + "/submit/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(submitProject(result));
+      });
+  };
+}
+
+export function handleRejectProject(id) {
+  return dispatch => {
+    return fetch(projectsURL + "/reject/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(rejectProject(result));
+      });
   };
 }

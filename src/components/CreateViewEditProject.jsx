@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
 import {projectDialogClose} from "../actions/mainPage";
+import {createNewProject} from "../reducers/mainPage";
 
 function CreateViewDeleteProject(props) {
   const {
@@ -24,6 +25,7 @@ function CreateViewDeleteProject(props) {
     projectFields,
     allProjects,
     selectedProject,
+    createNewProject,
   } = props;
 
   function handleClose() {
@@ -31,13 +33,12 @@ function CreateViewDeleteProject(props) {
   }
 
   function handleSave() {
-    console.log("Save");
-    dialogClose();
+    createNewProject();
+    window.location.reload();
   }
 
   function handleSubmit() {
-    console.log("Submit");
-    dialogClose();
+    console.log("Handle Submit...");
   }
 
   function displayContent(field) {
@@ -143,9 +144,11 @@ function CreateViewDeleteProject(props) {
           <Button onClick={handleSave} color="secondary" variant="outlined">
             {language === "en" ? en.save : de.save}
           </Button>
-          <Button onClick={handleSubmit} color="secondary" variant="contained">
-            {language === "en" ? en.submit : de.submit}
-          </Button>
+          {projectDialogState !== "create" ? (
+            <Button onClick={handleSubmit} color="secondary" variant="contained">
+              {language === "en" ? en.submit : de.submit}
+            </Button>
+          ) : null}
         </DialogActions>
       </Dialog>
     </div>
@@ -198,6 +201,7 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = {
   dialogClose: projectDialogClose,
+  createNewProject: createNewProject,
 };
 
 export default connect(
