@@ -72,6 +72,7 @@ function Project(props) {
 
   function handleDeleteProject(id) {
     deleteProject(id);
+    window.location.reload();
   }
 
   function handleDownloadProject() {

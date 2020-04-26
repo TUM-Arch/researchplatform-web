@@ -78,13 +78,6 @@ class MainPage extends React.Component {
     window.addEventListener("resize", this.updateDimensions);
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.allProjects !== prevProps.allProjects) {
-      this.props.getAllProjects();
-      this.updateDimensions();
-    }
-  }
-
   componentWillUnmount = () => {
     window.removeEventListener("resize", this.updateDimensions);
   };
