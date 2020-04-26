@@ -16,5 +16,10 @@
   "cancel": "Cancel",
   "save": "Save",
   "fieldProjectName": "Project Name",
-  "manageFields": "Manage Fields"
+  "manageFields": "Manage Fields",
+  "done": "Done",
+  "settingsTitle": "Current Form",
+  "logout": "Logout",
+  "createEditField": "Create/Edit Field",
+  "newField": "New Field"
 }

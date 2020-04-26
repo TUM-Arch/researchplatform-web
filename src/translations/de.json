@@ -16,5 +16,10 @@
   "cancel": "Abbrechen",
   "save": "Speichern",
   "fieldProjectName": "Projektname",
-  "manageFields": "Felder verwalten"
+  "manageFields": "Felder verwalten",
+  "done": "Erledigt",
+  "settingsTitle": "Aktuelle Form",
+  "logout": "Ausloggen",
+  "createEditField": "Feld erstellen/bearbeiten",
+  "newField": "Neues Feld"
 }

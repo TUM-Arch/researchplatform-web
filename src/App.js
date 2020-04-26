@@ -3,10 +3,12 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {createBrowserHistory} from "history";
 import {ThemeProvider} from "@material-ui/styles";
 import theme from "./theme/index";
-import MainPage from "./components/MainPage";
+import UserPage from "./components/UserPage";
+import SettingsPage from "./components/SettingsPage";
 import ErrorPage from "./components/ErrorPage";
 import LoginPage from "./components/LoginPage";
-import Auth from "./components/Auth";
+import AuthUser from "./components/AuthUser";
+import AuthAdmin from "./components/AuthAdmin";
 
 function App() {
   const history = createBrowserHistory();
@@ -18,7 +20,26 @@ function App() {
           <Route
             exact
             path="/"
-            render={() => (Auth() ? <MainPage /> : <LoginPage history={history} />)}
+            render={() =>
+              AuthAdmin() ? (
+                <UserPage history={history} /> // Replace with AdminPage
+              ) : AuthUser() ? (
+                <UserPage history={history} />
+              ) : (
+                <LoginPage history={history} />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/manage"
+            render={() =>
+              AuthAdmin() ? (
+                <SettingsPage history={history} />
+              ) : (
+                <LoginPage history={history} />
+              )
+            }
           />
           <Route exact path="/error" render={() => <ErrorPage history={history} />} />
           <Route path="*" render={() => <ErrorPage history={history} />} />

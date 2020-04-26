@@ -69,7 +69,7 @@ const styles = theme => ({
   },
 });
 
-class MainPage extends React.Component {
+class UserPage extends React.Component {
   componentWillMount = () => {
     this.props.getAllProjects();
     this.updateDimensions();
@@ -101,6 +101,7 @@ class MainPage extends React.Component {
       myProjects,
       isProjectDialogOpen,
       createProject,
+      history,
     } = this.props;
 
     const projectsRefs = [];
@@ -120,7 +121,7 @@ class MainPage extends React.Component {
 
     return (
       <div>
-        <Header />
+        <Header history={history} searchEnabled={true} settingsEnabled={true} />
         <div className={isMobile === true ? classes.rootMobile : classes.root}>
           <div className={classes.projectsLayout}>
             <Typography
@@ -215,4 +216,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, {withTheme: true})(MainPage));
+)(withStyles(styles, {withTheme: true})(UserPage));
