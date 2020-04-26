@@ -14,5 +14,10 @@
   "oldProjectSubtitle": "You can view/edit the details of the selected research project here.",
   "submit": "Submit",
   "cancel": "Cancel",
-  "fieldProjectName": "Project Name"
+  "fieldProjectName": "Project Name",
+  "done": "Done",
+  "settingsTitle": "Current Form",
+  "logout": "Logout",
+  "createEditField": "Create/Edit Field",
+  "newField": "New Field"
 }
