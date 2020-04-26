@@ -47,25 +47,29 @@ const styles = theme => ({
   timelineLayout: {
     display: "flex",
     flexDirection: "column",
-    width: "50%",
-    maxWidth: "50%",
+    width: "25%",
+    maxWidth: "30%",
     margin: theme.spacing(2),
     backgroundColor: grey100,
   },
   timelineLayoutText: {
     margin: theme.spacing(2),
   },
-  buttonInputs: {
+  rowAboveProjects: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  buttonInputs: {
+    display: "flex",
+    flexDirection: "row",
   },
   specificButtonInputs: {
     margin: theme.spacing(2),
   },
 });
 
-class MainPage extends React.Component {
+class UserPage extends React.Component {
   componentWillMount = () => {
     this.props.getAllProjects();
     this.updateDimensions();
@@ -73,6 +77,7 @@ class MainPage extends React.Component {
   componentDidMount = () => {
     window.addEventListener("resize", this.updateDimensions);
   };
+
   componentWillUnmount = () => {
     window.removeEventListener("resize", this.updateDimensions);
   };
@@ -96,6 +101,7 @@ class MainPage extends React.Component {
       myProjects,
       isProjectDialogOpen,
       createProject,
+      history,
     } = this.props;
 
     const projectsRefs = [];
@@ -109,9 +115,13 @@ class MainPage extends React.Component {
       createProject();
     }
 
+    function handleManageFields() {
+      console.log("Manage Fields");
+    }
+
     return (
       <div>
-        <Header />
+        <Header history={history} searchEnabled={true} settingsEnabled={true} />
         <div className={isMobile === true ? classes.rootMobile : classes.root}>
           <div className={classes.projectsLayout}>
             <Typography
@@ -124,16 +134,27 @@ class MainPage extends React.Component {
             <Typography variant="body1" className={classes.projectsLayoutText}>
               {language === "en" ? en.projectSubtitle : de.projectSubtitle}
             </Typography>
-            <div className={classes.buttonInputs}>
-              <Button
-                onClick={handleCreateProject}
-                variant="contained"
-                size="small"
-                color="secondary"
-                className={classes.specificButtonInputs}
-              >
-                {language === "en" ? en.createProject : de.createProject}
-              </Button>
+            <div className={classes.rowAboveProjects}>
+              <div className={classes.buttonInputs}>
+                <Button
+                  onClick={handleCreateProject}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  className={classes.specificButtonInputs}
+                >
+                  {language === "en" ? en.createProject : de.createProject}
+                </Button>
+                <Button
+                  onClick={handleManageFields}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  className={classes.specificButtonInputs}
+                >
+                  {language === "en" ? en.manageFields : de.manageFields}
+                </Button>
+              </div>
               <FormControl className={classes.specificButtonInputs}>
                 <InputLabel>{language === "en" ? en.view : de.view}</InputLabel>
                 <Select value={viewProjects} onChange={handleView}>
@@ -195,4 +216,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, {withTheme: true})(MainPage));
+)(withStyles(styles, {withTheme: true})(UserPage));

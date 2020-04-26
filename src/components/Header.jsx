@@ -22,6 +22,7 @@ import {isMobile} from "react-device-detect";
 import Downshift from "downshift";
 import deburr from "lodash/deburr";
 import {changeToEnglish, changeToGerman} from "../actions/mainPage";
+import AuthAdmin from "./AuthAdmin";
 
 const styles = theme => ({
   root: {
@@ -31,9 +32,14 @@ const styles = theme => ({
   },
   headerActions: {
     marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+  },
+  headerActionsItems: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   title: {
     flexGrow: 5,
@@ -77,7 +83,7 @@ const styles = theme => ({
   },
 });
 
-const isAdmin = true; //TODO: Map this to user isAdmin property
+const isAdmin = AuthAdmin();
 
 //TODO: Replace this with project indexes
 const suggestions = [
@@ -142,7 +148,26 @@ function getSuggestions(value, {showEmpty = false} = {}) {
 }
 
 function Header(props) {
-  const {classes, changeToEn, changeToDe, language} = props;
+  const {
+    classes,
+    changeToEn,
+    changeToDe,
+    language,
+    history,
+    searchEnabled,
+    settingsEnabled,
+  } = props;
+
+  function handleViewSettingsPage() {
+    history.push("/manage");
+    window.location.reload();
+  }
+
+  function logout() {
+    sessionStorage.removeItem("isAdmin");
+    window.location.reload();
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
@@ -154,55 +179,57 @@ function Header(props) {
             </Typography>
           ) : null}
 
-          <Downshift id="downshift-simple">
-            {({
-              getInputProps,
-              getItemProps,
-              getLabelProps,
-              getMenuProps,
-              highlightedIndex,
-              inputValue,
-              isOpen,
-              selectedItem,
-            }) => {
-              const {onBlur, onFocus, ...inputProps} = getInputProps({
-                placeholder:
-                  language === "en" ? en.searchPlaceholder : de.searchPlaceholder,
-              });
+          {searchEnabled === true ? (
+            <Downshift id="downshift-simple">
+              {({
+                getInputProps,
+                getItemProps,
+                getLabelProps,
+                getMenuProps,
+                highlightedIndex,
+                inputValue,
+                isOpen,
+                selectedItem,
+              }) => {
+                const {onBlur, onFocus, ...inputProps} = getInputProps({
+                  placeholder:
+                    language === "en" ? en.searchPlaceholder : de.searchPlaceholder,
+                });
 
-              return (
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
+                return (
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+
+                    {renderInput({
+                      fullWidth: true,
+                      classes,
+                      InputLabelProps: getLabelProps({shrink: true}),
+                      InputProps: {onBlur, onFocus},
+                      inputProps,
+                    })}
+
+                    <div {...getMenuProps()}>
+                      {isOpen ? (
+                        <Paper className={classes.paper} square>
+                          {getSuggestions(inputValue).map((suggestion, index) =>
+                            renderSuggestion({
+                              suggestion,
+                              index,
+                              itemProps: getItemProps({item: suggestion.label}),
+                              highlightedIndex,
+                              selectedItem,
+                            })
+                          )}
+                        </Paper>
+                      ) : null}
+                    </div>
                   </div>
-
-                  {renderInput({
-                    fullWidth: true,
-                    classes,
-                    InputLabelProps: getLabelProps({shrink: true}),
-                    InputProps: {onBlur, onFocus},
-                    inputProps,
-                  })}
-
-                  <div {...getMenuProps()}>
-                    {isOpen ? (
-                      <Paper className={classes.paper} square>
-                        {getSuggestions(inputValue).map((suggestion, index) =>
-                          renderSuggestion({
-                            suggestion,
-                            index,
-                            itemProps: getItemProps({item: suggestion.label}),
-                            highlightedIndex,
-                            selectedItem,
-                          })
-                        )}
-                      </Paper>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            }}
-          </Downshift>
+                );
+              }}
+            </Downshift>
+          ) : null}
           <div className={classes.headerActions}>
             <Link component="button" onClick={() => changeToEn()}>
               <Typography>en</Typography>
@@ -214,11 +241,22 @@ function Header(props) {
             <Link component="button" onClick={() => changeToDe()}>
               <Typography>de</Typography>
             </Link>
-            {isAdmin && (
-              <IconButton color="inherit">
+            {settingsEnabled && isAdmin && (
+              <IconButton
+                color="inherit"
+                onClick={() => handleViewSettingsPage()}
+                className={classes.headerActionsItems}
+              >
                 <SettingsIcon />
               </IconButton>
             )}
+            <Link
+              component="button"
+              onClick={() => logout()}
+              className={classes.headerActionsItems}
+            >
+              <Typography>{language === "en" ? en.logout : de.logout}</Typography>
+            </Link>
           </div>
         </Toolbar>
       </AppBar>

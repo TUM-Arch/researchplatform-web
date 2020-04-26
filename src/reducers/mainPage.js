@@ -17,10 +17,11 @@ import {projectsURL} from "../util/constants";
 
 let initialState = {
   language: "en",
-  viewProjects: "all",
+  viewProjects: "my",
   allProjects: [],
   myProjects: [],
   userId: "tempuser",
+  isAdmin: true, //TODO: Map this to user isAdmin property
   isProjectDialogOpen: false,
   projectDialogState: "",
   projectFields: [
@@ -51,9 +52,6 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "all",
-        projects: state.allProjects.sort(function(a, b) {
-          return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-        }),
       };
     case VIEWMY:
       return {
@@ -109,6 +107,13 @@ export default function mainPage(state = initialState, action) {
         allProjects: action.values.projectsList.sort(function(a, b) {
           return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
         }),
+        myProjects: action.values.projectsList
+          .filter(function(project) {
+            return project.userId === state.userId;
+          })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
       };
     default:
       return state;
@@ -129,5 +134,13 @@ export function getAllProjects() {
         };
         dispatch(updateProjects(values));
       });
+  };
+}
+
+export function deleteProject(id) {
+  return dispatch => {
+    return fetch(projectsURL + "/" + id, {
+      method: "DELETE",
+    });
   };
 }

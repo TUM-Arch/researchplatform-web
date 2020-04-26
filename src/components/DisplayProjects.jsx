@@ -3,12 +3,21 @@ import {connect} from "react-redux";
 import {Typography} from "@material-ui/core";
 import Project from "./Project";
 import {withStyles} from "@material-ui/styles";
+import Grid from "@material-ui/core/Grid";
 
 const styles = theme => ({
   root: {
     display: "flex",
-    flexDirection: "column",
-    margin: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    justifyContent: "space-between",
+    color: "theme.palette.text.secondary",
+  },
+  margin: {
+    marginLeft: "16px",
   },
 });
 
@@ -29,19 +38,25 @@ class DisplayProjects extends React.Component {
 
     return (
       <div className={classes.root}>
-        {projects.map((project, i) => (
-          <div key={project.id}>
-            {project.yearOfCreation < prevCreatedOn ? (
-              <div ref={projectsRefs[i]}>
-                <Typography variant="h6" color="secondary">
-                  {project.yearOfCreation}
-                </Typography>
+        <Grid container spacing={3}>
+          {projects.map((project, i) => (
+            <div key={project.id}>
+              {project.yearOfCreation < prevCreatedOn ? (
+                <div ref={projectsRefs[i]}>
+                  <Grid item xs={12}>
+                    <Typography variant="h6" color="secondary">
+                      {project.yearOfCreation}
+                    </Typography>
+                  </Grid>
+                </div>
+              ) : null}
+              <div className={classes.paper}>
+                <Project project={project} />
               </div>
-            ) : null}
-            <Project project={project} />
-            {setPrevCreatedOn(project.yearOfCreation)}
-          </div>
-        ))}
+              {setPrevCreatedOn(project.yearOfCreation)}
+            </div>
+          ))}
+        </Grid>
       </div>
     );
   }
