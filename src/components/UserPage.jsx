@@ -18,10 +18,14 @@ import DisplayProjects from "./DisplayProjects";
 import {
   viewAllProjects,
   viewMyProjects,
+  viewSubmittedProjects,
+  viewApprovedProjects,
+  viewRejectedProjects,
   createProject,
   setWindowDimensions,
 } from "../actions/mainPage";
 import {getAllProjects} from "../reducers/mainPage";
+import AuthAdmin from "./AuthAdmin";
 
 const styles = theme => ({
   root: {
@@ -53,6 +57,8 @@ const styles = theme => ({
   },
 });
 
+const isAdmin = AuthAdmin();
+
 class UserPage extends React.Component {
   componentWillMount = () => {
     this.props.getAllProjects();
@@ -81,8 +87,12 @@ class UserPage extends React.Component {
       viewProjects,
       viewAllProj,
       viewMyProj,
+      viewSubmittedProj,
+      viewApprovedProj,
+      viewRejectedProj,
       allProjects,
       myProjects,
+      submittedRejectedApprovedProjects,
       isProjectDialogOpen,
       createProject,
       history,
@@ -90,7 +100,10 @@ class UserPage extends React.Component {
 
     function handleView(event) {
       if (event.target.value === "all") viewAllProj();
-      else viewMyProj();
+      else if (event.target.value === "my") viewMyProj();
+      else if (event.target.value === "submitted") viewSubmittedProj();
+      else if (event.target.value === "approved") viewApprovedProj();
+      else viewRejectedProj();
     }
 
     function handleCreateProject() {
@@ -131,11 +144,32 @@ class UserPage extends React.Component {
                   <MenuItem value="my">
                     {language === "en" ? en.myProjects : de.myProjects}
                   </MenuItem>
+                  {isAdmin ? (
+                    <MenuItem value="submitted">
+                      {language === "en" ? en.submittedProjects : de.submittedProjects}
+                    </MenuItem>
+                  ) : null}
+                  {isAdmin ? (
+                    <MenuItem value="approved">
+                      {language === "en" ? en.approvedProjects : de.approvedProjects}
+                    </MenuItem>
+                  ) : null}
+                  {isAdmin ? (
+                    <MenuItem value="rejected">
+                      {language === "en" ? en.rejectedProjects : de.rejectedProjects}
+                    </MenuItem>
+                  ) : null}
                 </Select>
               </FormControl>
             </div>
             <DisplayProjects
-              projects={viewProjects === "all" ? allProjects : myProjects}
+              projects={
+                viewProjects === "all"
+                  ? allProjects
+                  : viewProjects === "my"
+                  ? myProjects
+                  : submittedRejectedApprovedProjects
+              }
             />
           </div>
         </div>
@@ -146,18 +180,29 @@ class UserPage extends React.Component {
 }
 
 const mapStateToProps = ({
-  mainPage: {language, viewProjects, allProjects, myProjects, isProjectDialogOpen},
+  mainPage: {
+    language,
+    viewProjects,
+    allProjects,
+    myProjects,
+    submittedRejectedApprovedProjects,
+    isProjectDialogOpen,
+  },
 }) => ({
   language,
   viewProjects,
   allProjects,
   myProjects,
+  submittedRejectedApprovedProjects,
   isProjectDialogOpen,
 });
 
 const mapDispatchToProps = {
   viewAllProj: viewAllProjects,
   viewMyProj: viewMyProjects,
+  viewSubmittedProj: viewSubmittedProjects,
+  viewApprovedProj: viewApprovedProjects,
+  viewRejectedProj: viewRejectedProjects,
   createProject: createProject,
   setWindowDimensions: setWindowDimensions,
   getAllProjects: getAllProjects,

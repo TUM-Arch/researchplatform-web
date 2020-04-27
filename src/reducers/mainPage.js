@@ -4,6 +4,9 @@ import {
   GERMAN,
   VIEWALL,
   VIEWMY,
+  VIEWSUBMITTED,
+  VIEWAPPROVED,
+  VIEWREJECTED,
   PROJECTDIALOGCLOSE,
   CREATEPROJECT,
   VIEWPROJECT,
@@ -26,6 +29,7 @@ let initialState = {
   viewProjects: "my",
   allProjects: [],
   myProjects: [],
+  submittedRejectedApprovedProjects: [],
   userId: "tempuser",
   isProjectDialogOpen: false,
   projectDialogState: "",
@@ -66,6 +70,38 @@ export default function mainPage(state = initialState, action) {
           .filter(function(project) {
             return project.userId === state.userId;
           })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+      };
+    case VIEWSUBMITTED:
+      return {
+        ...state,
+        viewProjects: "submitted",
+        submittedRejectedApprovedProjects: state.allProjects
+          .filter(function(project) {
+            return project.status === "SUBMITTED";
+          })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+      };
+    case VIEWAPPROVED:
+      return {
+        ...state,
+        viewProjects: "approved",
+        submittedRejectedApprovedProjects: state.allProjects
+          .filter(project => project.status === "APPROVED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+      };
+    case VIEWREJECTED:
+      return {
+        ...state,
+        viewProjects: "rejected",
+        submittedRejectedApprovedProjects: state.allProjects
+          .filter(project => project.status === "REJECTED")
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
           }),

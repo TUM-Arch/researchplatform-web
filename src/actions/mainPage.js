@@ -2,6 +2,9 @@ export const ENGLISH = "ENGLISH";
 export const GERMAN = "GERMAN";
 export const VIEWALL = "VIEWALL";
 export const VIEWMY = "VIEWMY";
+export const VIEWSUBMITTED = "VIEWSUBMITTED";
+export const VIEWAPPROVED = "VIEWAPPROVED";
+export const VIEWREJECTED = "VIEWREJECTED";
 export const PROJECTDIALOGCLOSE = "PROJECTDIALOGCLOSE";
 export const CREATEPROJECT = "CREATEPROJECT";
 export const EDITPROJECT = "EDITPROJECT";
@@ -30,6 +33,21 @@ export const viewAllProjects = () => dispatch =>
 export const viewMyProjects = () => dispatch =>
   dispatch({
     type: VIEWMY,
+  });
+
+export const viewSubmittedProjects = () => dispatch =>
+  dispatch({
+    type: VIEWSUBMITTED,
+  });
+
+export const viewApprovedProjects = () => dispatch =>
+  dispatch({
+    type: VIEWAPPROVED,
+  });
+
+export const viewRejectedProjects = () => dispatch =>
+  dispatch({
+    type: VIEWREJECTED,
   });
 
 export const projectDialogClose = () => dispatch =>
