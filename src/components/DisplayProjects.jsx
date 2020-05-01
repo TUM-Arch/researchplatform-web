@@ -3,18 +3,31 @@ import {connect} from "react-redux";
 import {Typography} from "@material-ui/core";
 import Project from "./Project";
 import {withStyles} from "@material-ui/styles";
-import Grid from "@material-ui/core/Grid";
 
 const styles = theme => ({
   root: {
     display: "flex",
+    flexDirection: "column",
     marginLeft: theme.spacing(2),
     marginTop: theme.spacing(2),
+  },
+  subRoot: {
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "wrap",
+  },
+  projects: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   paper: {
     padding: theme.spacing(2),
     justifyContent: "space-between",
     color: "theme.palette.text.secondary",
+  },
+  yearText: {
+    padding: theme.spacing(2),
   },
   margin: {
     marginLeft: "16px",
@@ -24,38 +37,53 @@ const styles = theme => ({
 class DisplayProjects extends React.Component {
   render() {
     const {classes, projects} = this.props;
-    var prevCreatedOn = 0;
-    if (!Array.isArray(projects) || !projects.length) {
-      prevCreatedOn = 0;
-    } else {
-      prevCreatedOn = projects[0].yearOfCreation + 1;
-    }
 
-    function setPrevCreatedOn(yearOfCreation) {
-      prevCreatedOn = yearOfCreation;
-    }
+    const getAllProjectsSortedByYear = function(projects) {
+      var prevCreatedOn = 0;
+      if (!Array.isArray(projects) || !projects.length) {
+        prevCreatedOn = 0;
+        return [];
+      } else {
+        prevCreatedOn = projects[0].yearOfCreation + 1;
+      }
+      var projectsSortedByYear = [];
+      projects.forEach(project => {
+        if (project.yearOfCreation < prevCreatedOn) {
+          // New Year. Push previous one to projectsSortedByYear and rebuild.
+          var newYearObject = {
+            year: project.yearOfCreation,
+            values: [],
+          };
+          projectsSortedByYear.push(newYearObject);
+        }
+        var objectToPushTo = projectsSortedByYear.find(
+          object => object.year === project.yearOfCreation
+        );
+        if (objectToPushTo) {
+          objectToPushTo.values.push(project);
+        }
+        prevCreatedOn = project.yearOfCreation;
+      });
+      return projectsSortedByYear;
+    };
+    const allProjectsSortedByYear = getAllProjectsSortedByYear(projects);
 
     return (
       <div className={classes.root}>
-        <Grid container spacing={3}>
-          {projects.map((project, i) => (
-            <div key={project.id}>
-              {project.yearOfCreation < prevCreatedOn ? (
-                <div>
-                  <Grid item xs={12}>
-                    <Typography variant="h6" color="secondary">
-                      {project.yearOfCreation}
-                    </Typography>
-                  </Grid>
+        {allProjectsSortedByYear.map((yearBasedProjects, i) => (
+          <div className={classes.subRoot} key={yearBasedProjects.year}>
+            <Typography variant="h6" color="secondary" className={classes.yearText}>
+              {yearBasedProjects.year}
+            </Typography>
+            <div className={classes.projects}>
+              {yearBasedProjects.values.map((project, i) => (
+                <div className={classes.paper} key={project.id}>
+                  <Project project={project} />
                 </div>
-              ) : null}
-              <div className={classes.paper}>
-                <Project project={project} />
-              </div>
-              {setPrevCreatedOn(project.yearOfCreation)}
+              ))}
             </div>
-          ))}
-        </Grid>
+          </div>
+        ))}
       </div>
     );
   }

@@ -29,6 +29,12 @@ import {
 } from "../reducers/mainPage";
 import jsPDF from "jspdf";
 import AuthAdmin from "./AuthAdmin";
+import {
+  COLOR_NOT_SUBMITTED,
+  COLOR_SUBMITTED,
+  COLOR_REJECTED,
+  COLOR_APPROVED,
+} from "../util/constants";
 
 const styles = theme => ({
   root: {
@@ -119,10 +125,10 @@ function Project(props) {
   }
 
   function setBackgroundColor() {
-    if (project.status === "NOTSUBMITTED") return "";
-    else if (project.status === "SUBMITTED") return "#CDCDCD";
-    else if (project.status === "REJECTED") return "#FF726F";
-    else return "#D0F0C0";
+    if (project.status === "NOTSUBMITTED") return COLOR_NOT_SUBMITTED;
+    else if (project.status === "SUBMITTED") return COLOR_SUBMITTED;
+    else if (project.status === "REJECTED") return COLOR_REJECTED;
+    else return COLOR_APPROVED;
   }
 
   return (
