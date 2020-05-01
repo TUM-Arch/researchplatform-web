@@ -42,7 +42,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     margin: theme.spacing(2),
-    width: "80%",
+    width: "90%",
   },
   projectsLayoutText: {
     margin: theme.spacing(2),

@@ -22,7 +22,7 @@ import {
   submitProject,
   rejectProject,
 } from "../actions/mainPage";
-import {projectsURL} from "../util/constants";
+import {projectsURL, imagesURL} from "../util/constants";
 
 let initialState = {
   language: "en",
@@ -196,6 +196,21 @@ export function getAllProjects() {
         dispatch(updateProjects(values));
       });
   };
+}
+
+export function getImageFromId(imageId) {
+  let values = {};
+  return fetch(imagesURL + "/" + imageId, {
+    method: "GET",
+  })
+    .then(response => response.json())
+    .then(result => {
+      values = {
+        imageId: result.imageId,
+        image: result.image,
+      };
+      return values;
+    });
 }
 
 export function handledeleteProject(id) {

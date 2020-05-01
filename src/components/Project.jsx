@@ -26,6 +26,7 @@ import {
   handledeleteProject,
   handleSubmitProject,
   handleRejectProject,
+  getImageFromId,
 } from "../reducers/mainPage";
 import jsPDF from "jspdf";
 import AuthAdmin from "./AuthAdmin";
@@ -34,6 +35,7 @@ import {
   COLOR_SUBMITTED,
   COLOR_REJECTED,
   COLOR_APPROVED,
+  defaultImageIcon,
 } from "../util/constants";
 
 const styles = theme => ({
@@ -41,9 +43,8 @@ const styles = theme => ({
     width: 300,
     maxWidth: 325,
   },
-  media: {
-    height: 0,
-    paddingTop: "56.25%", // 16:9
+  cardImage: {
+    objectFit: "scale-down",
   },
   avatar: {
     backgroundColor: red[500],
@@ -131,6 +132,14 @@ function Project(props) {
     else return COLOR_APPROVED;
   }
 
+  // Fetch Image for rendering
+  const imageId = project.imageId;
+  var imageString = defaultImageIcon;
+  if (imageId) {
+    const imageResponse = getImageFromId(imageId);
+    imageString = imageResponse.image;
+  }
+
   return (
     <Card className={classes.root} style={{background: setBackgroundColor()}}>
       <CardHeader
@@ -148,9 +157,11 @@ function Project(props) {
         subheader={convertTimeStampToDate(project.createdAt)}
       />
       <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
+        component="img"
+        height="125"
+        image={`data:image/png;base64, ${imageString}`}
+        title={project.name}
+        className={classes.cardImage}
       />
       <CardContent>
         <Typography
