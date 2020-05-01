@@ -21,6 +21,7 @@ import {
   setFieldValueDe,
   setFieldDescription,
   setFieldRequired,
+  setFieldLength,
   resetFieldsState,
 } from "../actions/settingsPage";
 import {saveField} from "../reducers/settingsPage";
@@ -67,6 +68,7 @@ class CreateEditField extends React.Component {
       setFieldValueDe,
       setFieldDescription,
       setFieldRequired,
+      setFieldLength,
       resetFieldsState,
       fieldNameEn,
       fieldNameDe,
@@ -74,6 +76,7 @@ class CreateEditField extends React.Component {
       fieldValueEn,
       fieldValueDe,
       fieldRequired,
+      fieldLength,
       isNewField,
     } = this.props;
 
@@ -88,6 +91,7 @@ class CreateEditField extends React.Component {
       fieldValueEn,
       fieldValueDe,
       fieldRequired,
+      fieldLength,
       isNewField,
       id
     ) {
@@ -99,6 +103,7 @@ class CreateEditField extends React.Component {
         fieldValueEn,
         fieldValueDe,
         fieldRequired,
+        fieldLength,
         isNewField,
         id
       );
@@ -109,10 +114,11 @@ class CreateEditField extends React.Component {
     const nameMap = {
       nameEn: "Name (ENG)",
       nameDe: "Name (DE)",
-      valueEn: "Value (ENG)",
-      valueDe: "Value (DE)",
+      valueEn: "Default value (ENG)",
+      valueDe: "Default value (DE)",
       description: "Description",
-      required: "Required Field",
+      required: "Required field",
+      length: "Maximum number of characters",
     };
 
     return (
@@ -210,6 +216,20 @@ class CreateEditField extends React.Component {
                       />
                     </div>
                   );
+                case "length":
+                  return (
+                    <div key={i} className={classes.textFields}>
+                      <CustomTextField
+                        label={nameMap[keyName]}
+                        defaultValue={isNewField === true ? "" : selectedField[keyName]}
+                        variant="outlined"
+                        fullWidth
+                        onChange={evt => {
+                          setFieldLength(evt.target.value);
+                        }}
+                      />
+                    </div>
+                  );
                 default:
                   return null;
               }
@@ -228,6 +248,7 @@ class CreateEditField extends React.Component {
                   fieldValueEn,
                   fieldValueDe,
                   fieldRequired,
+                  fieldLength,
                   isNewField,
                   selectedField.id
                 )
@@ -254,6 +275,7 @@ const mapStateToProps = ({
     fieldValueEn,
     fieldValueDe,
     fieldRequired,
+    fieldLength,
   },
 }) => ({
   selectedField,
@@ -264,6 +286,7 @@ const mapStateToProps = ({
   fieldValueEn,
   fieldValueDe,
   fieldRequired,
+  fieldLength,
 });
 
 const mapDispatchToProps = {
@@ -275,6 +298,7 @@ const mapDispatchToProps = {
   setFieldValueDe: setFieldValueDe,
   setFieldDescription: setFieldDescription,
   setFieldRequired: setFieldRequired,
+  setFieldLength: setFieldLength,
   resetFieldsState: resetFieldsState,
 };
 

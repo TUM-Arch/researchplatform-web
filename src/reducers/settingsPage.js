@@ -9,6 +9,7 @@ import {
   SETFIELDVALUEDE,
   SETFIELDESCRIPTION,
   SETFIELDREQUIRED,
+  SETFIELDLENGTH,
   RESETFIELDSSTATE,
   SETNEWFIELD,
   setFields,
@@ -26,6 +27,7 @@ let initialState = {
     valueEn: "",
     valueDe: "",
     description: "",
+    length: null,
     required: false,
   },
   isNewField: false,
@@ -35,6 +37,7 @@ let initialState = {
   fieldValueEn: "",
   fieldValueDe: "",
   fieldRequired: false,
+  fieldLength: null,
 };
 
 export default function mainPage(state = initialState, action) {
@@ -71,6 +74,7 @@ export default function mainPage(state = initialState, action) {
         fieldValueEn: field.valueEn,
         fieldValueDe: field.valueDe,
         fieldRequired: field.required,
+        fieldLength: field.length,
       };
     case SETFIELDNAMEEN:
       return {
@@ -106,6 +110,11 @@ export default function mainPage(state = initialState, action) {
           required: action.value,
         },
       };
+    case SETFIELDLENGTH:
+      return {
+        ...state,
+        fieldLength: action.value,
+      };
     case RESETFIELDSSTATE:
       return {
         ...state,
@@ -116,6 +125,7 @@ export default function mainPage(state = initialState, action) {
           valueDe: "",
           description: "",
           required: false,
+          length: null,
         },
         isNewField: false,
         fieldNameEn: "",
@@ -124,6 +134,7 @@ export default function mainPage(state = initialState, action) {
         fieldValueEn: "",
         fieldValueDe: "",
         fieldRequired: false,
+        fieldLength: null,
       };
     default:
       return state;
@@ -164,6 +175,7 @@ export function saveField(
   fieldValueEn,
   fieldValueDe,
   fieldRequired,
+  fieldLength,
   isNewField,
   id
 ) {
@@ -175,6 +187,7 @@ export function saveField(
     valueDe: fieldValueDe,
     description: fieldDescription,
     required: fieldRequired,
+    length: fieldLength,
   };
   return dispatch => {
     return fetch(url, {

@@ -8,6 +8,7 @@ export const SETFIELDVALUEEN = "SETFIELDVALUEEN";
 export const SETFIELDVALUEDE = "SETFIELDVALUEDE";
 export const SETFIELDESCRIPTION = "SETFIELDESCRIPTION";
 export const SETFIELDREQUIRED = "SETFIELDREQUIRED";
+export const SETFIELDLENGTH = "SETFIELDLENGTH";
 export const RESETFIELDSSTATE = "RESETFIELDSSTATE";
 export const SETNEWFIELD = "SETNEWFIELD";
 
@@ -58,6 +59,11 @@ export const setFieldDescription = value => ({
 
 export const setFieldRequired = value => ({
   type: SETFIELDREQUIRED,
+  value,
+});
+
+export const setFieldLength = value => ({
+  type: SETFIELDLENGTH,
   value,
 });
 
