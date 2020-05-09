@@ -92,7 +92,8 @@ class UserPage extends React.Component {
       viewRejectedProj,
       allProjects,
       myProjects,
-      submittedRejectedApprovedProjects,
+      submittedProjects,
+      rejectedApprovedProjects,
       createProject,
       history,
     } = this.props;
@@ -167,7 +168,9 @@ class UserPage extends React.Component {
                   ? allProjects
                   : viewProjects === "my"
                   ? myProjects
-                  : submittedRejectedApprovedProjects
+                  : viewProjects === "submitted"
+                  ? submittedProjects
+                  : rejectedApprovedProjects
               }
             />
           </div>
@@ -184,14 +187,16 @@ const mapStateToProps = ({
     viewProjects,
     allProjects,
     myProjects,
-    submittedRejectedApprovedProjects,
+    submittedProjects,
+    rejectedApprovedProjects,
   },
 }) => ({
   language,
   viewProjects,
   allProjects,
   myProjects,
-  submittedRejectedApprovedProjects,
+  submittedProjects,
+  rejectedApprovedProjects,
 });
 
 const mapDispatchToProps = {

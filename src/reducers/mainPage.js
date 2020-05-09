@@ -36,7 +36,8 @@ let initialState = {
   viewProjects: "my",
   allProjects: [],
   myProjects: [],
-  submittedRejectedApprovedProjects: [],
+  submittedProjects: [],
+  rejectedApprovedProjects: [],
   userId: "tempuser",
   isProjectDialogOpen: false,
   projectDialogState: "",
@@ -84,19 +85,15 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "my",
-        myProjects: state.allProjects
-          .filter(function(project) {
-            return project.userId === state.userId;
-          })
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
+        myProjects: state.allProjects.filter(function(project) {
+          return project.userId === state.userId;
+        }),
       };
     case VIEWSUBMITTED:
       return {
         ...state,
         viewProjects: "submitted",
-        submittedRejectedApprovedProjects: state.allProjects
+        submittedProjects: state.allProjects
           .filter(function(project) {
             return project.status === "SUBMITTED";
           })
@@ -108,7 +105,7 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "approved",
-        submittedRejectedApprovedProjects: state.allProjects
+        rejectedApprovedProjects: state.allProjects
           .filter(project => project.status === "APPROVED")
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
@@ -118,7 +115,7 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "rejected",
-        submittedRejectedApprovedProjects: state.allProjects
+        rejectedApprovedProjects: state.allProjects
           .filter(project => project.status === "REJECTED")
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
@@ -191,6 +188,12 @@ export default function mainPage(state = initialState, action) {
         ...state,
         myProjects: state.myProjects.filter(project => project.id !== action.id),
         allProjects: state.allProjects.filter(project => project.id !== action.id),
+        submittedProjects: state.submittedProjects.filter(
+          project => project.id !== action.id
+        ),
+        rejectedApprovedProjects: state.rejectedApprovedProjects.filter(
+          project => project.id !== action.id
+        ),
       };
     case SUBMITREJECTPROJECT:
       return {
@@ -204,6 +207,9 @@ export default function mainPage(state = initialState, action) {
           project.id === action.result.id
             ? {...project, status: action.result.status}
             : project
+        ),
+        submittedProjects: state.submittedProjects.filter(
+          project => project.id !== action.result.id
         ),
       };
     case SETSELECTEDPROJECT:
