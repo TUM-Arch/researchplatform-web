@@ -13,7 +13,7 @@ import {
 import {withStyles} from "@material-ui/styles";
 import {isMobile} from "react-device-detect";
 import Header from "./Header";
-import CreateViewDeleteProject from "./CreateViewEditProject";
+import CreateViewEditProject from "./CreateViewEditProject";
 import DisplayProjects from "./DisplayProjects";
 import {
   viewAllProjects,
@@ -93,7 +93,6 @@ class UserPage extends React.Component {
       allProjects,
       myProjects,
       submittedRejectedApprovedProjects,
-      isProjectDialogOpen,
       createProject,
       history,
     } = this.props;
@@ -173,7 +172,7 @@ class UserPage extends React.Component {
             />
           </div>
         </div>
-        <CreateViewDeleteProject open={isProjectDialogOpen} language={language} />
+        <CreateViewEditProject language={language} />
       </div>
     );
   }
@@ -186,7 +185,6 @@ const mapStateToProps = ({
     allProjects,
     myProjects,
     submittedRejectedApprovedProjects,
-    isProjectDialogOpen,
   },
 }) => ({
   language,
@@ -194,7 +192,6 @@ const mapStateToProps = ({
   allProjects,
   myProjects,
   submittedRejectedApprovedProjects,
-  isProjectDialogOpen,
 });
 
 const mapDispatchToProps = {

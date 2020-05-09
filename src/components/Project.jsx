@@ -72,7 +72,7 @@ function Project(props) {
   } = props;
 
   // Get current user
-  const currentUserId = sessionStorage.getItem("userId");
+  const currentUserId = "tempuser";
   const isAdmin = AuthAdmin();
 
   function handleViewProject(id) {
@@ -81,7 +81,7 @@ function Project(props) {
   }
 
   function handleEditProject(id) {
-    editProject();
+    editProject(id);
     setSelectedProject(id);
   }
 
@@ -89,11 +89,7 @@ function Project(props) {
     handledeleteProject(id);
   }
 
-  function handleSubmitProject(id) {
-    handlesubmitProject(id);
-  }
-
-  function handleApproveProject(id) {
+  function handleSubmitApproveProject(id) {
     handlesubmitProject(id);
   }
 
@@ -221,7 +217,7 @@ function Project(props) {
             <IconButton
               edge="end"
               aria-label="submit"
-              onClick={() => handleSubmitProject(project.id)}
+              onClick={() => handleSubmitApproveProject(project.id)}
               className={classes.icon}
             >
               <SendIcon />
@@ -233,7 +229,7 @@ function Project(props) {
             <IconButton
               edge="end"
               aria-label="approve"
-              onClick={() => handleApproveProject(project.id)}
+              onClick={() => handleSubmitApproveProject(project.id)}
               className={classes.icon}
             >
               <ThumbUpIcon />

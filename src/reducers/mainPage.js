@@ -9,14 +9,21 @@ import {
   VIEWREJECTED,
   PROJECTDIALOGCLOSE,
   CREATEPROJECT,
+  NEWPROJECTCREATED,
   VIEWPROJECT,
   EDITPROJECT,
+  UPDATEPROJECT,
   DELETEPROJECT,
   SUBMITREJECTPROJECT,
   SETSELECTEDPROJECT,
+  SETPROJECTCHAIRNAME,
+  SETPROJECTDESCRIPTION,
+  SETPROJECTIMAGEID,
   SETWINDOWDIMS,
   UPDATE_PROJECTS,
-  createProject,
+  SETPROJECTNAME,
+  newProjectCreated,
+  updateProject,
   updateProjects,
   deleteProject,
   submitProject,
@@ -33,16 +40,27 @@ let initialState = {
   userId: "tempuser",
   isProjectDialogOpen: false,
   projectDialogState: "",
-  projectFields: [
-    {id: 1, name: "Project Name", type: "text"},
-    {id: 2, name: "Project Description", type: "multiline"},
-  ],
-  selectedProject: "",
   windowDims: {
     width: "",
     height: "",
   },
   sortByYear: "",
+  selectedProject: {
+    name: "",
+    chairName: "",
+    description: "",
+    imageId: "",
+    userId: "",
+    tags: [],
+    fields: [],
+    status: "",
+  },
+  projectName: "",
+  projectChairName: "",
+  projectDescription: "",
+  projectImageId: "",
+  projectTags: [],
+  projectFields: [],
 };
 
 export default function mainPage(state = initialState, action) {
@@ -115,7 +133,21 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectDialogState: "create",
-        isProjectDialogOpen: !state.isProjectDialogOpen,
+        isProjectDialogOpen: true,
+      };
+    case NEWPROJECTCREATED:
+      return {
+        ...state,
+        projectDialogState: "",
+        isProjectDialogOpen: false,
+        myProjects: state.myProjects.concat(action.result),
+        allProjects: state.allProjects.concat(action.result),
+        projectName: "",
+        projectChairName: "",
+        projectDescription: "",
+        projectImageId: "",
+        projectTags: [],
+        projectFields: [],
       };
     case VIEWPROJECT:
       return {
@@ -124,10 +156,35 @@ export default function mainPage(state = initialState, action) {
         isProjectDialogOpen: true,
       };
     case EDITPROJECT:
+      const project = state.allProjects.find(project => project.id === action.id);
       return {
         ...state,
         projectDialogState: "edit",
         isProjectDialogOpen: true,
+        projectName: project.name,
+        projectChairName: project.chairName,
+        projectDescription: project.description,
+        projectImageId: project.imageId,
+        projectTags: project.tags,
+        projectFields: project.fields,
+      };
+    case UPDATEPROJECT:
+      return {
+        ...state,
+        myProjects: state.myProjects.map(project =>
+          project.id === action.result.id ? action.result : project
+        ),
+        allProjects: state.allProjects.map(project =>
+          project.id === action.result.id ? action.result : project
+        ),
+        projectDialogState: "",
+        isProjectDialogOpen: false,
+        projectName: "",
+        projectChairName: "",
+        projectDescription: "",
+        projectImageId: "",
+        projectTags: [],
+        projectFields: [],
       };
     case DELETEPROJECT:
       return {
@@ -152,7 +209,7 @@ export default function mainPage(state = initialState, action) {
     case SETSELECTEDPROJECT:
       return {
         ...state,
-        selectedProject: action.value,
+        selectedProject: state.allProjects.find(project => project.id === action.value),
       };
     case SETWINDOWDIMS:
       return {
@@ -175,6 +232,26 @@ export default function mainPage(state = initialState, action) {
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
           }),
+      };
+    case SETPROJECTNAME:
+      return {
+        ...state,
+        projectName: action.value,
+      };
+    case SETPROJECTCHAIRNAME:
+      return {
+        ...state,
+        projectChairName: action.value,
+      };
+    case SETPROJECTDESCRIPTION:
+      return {
+        ...state,
+        projectDescription: action.value,
+      };
+    case SETPROJECTIMAGEID:
+      return {
+        ...state,
+        projectImageId: action.value,
       };
     default:
       return state;
@@ -223,15 +300,23 @@ export function handledeleteProject(id) {
   };
 }
 
-export function createNewProject() {
+export function createNewProject(
+  projectName,
+  projectChairName,
+  projectDescription,
+  projectImageId,
+  projectTags,
+  projectFields,
+  userId
+) {
   const body = {
-    name: "ABCD",
-    chairName: "",
-    description: "asdadasdasdasd",
-    imageId: "",
-    userId: "tempuser",
-    tags: [],
-    fields: [],
+    name: projectName,
+    chairName: projectChairName,
+    description: projectDescription,
+    imageId: projectImageId,
+    userId: userId,
+    tags: projectTags,
+    fields: projectFields,
   };
   return dispatch => {
     return fetch(projectsURL, {
@@ -243,7 +328,41 @@ export function createNewProject() {
     })
       .then(response => response.json())
       .then(result => {
-        dispatch(createProject());
+        dispatch(newProjectCreated(result));
+      });
+  };
+}
+
+export function handleEditProject(
+  projectName,
+  projectChairName,
+  projectDescription,
+  projectImageId,
+  projectTags,
+  projectFields,
+  userId,
+  id
+) {
+  const body = {
+    name: projectName,
+    chairName: projectChairName,
+    description: projectDescription,
+    imageId: projectImageId,
+    userId: userId,
+    tags: projectTags,
+    fields: projectFields,
+  };
+  return dispatch => {
+    return fetch(projectsURL + "/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(updateProject(result));
       });
   };
 }

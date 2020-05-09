@@ -10,22 +10,70 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Typography,
 } from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
-import {projectDialogClose} from "../actions/mainPage";
-import {createNewProject} from "../reducers/mainPage";
+import {
+  projectDialogClose,
+  setProjectName,
+  setProjectChairName,
+  setProjectDescription,
+  setProjectImageId,
+} from "../actions/mainPage";
+import {
+  createNewProject,
+  handleEditProject,
+  handleSubmitProject,
+} from "../reducers/mainPage";
 
-function CreateViewDeleteProject(props) {
+const styles = theme => ({
+  root: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  textFields: {
+    margin: theme.spacing(2),
+  },
+});
+
+const CustomTextField = withStyles({
+  root: {
+    "& label.Mui-focused": {
+      color: "black",
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "black",
+    },
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: "black",
+      },
+    },
+  },
+})(TextField);
+
+function CreateViewEditProject(props) {
   const {
-    open,
+    classes,
     language,
+    userId,
     dialogClose,
+    isProjectDialogOpen,
     projectDialogState,
-    projectFields,
-    allProjects,
     selectedProject,
     createNewProject,
+    handleEditProject,
+    handlesubmitProject,
+    projectName,
+    setProjectName,
+    projectChairName,
+    setProjectChairName,
+    projectDescription,
+    setProjectDescription,
+    projectImageId,
+    setProjectImageId,
+    projectTags,
+    projectFields,
   } = props;
 
   function handleClose() {
@@ -33,26 +81,54 @@ function CreateViewDeleteProject(props) {
   }
 
   function handleSave() {
-    createNewProject();
-    window.location.reload();
+    if (projectDialogState === "create") {
+      if (projectName === "" || projectChairName === "" || projectDescription === "") {
+        alert("The required fields are empty!!");
+      } else {
+        createNewProject(
+          projectName,
+          projectChairName,
+          projectDescription,
+          projectImageId,
+          projectTags,
+          projectFields,
+          userId
+        );
+      }
+    } else {
+      handleEditProject(
+        projectName,
+        projectChairName,
+        projectDescription,
+        projectImageId,
+        projectTags,
+        projectFields,
+        userId,
+        selectedProject.id
+      );
+    }
   }
 
   function handleSubmit() {
-    console.log("Handle Submit...");
+    handlesubmitProject(selectedProject.id);
+    dialogClose();
   }
 
-  function displayContent(field) {
-    switch (field.name) {
-      case "Project Name":
-        return allProjects.filter(function(project) {
-          return project.id === selectedProject;
-        })[0].name;
-      case "Project Description":
-        return allProjects.filter(function(project) {
-          return project.id === selectedProject;
-        })[0].description;
+  function handleOnChangeEvent(keyName, value) {
+    switch (keyName) {
+      case "name":
+        setProjectName(value);
+        break;
+      case "description":
+        setProjectDescription(value);
+        break;
+      case "chairName":
+        setProjectChairName(value);
+        break;
+      case "imageId":
+        setProjectImageId(value);
+        break;
       default:
-        return null;
     }
   }
 
@@ -61,9 +137,8 @@ function CreateViewDeleteProject(props) {
       <Dialog
         fullWidth
         maxWidth="md"
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        open={isProjectDialogOpen}
+        onClose={projectDialogClose}
       >
         <DialogTitle id="form-dialog-title">
           {(() => {
@@ -75,7 +150,7 @@ function CreateViewDeleteProject(props) {
               case "view":
                 return language === "en" ? en.viewProject : de.viewProject;
               default:
-                return null;
+                return "";
             }
           })()}
         </DialogTitle>
@@ -89,63 +164,59 @@ function CreateViewDeleteProject(props) {
               ? en.oldProjectSubtitle
               : de.oldProjectSubtitle}
           </DialogContentText>
-          {projectDialogState === "view" ? (
-            <ViewProjectFields
-              displayContent={displayContent}
-              projectFields={projectFields}
-              projectDialogState={projectDialogState}
-            />
-          ) : (
-            projectFields.map(({id, name, type}) => (
-              <div key={id}>
-                {(() => {
-                  switch (type) {
-                    case "text":
-                      return (
-                        <TextField
-                          id="text"
-                          margin="dense"
-                          variant="outlined"
-                          label={name}
-                          defaultValue={
-                            projectDialogState === "edit" ? displayContent({name}) : null
-                          }
-                          type="text"
-                          fullWidth
-                        />
-                      );
-                    case "multiline":
-                      return (
-                        <TextField
-                          id="outlined-multiline-static"
-                          label={name}
-                          multiline
-                          defaultValue={
-                            projectDialogState === "edit" ? displayContent({name}) : null
-                          }
-                          rows="4"
-                          margin="dense"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })()}
-              </div>
-            ))
-          )}
+          {Object.keys(selectedProject).map((keyName, i) => {
+            if (
+              keyName === "id" ||
+              keyName === "createdAt" ||
+              keyName === "yearOfCreation"
+            ) {
+              return null;
+            }
+            switch (keyName) {
+              case "name":
+              case "description":
+              case "chairName":
+              case "imageId":
+                return (
+                  <div key={i} className={classes.textFields}>
+                    <CustomTextField
+                      multiline
+                      rows={keyName === "description" ? "4" : "1"}
+                      label={keyName}
+                      defaultValue={
+                        projectDialogState === "create" ? "" : selectedProject[keyName]
+                      }
+                      disabled={projectDialogState === "view" ? true : false}
+                      required={keyName === "imageId" ? false : true}
+                      variant="outlined"
+                      fullWidth
+                      onChange={event => {
+                        handleOnChangeEvent(keyName, event.target.value);
+                      }}
+                    />
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
             {language === "en" ? en.cancel : de.cancel}
           </Button>
-          <Button onClick={handleSave} color="secondary" variant="outlined">
-            {language === "en" ? en.save : de.save}
-          </Button>
-          {projectDialogState !== "create" ? (
-            <Button onClick={handleSubmit} color="secondary" variant="contained">
+          {projectDialogState !== "view" ? (
+            <Button onClick={() => handleSave()} color="secondary" variant="outlined">
+              {language === "en" ? en.save : de.save}
+            </Button>
+          ) : null}
+          {projectDialogState === "view" ? (
+            <Button
+              onClick={handleSubmit}
+              color="secondary"
+              variant="contained"
+              disabled={selectedProject.status === "NOTSUBMITTED" ? false : true}
+            >
               {language === "en" ? en.submit : de.submit}
             </Button>
           ) : null}
@@ -155,56 +226,46 @@ function CreateViewDeleteProject(props) {
   );
 }
 
-function ViewProjectFields(props) {
-  const {displayContent, projectFields, projectDialogState} = props;
-  return (
-    <div>
-      {projectFields.map(({id, name, type}) => (
-        <div key={id}>
-          {(() => {
-            switch (type) {
-              case "text":
-                return (
-                  <Typography>
-                    {projectDialogState === "view"
-                      ? name + " : " + displayContent({name})
-                      : null}
-                  </Typography>
-                );
-
-              case "multiline":
-                return (
-                  <Typography>
-                    {projectDialogState === "view"
-                      ? name + " : " + displayContent({name})
-                      : null}
-                  </Typography>
-                );
-              default:
-                return null;
-            }
-          })()}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 const mapStateToProps = ({
-  mainPage: {projectDialogState, projectFields, allProjects, selectedProject},
+  mainPage: {
+    userId,
+    isProjectDialogOpen,
+    projectDialogState,
+    allProjects,
+    selectedProject,
+    projectName,
+    projectChairName,
+    projectDescription,
+    projectImageId,
+    projectTags,
+    projectFields,
+  },
 }) => ({
+  userId,
+  isProjectDialogOpen,
   projectDialogState,
-  projectFields,
   allProjects,
   selectedProject,
+  projectName,
+  projectChairName,
+  projectDescription,
+  projectImageId,
+  projectTags,
+  projectFields,
 });
 
 const mapDispatchToProps = {
   dialogClose: projectDialogClose,
   createNewProject: createNewProject,
+  handleEditProject: handleEditProject,
+  handlesubmitProject: handleSubmitProject,
+  setProjectName: setProjectName,
+  setProjectChairName: setProjectChairName,
+  setProjectDescription: setProjectDescription,
+  setProjectImageId: setProjectImageId,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles({withTheme: true})(CreateViewDeleteProject));
+)(withStyles(styles, {withTheme: true})(CreateViewEditProject));

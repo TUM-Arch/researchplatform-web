@@ -7,13 +7,19 @@ export const VIEWAPPROVED = "VIEWAPPROVED";
 export const VIEWREJECTED = "VIEWREJECTED";
 export const PROJECTDIALOGCLOSE = "PROJECTDIALOGCLOSE";
 export const CREATEPROJECT = "CREATEPROJECT";
+export const NEWPROJECTCREATED = "NEWPROJECTCREATED";
 export const EDITPROJECT = "EDITPROJECT";
+export const UPDATEPROJECT = "UPDATEPROJECT";
 export const VIEWPROJECT = "VIEWPROJECT";
 export const DELETEPROJECT = "DELETEPROJECT";
 export const SUBMITREJECTPROJECT = "SUBMITREJECTPROJECT";
 export const SETSELECTEDPROJECT = "SETSELECTEDPROJECT";
 export const SETWINDOWDIMS = "SETWINDOWDIMS";
 export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
+export const SETPROJECTNAME = "SETPROJECTNAME";
+export const SETPROJECTCHAIRNAME = "SETPROJECTCHAIRNAME";
+export const SETPROJECTDESCRIPTION = "SETPROJECTDESCRIPTION";
+export const SETPROJECTIMAGEID = "SETPROJECTIMAGEID";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -60,9 +66,22 @@ export const createProject = () => dispatch =>
     type: CREATEPROJECT,
   });
 
-export const editProject = () => dispatch =>
+export const newProjectCreated = result => dispatch =>
+  dispatch({
+    type: NEWPROJECTCREATED,
+    result,
+  });
+
+export const editProject = id => dispatch =>
   dispatch({
     type: EDITPROJECT,
+    id,
+  });
+
+export const updateProject = result => dispatch =>
+  dispatch({
+    type: UPDATEPROJECT,
+    result,
   });
 
 export const viewProject = () => dispatch =>
@@ -104,3 +123,27 @@ export const updateProjects = values => ({
   type: UPDATE_PROJECTS,
   values,
 });
+
+export const setProjectName = value => dispatch =>
+  dispatch({
+    type: SETPROJECTNAME,
+    value,
+  });
+
+export const setProjectChairName = value => dispatch =>
+  dispatch({
+    type: SETPROJECTCHAIRNAME,
+    value,
+  });
+
+export const setProjectDescription = value => dispatch =>
+  dispatch({
+    type: SETPROJECTDESCRIPTION,
+    value,
+  });
+
+export const setProjectImageId = value => dispatch =>
+  dispatch({
+    type: SETPROJECTIMAGEID,
+    value,
+  });
