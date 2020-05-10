@@ -76,7 +76,7 @@ function Project(props) {
   const isAdmin = AuthAdmin();
 
   function handleViewProject(id) {
-    viewProject();
+    viewProject(id);
     setSelectedProject(id);
   }
 

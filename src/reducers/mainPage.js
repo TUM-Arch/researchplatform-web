@@ -19,17 +19,20 @@ import {
   SETPROJECTCHAIRNAME,
   SETPROJECTDESCRIPTION,
   SETPROJECTIMAGEID,
+  SETPROJECTFIELDS,
   SETWINDOWDIMS,
   UPDATE_PROJECTS,
   SETPROJECTNAME,
+  SETPROJECTFIELDENVALUE,
   newProjectCreated,
   updateProject,
   updateProjects,
   deleteProject,
   submitProject,
   rejectProject,
+  setProjectFields,
 } from "../actions/mainPage";
-import {projectsURL, imagesURL} from "../util/constants";
+import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
 let initialState = {
   language: "en",
@@ -125,6 +128,12 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         isProjectDialogOpen: false,
+        projectName: "",
+        projectChairName: "",
+        projectDescription: "",
+        projectImageId: "",
+        projectTags: [],
+        projectFields: [],
       };
     case CREATEPROJECT:
       return {
@@ -147,10 +156,12 @@ export default function mainPage(state = initialState, action) {
         projectFields: [],
       };
     case VIEWPROJECT:
+      const projectInSight = state.allProjects.find(project => project.id === action.id);
       return {
         ...state,
         projectDialogState: "view",
         isProjectDialogOpen: true,
+        projectFields: projectInSight.fields,
       };
     case EDITPROJECT:
       const project = state.allProjects.find(project => project.id === action.id);
@@ -258,6 +269,20 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectImageId: action.value,
+      };
+    case SETPROJECTFIELDS:
+      return {
+        ...state,
+        projectFields: action.values.fieldsList,
+      };
+    case SETPROJECTFIELDENVALUE:
+      return {
+        ...state,
+        projectFields: state.projectFields.map(projectField =>
+          projectField.id === action.id
+            ? {...projectField, valueEn: action.value}
+            : projectField
+        ),
       };
     default:
       return state;
@@ -399,6 +424,23 @@ export function handleRejectProject(id) {
       .then(response => response.json())
       .then(result => {
         dispatch(rejectProject(result));
+      });
+  };
+}
+
+export function getCurrentFormfields() {
+  let values = {};
+  return dispatch => {
+    return fetch(formfieldsURL, {
+      method: "GET",
+    })
+      .then(response => response.json())
+      .then(result => {
+        values = {
+          numberOfFields: result.numberOfFields,
+          fieldsList: result.fieldsList,
+        };
+        dispatch(setProjectFields(values));
       });
   };
 }

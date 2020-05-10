@@ -18,6 +18,7 @@ import {
   setProjectChairName,
   setProjectDescription,
   setProjectImageId,
+  setProjectFieldEnValue,
 } from "../actions/mainPage";
 import {
   createNewProject,
@@ -72,6 +73,7 @@ function CreateViewEditProject(props) {
     setProjectDescription,
     projectImageId,
     setProjectImageId,
+    setProjectFieldEnValue,
     projectTags,
     projectFields,
   } = props;
@@ -80,11 +82,22 @@ function CreateViewEditProject(props) {
     dialogClose();
   }
 
+  function isRequiredFieldsNotFilled() {
+    return (
+      projectName === "" ||
+      projectChairName === "" ||
+      projectDescription === "" ||
+      projectFields.some(
+        projectField => projectField.required === true && projectField.valueEn === ""
+      )
+    );
+  }
+
   function handleSave() {
-    if (projectDialogState === "create") {
-      if (projectName === "" || projectChairName === "" || projectDescription === "") {
-        alert("The required fields are empty!!");
-      } else {
+    if (isRequiredFieldsNotFilled()) {
+      alert("The required fields are empty!!");
+    } else {
+      if (projectDialogState === "create") {
         createNewProject(
           projectName,
           projectChairName,
@@ -94,18 +107,18 @@ function CreateViewEditProject(props) {
           projectFields,
           userId
         );
+      } else {
+        handleEditProject(
+          projectName,
+          projectChairName,
+          projectDescription,
+          projectImageId,
+          projectTags,
+          projectFields,
+          userId,
+          selectedProject.id
+        );
       }
-    } else {
-      handleEditProject(
-        projectName,
-        projectChairName,
-        projectDescription,
-        projectImageId,
-        projectTags,
-        projectFields,
-        userId,
-        selectedProject.id
-      );
     }
   }
 
@@ -129,6 +142,7 @@ function CreateViewEditProject(props) {
         setProjectImageId(value);
         break;
       default:
+        setProjectFieldEnValue(keyName, value);
     }
   }
 
@@ -194,6 +208,32 @@ function CreateViewEditProject(props) {
                         handleOnChangeEvent(keyName, event.target.value);
                       }}
                     />
+                  </div>
+                );
+              case "fields":
+                return (
+                  <div key={i}>
+                    {Object.keys(projectFields).map(j => {
+                      return (
+                        <div key={j} className={classes.textFields}>
+                          <CustomTextField
+                            label={projectFields[j].nameEn}
+                            defaultValue={projectFields[j].valueEn}
+                            required={projectFields[j].required}
+                            disabled={projectDialogState === "view" ? true : false}
+                            inputProps={{maxLength: projectFields[j].length}}
+                            variant="outlined"
+                            fullWidth
+                            onChange={event => {
+                              handleOnChangeEvent(
+                                projectFields[j].id,
+                                event.target.value
+                              );
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               default:
@@ -263,6 +303,7 @@ const mapDispatchToProps = {
   setProjectChairName: setProjectChairName,
   setProjectDescription: setProjectDescription,
   setProjectImageId: setProjectImageId,
+  setProjectFieldEnValue: setProjectFieldEnValue,
 };
 
 export default connect(

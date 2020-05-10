@@ -20,6 +20,8 @@ export const SETPROJECTNAME = "SETPROJECTNAME";
 export const SETPROJECTCHAIRNAME = "SETPROJECTCHAIRNAME";
 export const SETPROJECTDESCRIPTION = "SETPROJECTDESCRIPTION";
 export const SETPROJECTIMAGEID = "SETPROJECTIMAGEID";
+export const SETPROJECTFIELDS = "SETPROJECTFIELDS";
+export const SETPROJECTFIELDENVALUE = "SETPROJECTFIELDENVALUE";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -84,9 +86,10 @@ export const updateProject = result => dispatch =>
     result,
   });
 
-export const viewProject = () => dispatch =>
+export const viewProject = id => dispatch =>
   dispatch({
     type: VIEWPROJECT,
+    id,
   });
 
 export const deleteProject = id => dispatch =>
@@ -145,5 +148,18 @@ export const setProjectDescription = value => dispatch =>
 export const setProjectImageId = value => dispatch =>
   dispatch({
     type: SETPROJECTIMAGEID,
+    value,
+  });
+
+export const setProjectFields = values => dispatch =>
+  dispatch({
+    type: SETPROJECTFIELDS,
+    values,
+  });
+
+export const setProjectFieldEnValue = (id, value) => dispatch =>
+  dispatch({
+    type: SETPROJECTFIELDENVALUE,
+    id,
     value,
   });

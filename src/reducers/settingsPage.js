@@ -187,7 +187,7 @@ export function saveField(
     valueDe: fieldValueDe,
     description: fieldDescription,
     required: fieldRequired,
-    length: fieldLength,
+    length: fieldLength === null ? 50 : fieldLength,
   };
   return dispatch => {
     return fetch(url, {
