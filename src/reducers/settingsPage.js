@@ -27,7 +27,7 @@ let initialState = {
     valueEn: "",
     valueDe: "",
     description: "",
-    length: null,
+    length: 128,
     required: false,
   },
   isNewField: false,
@@ -37,7 +37,7 @@ let initialState = {
   fieldValueEn: "",
   fieldValueDe: "",
   fieldRequired: false,
-  fieldLength: null,
+  fieldLength: 128,
 };
 
 export default function mainPage(state = initialState, action) {
@@ -125,7 +125,7 @@ export default function mainPage(state = initialState, action) {
           valueDe: "",
           description: "",
           required: false,
-          length: null,
+          length: 128,
         },
         isNewField: false,
         fieldNameEn: "",
@@ -134,7 +134,7 @@ export default function mainPage(state = initialState, action) {
         fieldValueEn: "",
         fieldValueDe: "",
         fieldRequired: false,
-        fieldLength: null,
+        fieldLength: 128,
       };
     default:
       return state;
@@ -187,7 +187,7 @@ export function saveField(
     valueDe: fieldValueDe,
     description: fieldDescription,
     required: fieldRequired,
-    length: fieldLength === null ? 50 : fieldLength,
+    length: fieldLength,
   };
   return dispatch => {
     return fetch(url, {

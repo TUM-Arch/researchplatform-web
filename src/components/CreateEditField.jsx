@@ -35,6 +35,9 @@ const styles = theme => ({
   textFields: {
     margin: theme.spacing(2),
   },
+  requiredFieldMargin: {
+    margin: theme.spacing(2),
+  },
 });
 
 const CustomTextField = withStyles({
@@ -135,7 +138,7 @@ class CreateEditField extends React.Component {
               switch (keyName) {
                 case "required":
                   return (
-                    <div key={i}>
+                    <div key={i} className={classes.requiredFieldMargin}>
                       <Typography>{nameMap[keyName]}</Typography>
                       <Checkbox
                         color="secondary"
