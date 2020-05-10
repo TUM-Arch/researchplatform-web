@@ -12,6 +12,10 @@ import {
   TextField,
   Chip,
   Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
 import {
@@ -22,6 +26,8 @@ import {
   setProjectTag,
   deleteProjectTag,
   setProjectFieldEnValue,
+  setProjectFieldDeValue,
+  setprojectLanguageChoice,
 } from "../actions/mainPage";
 import {
   createNewProject,
@@ -37,6 +43,12 @@ const styles = theme => ({
   },
   textFields: {
     margin: theme.spacing(2),
+  },
+  rowAboveFields: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
   },
   tags: {
     display: "flex",
@@ -118,8 +130,11 @@ function CreateViewEditProject(props) {
     setProjectTag,
     deleteProjectTag,
     setProjectFieldEnValue,
+    setProjectFieldDeValue,
+    setprojectLanguageChoice,
     projectTags,
     projectFields,
+    projectLanguageChoice,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
@@ -147,7 +162,16 @@ function CreateViewEditProject(props) {
       projectChairName === "" ||
       projectDescription === "" ||
       projectFields.some(
-        projectField => projectField.required === true && projectField.valueEn === ""
+        projectField =>
+          projectField.required === true &&
+          projectField.valueEn === "" &&
+          projectLanguageChoice !== "de"
+      ) ||
+      projectFields.some(
+        projectField =>
+          projectField.required === true &&
+          projectField.valueDe === "" &&
+          projectLanguageChoice !== "en"
       )
     );
   }
@@ -198,8 +222,13 @@ function CreateViewEditProject(props) {
         setProjectChairName(value);
         break;
       default:
-        setProjectFieldEnValue(keyName, value);
     }
+  }
+
+  function handleOnChangeProjectFieldEvent(id, value, language) {
+    language === "en"
+      ? setProjectFieldEnValue(id, value)
+      : setProjectFieldDeValue(id, value);
   }
 
   function handleAddNewTag() {
@@ -209,6 +238,10 @@ function CreateViewEditProject(props) {
 
   function handleDeleteTag(value) {
     deleteProjectTag(value);
+  }
+
+  function handleLanguageChoice(event) {
+    setprojectLanguageChoice(event.target.value);
   }
 
   return (
@@ -234,15 +267,27 @@ function CreateViewEditProject(props) {
           })()}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {projectDialogState === "create"
-              ? language === "en"
-                ? en.newProjectSubtitle
-                : de.newProjectSubtitle
-              : language === "en"
-              ? en.oldProjectSubtitle
-              : de.oldProjectSubtitle}
-          </DialogContentText>
+          <div className={classes.rowAboveFields}>
+            <DialogContentText>
+              {projectDialogState === "create"
+                ? language === "en"
+                  ? en.newProjectSubtitle
+                  : de.newProjectSubtitle
+                : language === "en"
+                ? en.oldProjectSubtitle
+                : de.oldProjectSubtitle}
+            </DialogContentText>
+            <FormControl style={{minWidth: 120}}>
+              <InputLabel>
+                {language === "en" ? en.inputLanguage : de.inputLanguage}
+              </InputLabel>
+              <Select value={projectLanguageChoice} onChange={handleLanguageChoice}>
+                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="de">German</MenuItem>
+                <MenuItem value="both">Both</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
           {Object.keys(selectedProject).map((keyName, i) => {
             if (
               keyName === "id" ||
@@ -362,21 +407,51 @@ function CreateViewEditProject(props) {
                     {Object.keys(projectFields).map(j => {
                       return (
                         <div key={j} className={classes.textFields}>
-                          <CustomTextField
-                            label={projectFields[j].nameEn}
-                            defaultValue={projectFields[j].valueEn}
-                            required={projectFields[j].required}
-                            disabled={projectDialogState === "view" ? true : false}
-                            inputProps={{maxLength: projectFields[j].length}}
-                            variant="outlined"
-                            fullWidth
-                            onChange={event => {
-                              handleOnChangeEvent(
-                                projectFields[j].id,
-                                event.target.value
-                              );
-                            }}
-                          />
+                          {projectLanguageChoice !== "de" ? (
+                            <CustomTextField
+                              label={projectFields[j].nameEn}
+                              defaultValue={projectFields[j].valueEn}
+                              required={projectFields[j].required}
+                              disabled={projectDialogState === "view" ? true : false}
+                              inputProps={{maxLength: projectFields[j].length}}
+                              variant="outlined"
+                              fullWidth
+                              onChange={event => {
+                                handleOnChangeProjectFieldEvent(
+                                  projectFields[j].id,
+                                  event.target.value,
+                                  "en"
+                                );
+                              }}
+                            />
+                          ) : null}
+                          {projectLanguageChoice !== "en" ? (
+                            <CustomTextField
+                              label={
+                                projectLanguageChoice === "de"
+                                  ? projectFields[j].nameDe
+                                  : ""
+                              }
+                              placeholder={
+                                projectLanguageChoice === "both"
+                                  ? projectFields[j].nameDe
+                                  : ""
+                              }
+                              defaultValue={projectFields[j].valueDe}
+                              required={projectFields[j].required}
+                              disabled={projectDialogState === "view" ? true : false}
+                              inputProps={{maxLength: projectFields[j].length}}
+                              variant="outlined"
+                              fullWidth
+                              onChange={event => {
+                                handleOnChangeProjectFieldEvent(
+                                  projectFields[j].id,
+                                  event.target.value,
+                                  "de"
+                                );
+                              }}
+                            />
+                          ) : null}
                         </div>
                       );
                     })}
@@ -425,6 +500,7 @@ const mapStateToProps = ({
     projectImageId,
     projectTags,
     projectFields,
+    projectLanguageChoice,
   },
 }) => ({
   userId,
@@ -438,6 +514,7 @@ const mapStateToProps = ({
   projectImageId,
   projectTags,
   projectFields,
+  projectLanguageChoice,
 });
 
 const mapDispatchToProps = {
@@ -449,8 +526,10 @@ const mapDispatchToProps = {
   setProjectChairName: setProjectChairName,
   setProjectDescription: setProjectDescription,
   setProjectTag: setProjectTag,
-  setProjectFieldEnValue: setProjectFieldEnValue,
   deleteProjectTag: deleteProjectTag,
+  setProjectFieldEnValue: setProjectFieldEnValue,
+  setProjectFieldDeValue: setProjectFieldDeValue,
+  setprojectLanguageChoice: setprojectLanguageChoice,
 };
 
 export default connect(

@@ -28,5 +28,6 @@
   "tags": "Tags",
   "tagName": "Tag Name",
   "addTag": "Add Tag",
-  "addTagText": "Add a tag to your project for indexing"
+  "addTagText": "Add a tag to your project for indexing",
+  "inputLanguage": "Input Language"
 }

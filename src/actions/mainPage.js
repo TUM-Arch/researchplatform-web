@@ -24,6 +24,8 @@ export const SETPROJECTTAG = "SETPROJECTTAG";
 export const DELETEPROJECTTAG = "DELETEPROJECTTAG";
 export const SETPROJECTFIELDS = "SETPROJECTFIELDS";
 export const SETPROJECTFIELDENVALUE = "SETPROJECTFIELDENVALUE";
+export const SETPROJECTFIELDDEVALUE = "SETPROJECTFIELDDEVALUE";
+export const SETPROJECTLANGUAGECHOICE = "SETPROJECTLANGUAGECHOICE";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -175,5 +177,18 @@ export const setProjectFieldEnValue = (id, value) => dispatch =>
   dispatch({
     type: SETPROJECTFIELDENVALUE,
     id,
+    value,
+  });
+
+export const setProjectFieldDeValue = (id, value) => dispatch =>
+  dispatch({
+    type: SETPROJECTFIELDDEVALUE,
+    id,
+    value,
+  });
+
+export const setprojectLanguageChoice = value => dispatch =>
+  dispatch({
+    type: SETPROJECTLANGUAGECHOICE,
     value,
   });

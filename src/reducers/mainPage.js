@@ -26,6 +26,8 @@ import {
   SETWINDOWDIMS,
   UPDATE_PROJECTS,
   SETPROJECTFIELDENVALUE,
+  SETPROJECTFIELDDEVALUE,
+  SETPROJECTLANGUAGECHOICE,
   newProjectCreated,
   updateProject,
   updateProjects,
@@ -67,6 +69,7 @@ let initialState = {
   projectImageId: "",
   projectTags: [],
   projectFields: [],
+  projectLanguageChoice: "en",
 };
 
 export default function mainPage(state = initialState, action) {
@@ -296,6 +299,20 @@ export default function mainPage(state = initialState, action) {
             ? {...projectField, valueEn: action.value}
             : projectField
         ),
+      };
+    case SETPROJECTFIELDDEVALUE:
+      return {
+        ...state,
+        projectFields: state.projectFields.map(projectField =>
+          projectField.id === action.id
+            ? {...projectField, valueDe: action.value}
+            : projectField
+        ),
+      };
+    case SETPROJECTLANGUAGECHOICE:
+      return {
+        ...state,
+        projectLanguageChoice: action.value,
       };
     default:
       return state;

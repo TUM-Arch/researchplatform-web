@@ -28,5 +28,6 @@
   "tags": "Stichworte",
   "tagName": "Stichworte Name",
   "addTag": "Stichworte hinzufügen",
-  "addTagText": "Fügen Sie Ihrem Projekt ein Stichworte zur Indizierung hinzu"
+  "addTagText": "Fügen Sie Ihrem Projekt ein Stichworte zur Indizierung hinzu",
+  "inputLanguage": "Eingabesprache"
 }
