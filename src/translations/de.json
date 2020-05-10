@@ -18,10 +18,15 @@
   "submit": "Absenden",
   "cancel": "Abbrechen",
   "save": "Speichern",
+  "add": "Hinzufügen",
   "fieldProjectName": "Projektname",
   "done": "Erledigt",
   "settingsTitle": "Aktuelle Form",
   "logout": "Ausloggen",
   "createEditField": "Feld erstellen/bearbeiten",
-  "newField": "Neues Feld"
+  "newField": "Neues Feld",
+  "tags": "Stichworte",
+  "tagName": "Stichworte Name",
+  "addTag": "Stichworte hinzufügen",
+  "addTagText": "Fügen Sie Ihrem Projekt ein Stichworte zur Indizierung hinzu"
 }

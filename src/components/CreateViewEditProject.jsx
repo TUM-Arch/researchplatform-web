@@ -10,6 +10,8 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  Chip,
+  Typography,
 } from "@material-ui/core";
 import {withStyles} from "@material-ui/styles";
 import {
@@ -17,7 +19,8 @@ import {
   setProjectName,
   setProjectChairName,
   setProjectDescription,
-  setProjectImageId,
+  setProjectTag,
+  deleteProjectTag,
   setProjectFieldEnValue,
 } from "../actions/mainPage";
 import {
@@ -34,6 +37,46 @@ const styles = theme => ({
   },
   textFields: {
     margin: theme.spacing(2),
+  },
+  tags: {
+    display: "flex",
+    flexWrap: "wrap",
+    listStyle: "none",
+    padding: theme.spacing(1),
+    margin: theme.spacing(2),
+    borderColor: "lightgrey",
+    borderStyle: "solid",
+    borderWidth: "thin",
+    borderRadius: theme.spacing(0.5),
+    "&:hover": {
+      borderColor: "black",
+    },
+  },
+  tagsDisabled: {
+    display: "flex",
+    flexWrap: "wrap",
+    listStyle: "none",
+    padding: theme.spacing(1),
+    margin: theme.spacing(2),
+    borderColor: "lightgrey",
+    borderStyle: "solid",
+    borderWidth: "thin",
+    borderRadius: theme.spacing(0.5),
+  },
+  tagText: {
+    marginTop: "auto",
+    marginBottom: "auto",
+    padding: theme.spacing(0.5),
+  },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
+  chipDisabled: {
+    margin: theme.spacing(0.5),
+    color: "lightslategray",
+  },
+  button: {
+    margin: theme.spacing(0.5),
   },
 });
 
@@ -72,11 +115,27 @@ function CreateViewEditProject(props) {
     projectDescription,
     setProjectDescription,
     projectImageId,
-    setProjectImageId,
+    setProjectTag,
+    deleteProjectTag,
     setProjectFieldEnValue,
     projectTags,
     projectFields,
   } = props;
+
+  const [openAddTag, setOpenAddTag] = React.useState(false);
+  const [newTagValue, setNewTagValue] = React.useState("");
+
+  const handleOpenAddTag = () => {
+    setOpenAddTag(true);
+  };
+
+  const handleCloseAddTag = () => {
+    setOpenAddTag(false);
+  };
+
+  const handlesetNewTagValue = value => {
+    setNewTagValue(value);
+  };
 
   function handleClose() {
     dialogClose();
@@ -138,12 +197,18 @@ function CreateViewEditProject(props) {
       case "chairName":
         setProjectChairName(value);
         break;
-      case "imageId":
-        setProjectImageId(value);
-        break;
       default:
         setProjectFieldEnValue(keyName, value);
     }
+  }
+
+  function handleAddNewTag() {
+    setProjectTag(newTagValue);
+    handleCloseAddTag();
+  }
+
+  function handleDeleteTag(value) {
+    deleteProjectTag(value);
   }
 
   return (
@@ -182,7 +247,8 @@ function CreateViewEditProject(props) {
             if (
               keyName === "id" ||
               keyName === "createdAt" ||
-              keyName === "yearOfCreation"
+              keyName === "yearOfCreation" ||
+              keyName === "imageId"
             ) {
               return null;
             }
@@ -190,7 +256,6 @@ function CreateViewEditProject(props) {
               case "name":
               case "description":
               case "chairName":
-              case "imageId":
                 return (
                   <div key={i} className={classes.textFields}>
                     <CustomTextField
@@ -208,6 +273,87 @@ function CreateViewEditProject(props) {
                         handleOnChangeEvent(keyName, event.target.value);
                       }}
                     />
+                  </div>
+                );
+              case "tags":
+                return (
+                  <div
+                    key={i}
+                    component="ul"
+                    variant="outlined"
+                    className={
+                      projectDialogState === "view" ? classes.tagsDisabled : classes.tags
+                    }
+                  >
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      className={classes.tagText}
+                    >
+                      {language === "en" ? en.tags : de.tags}:
+                    </Typography>
+                    {projectDialogState === "view"
+                      ? projectTags.map((tag, i) => {
+                          return (
+                            <li key={i}>
+                              <Chip label={tag} className={classes.chipDisabled} />
+                            </li>
+                          );
+                        })
+                      : projectTags.map((tag, i) => {
+                          return (
+                            <li key={i}>
+                              <Chip
+                                label={tag}
+                                onDelete={() => {
+                                  handleDeleteTag(tag);
+                                }}
+                                className={classes.chip}
+                              />
+                            </li>
+                          );
+                        })}
+                    {projectDialogState === "view" ? null : (
+                      <Button
+                        onClick={handleOpenAddTag}
+                        variant="contained"
+                        size="small"
+                        color="inherit"
+                        className={classes.button}
+                      >
+                        {language === "en" ? en.addTag : de.addTag}
+                      </Button>
+                    )}
+                    <Dialog
+                      open={openAddTag}
+                      onClose={handleCloseAddTag}
+                      aria-labelledby="form-dialog-title"
+                    >
+                      <DialogTitle id="form-dialog-title">
+                        {language === "en" ? en.addTag : de.addTag}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          {language === "en" ? en.addTagText : de.addTagText}
+                        </DialogContentText>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="tag"
+                          label={language === "en" ? en.tagName : de.tagName}
+                          fullWidth
+                          onChange={event => handlesetNewTagValue(event.target.value)}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseAddTag} color="secondary">
+                          {language === "en" ? en.cancel : de.cancel}
+                        </Button>
+                        <Button onClick={handleAddNewTag} color="secondary">
+                          {language === "en" ? en.add : de.add}
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </div>
                 );
               case "fields":
@@ -302,8 +448,9 @@ const mapDispatchToProps = {
   setProjectName: setProjectName,
   setProjectChairName: setProjectChairName,
   setProjectDescription: setProjectDescription,
-  setProjectImageId: setProjectImageId,
+  setProjectTag: setProjectTag,
   setProjectFieldEnValue: setProjectFieldEnValue,
+  deleteProjectTag: deleteProjectTag,
 };
 
 export default connect(

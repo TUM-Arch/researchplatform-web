@@ -16,13 +16,15 @@ import {
   DELETEPROJECT,
   SUBMITREJECTPROJECT,
   SETSELECTEDPROJECT,
+  SETPROJECTNAME,
   SETPROJECTCHAIRNAME,
   SETPROJECTDESCRIPTION,
   SETPROJECTIMAGEID,
+  SETPROJECTTAG,
+  DELETEPROJECTTAG,
   SETPROJECTFIELDS,
   SETWINDOWDIMS,
   UPDATE_PROJECTS,
-  SETPROJECTNAME,
   SETPROJECTFIELDENVALUE,
   newProjectCreated,
   updateProject,
@@ -161,6 +163,7 @@ export default function mainPage(state = initialState, action) {
         ...state,
         projectDialogState: "view",
         isProjectDialogOpen: true,
+        projectTags: projectInSight.tags,
         projectFields: projectInSight.fields,
       };
     case EDITPROJECT:
@@ -269,6 +272,16 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectImageId: action.value,
+      };
+    case SETPROJECTTAG:
+      return {
+        ...state,
+        projectTags: [...state.projectTags, action.value],
+      };
+    case DELETEPROJECTTAG:
+      return {
+        ...state,
+        projectTags: state.projectTags.filter(tag => tag !== action.value),
       };
     case SETPROJECTFIELDS:
       return {

@@ -18,10 +18,15 @@
   "submit": "Submit",
   "cancel": "Cancel",
   "save": "Save",
+  "add": "Add",
   "fieldProjectName": "Project Name",
   "done": "Done",
   "settingsTitle": "Current Form",
   "logout": "Logout",
   "createEditField": "Create/Edit Field",
-  "newField": "New Field"
+  "newField": "New Field",
+  "tags": "Tags",
+  "tagName": "Tag Name",
+  "addTag": "Add Tag",
+  "addTagText": "Add a tag to your project for indexing"
 }
