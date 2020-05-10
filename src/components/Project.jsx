@@ -140,8 +140,14 @@ function Project(props) {
     <Card className={classes.root} style={{background: setBackgroundColor()}}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+          <Avatar aria-label="status" className={classes.avatar}>
+            {project.status === "NOTSUBMITTED"
+              ? "N"
+              : project.status === "SUBMITTED"
+              ? "S"
+              : project.status === "REJECTED"
+              ? "R"
+              : "A"}
           </Avatar>
         }
         action={
