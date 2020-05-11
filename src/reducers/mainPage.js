@@ -20,6 +20,7 @@ import {
   SETPROJECTCHAIRNAME,
   SETPROJECTDESCRIPTION,
   SETPROJECTIMAGEID,
+  SETPROJECTIMAGE,
   SETPROJECTTAG,
   DELETEPROJECTTAG,
   SETPROJECTFIELDS,
@@ -36,6 +37,7 @@ import {
   rejectProject,
   setProjectFields,
   setProjectImageId,
+  setProjectImage,
 } from "../actions/mainPage";
 import {defaultImageIcon, projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
@@ -288,6 +290,11 @@ export default function mainPage(state = initialState, action) {
             : project
         ),
       };
+    case SETPROJECTIMAGE:
+      return {
+        ...state,
+        projectImage: action.value.image,
+      };
     case SETPROJECTTAG:
       return {
         ...state,
@@ -344,24 +351,6 @@ export function getAllProjects() {
           projectsList: result.projectsList,
         };
         dispatch(updateProjects(values));
-      });
-  };
-}
-
-export function getImageFromId(imageId, projectId) {
-  let values = {};
-  return dispatch => {
-    return fetch(imagesURL + "/" + imageId, {
-      method: "GET",
-    })
-      .then(response => response.json())
-      .then(result => {
-        values = {
-          projectId: projectId,
-          imageId: result.imageId,
-          image: result.image,
-        };
-        dispatch(setProjectImageId(values));
       });
   };
 }
@@ -486,6 +475,24 @@ export function getCurrentFormfields() {
           fieldsList: result.fieldsList,
         };
         dispatch(setProjectFields(values));
+      });
+  };
+}
+
+export function getImageFromId(imageId, projectId) {
+  let values = {};
+  return dispatch => {
+    return fetch(imagesURL + "/" + imageId, {
+      method: "GET",
+    })
+      .then(response => response.json())
+      .then(result => {
+        values = {
+          projectId: projectId,
+          imageId: result.imageId,
+          image: result.image,
+        };
+        dispatch(setProjectImage(values));
       });
   };
 }

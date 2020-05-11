@@ -64,7 +64,7 @@ const styles = theme => ({
 });
 
 class Project extends React.Component {
-  componentWillMount = () => {
+  componentDidMount = () => {
     if (this.props.project.imageId !== "")
       this.props.getImageFromId(this.props.project.imageId, this.props.project.id);
   };
