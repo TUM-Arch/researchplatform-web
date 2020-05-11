@@ -27,6 +27,7 @@ import {
   handleSubmitProject,
   handleRejectProject,
   getImageFromId,
+  handleSetProjectImage,
 } from "../reducers/mainPage";
 import jsPDF from "jspdf";
 import AuthAdmin from "./AuthAdmin";
@@ -45,6 +46,9 @@ const styles = theme => ({
   },
   cardImage: {
     objectFit: "scale-down",
+  },
+  input: {
+    display: "none",
   },
   avatar: {
     backgroundColor: red[500],
@@ -69,6 +73,7 @@ function Project(props) {
     handlesubmitProject,
     handlerejectProject,
     setSelectedProject,
+    handleSetProjectImage,
   } = props;
 
   // Get current user
@@ -128,6 +133,12 @@ function Project(props) {
     else return COLOR_APPROVED;
   }
 
+  function handleImageChange(event) {
+    const formData = new FormData();
+    formData.append("image", event.target.files[0], event.target.files[0].name);
+    handleSetProjectImage(formData);
+  }
+
   // Fetch Image for rendering
   const imageId = project.imageId;
   var imageString = defaultImageIcon;
@@ -158,13 +169,22 @@ function Project(props) {
         title={project.name}
         subheader={convertTimeStampToDate(project.createdAt)}
       />
-      <CardMedia
-        component="img"
-        height="125"
-        image={`data:image/png;base64, ${imageString}`}
-        title={project.name}
-        className={classes.cardImage}
+      <input
+        className={classes.input}
+        id="img-button-file"
+        type="file"
+        onChange={handleImageChange}
       />
+      <label htmlFor="img-button-file">
+        <CardMedia
+          component="img"
+          height="125"
+          image={`data:image/png;base64, ${imageString}`}
+          title={project.name}
+          className={classes.cardImage}
+        />
+      </label>
+
       <CardContent>
         <Typography
           variant="body2"
@@ -270,6 +290,7 @@ const mapDispatchToProps = {
   handlesubmitProject: handleSubmitProject,
   handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
+  handleSetProjectImage: handleSetProjectImage,
 };
 
 export default connect(

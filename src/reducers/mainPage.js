@@ -35,6 +35,7 @@ import {
   submitProject,
   rejectProject,
   setProjectFields,
+  setProjectImageId,
 } from "../actions/mainPage";
 import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
@@ -70,6 +71,7 @@ let initialState = {
   projectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
+  inputImageData: null,
 };
 
 export default function mainPage(state = initialState, action) {
@@ -274,7 +276,7 @@ export default function mainPage(state = initialState, action) {
     case SETPROJECTIMAGEID:
       return {
         ...state,
-        projectImageId: action.value,
+        projectImageId: action.value.imageId,
       };
     case SETPROJECTTAG:
       return {
@@ -471,6 +473,24 @@ export function getCurrentFormfields() {
           fieldsList: result.fieldsList,
         };
         dispatch(setProjectFields(values));
+      });
+  };
+}
+
+export function handleSetProjectImage(body) {
+  let values = {};
+  return dispatch => {
+    return fetch(imagesURL, {
+      method: "POST",
+      body: body,
+    })
+      .then(response => response.json())
+      .then(result => {
+        values = {
+          imageId: result.imageId,
+          image: result.image,
+        };
+        dispatch(setProjectImageId(values));
       });
   };
 }
