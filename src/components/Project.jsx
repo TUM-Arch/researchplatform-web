@@ -67,6 +67,7 @@ function Project(props) {
   const {
     classes,
     project,
+    projectImage,
     viewProject,
     editProject,
     handledeleteProject,
@@ -136,15 +137,8 @@ function Project(props) {
   function handleImageChange(event) {
     const formData = new FormData();
     formData.append("image", event.target.files[0], event.target.files[0].name);
+    formData.append("projectId", project.id);
     handleSetProjectImage(formData);
-  }
-
-  // Fetch Image for rendering
-  const imageId = project.imageId;
-  var imageString = defaultImageIcon;
-  if (imageId) {
-    const imageResponse = getImageFromId(imageId);
-    imageString = imageResponse.image;
   }
 
   return (
@@ -179,7 +173,7 @@ function Project(props) {
         <CardMedia
           component="img"
           height="125"
-          image={`data:image/png;base64, ${imageString}`}
+          image={`data:image/png;base64, ${projectImage}`}
           title={project.name}
           className={classes.cardImage}
         />
@@ -279,8 +273,9 @@ function Project(props) {
   );
 }
 
-const mapStateToProps = ({mainPage: {viewProjects}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects, projectImageId, projectImage}}) => ({
   viewProjects,
+  projectImage,
 });
 
 const mapDispatchToProps = {

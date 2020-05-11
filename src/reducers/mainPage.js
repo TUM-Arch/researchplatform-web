@@ -37,7 +37,7 @@ import {
   setProjectFields,
   setProjectImageId,
 } from "../actions/mainPage";
-import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
+import {defaultImageIcon, projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
 let initialState = {
   language: "en",
@@ -71,7 +71,7 @@ let initialState = {
   projectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
-  inputImageData: null,
+  projectImage: defaultImageIcon,
 };
 
 export default function mainPage(state = initialState, action) {
@@ -276,7 +276,17 @@ export default function mainPage(state = initialState, action) {
     case SETPROJECTIMAGEID:
       return {
         ...state,
-        projectImageId: action.value.imageId,
+        projectImage: action.value.image,
+        myProjects: state.myProjects.map(project =>
+          project.id === action.value.projectId
+            ? {...project, imageId: action.value.imageId}
+            : project
+        ),
+        allProjects: state.allProjects.map(project =>
+          project.id === action.value.projectId
+            ? {...project, imageId: action.value.imageId}
+            : project
+        ),
       };
     case SETPROJECTTAG:
       return {
@@ -487,6 +497,7 @@ export function handleSetProjectImage(body) {
       .then(response => response.json())
       .then(result => {
         values = {
+          projectId: body.get("projectId"),
           imageId: result.imageId,
           image: result.image,
         };
