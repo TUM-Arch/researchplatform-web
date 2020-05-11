@@ -348,19 +348,22 @@ export function getAllProjects() {
   };
 }
 
-export function getImageFromId(imageId) {
+export function getImageFromId(imageId, projectId) {
   let values = {};
-  return fetch(imagesURL + "/" + imageId, {
-    method: "GET",
-  })
-    .then(response => response.json())
-    .then(result => {
-      values = {
-        imageId: result.imageId,
-        image: result.image,
-      };
-      return values;
-    });
+  return dispatch => {
+    return fetch(imagesURL + "/" + imageId, {
+      method: "GET",
+    })
+      .then(response => response.json())
+      .then(result => {
+        values = {
+          projectId: projectId,
+          imageId: result.imageId,
+          image: result.image,
+        };
+        dispatch(setProjectImageId(values));
+      });
+  };
 }
 
 export function handledeleteProject(id) {

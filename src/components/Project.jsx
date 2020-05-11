@@ -63,214 +63,221 @@ const styles = theme => ({
   },
 });
 
-function Project(props) {
-  const {
-    classes,
-    project,
-    projectImage,
-    viewProject,
-    editProject,
-    handledeleteProject,
-    handlesubmitProject,
-    handlerejectProject,
-    setSelectedProject,
-    handleSetProjectImage,
-  } = props;
+class Project extends React.Component {
+  componentWillMount = () => {
+    if (this.props.project.imageId !== "")
+      this.props.getImageFromId(this.props.project.imageId, this.props.project.id);
+  };
 
-  // Get current user
-  const currentUserId = "tempuser";
-  const isAdmin = AuthAdmin();
+  render() {
+    const {
+      classes,
+      project,
+      projectImage,
+      viewProject,
+      editProject,
+      handledeleteProject,
+      handlesubmitProject,
+      handlerejectProject,
+      setSelectedProject,
+      handleSetProjectImage,
+    } = this.props;
 
-  function handleViewProject(id) {
-    viewProject(id);
-    setSelectedProject(id);
-  }
+    // Get current user
+    const currentUserId = "tempuser";
+    const isAdmin = AuthAdmin();
 
-  function handleEditProject(id) {
-    editProject(id);
-    setSelectedProject(id);
-  }
-
-  function handleDeleteProject(id) {
-    handledeleteProject(id);
-  }
-
-  function handleSubmitApproveProject(id) {
-    handlesubmitProject(id);
-  }
-
-  function handleRejectProject(id) {
-    handlerejectProject(id);
-  }
-
-  function handleDownloadProject() {
-    var doc = new jsPDF();
-    doc.setFontSize(22);
-    doc.text(20, 20, project.name);
-    doc.setFontSize(13);
-    var desc = doc.splitTextToSize(project.description, 170);
-    doc.text(20, 30, desc);
-    doc.save(project.name + ".pdf");
-  }
-
-  function convertTimeStampToDate(timestamp) {
-    var dateFormat = new Date(timestamp);
-    var year = dateFormat.getFullYear();
-    var month = dateFormat.getMonth() + 1;
-    var date = dateFormat.getDate();
-    if (date < 10) {
-      date = "0" + date;
+    function handleViewProject(id) {
+      viewProject(id);
+      setSelectedProject(id);
     }
-    if (month < 10) {
-      month = "0" + month;
+
+    function handleEditProject(id) {
+      editProject(id);
+      setSelectedProject(id);
     }
-    return date + "-" + month + "-" + year;
-  }
 
-  function setBackgroundColor() {
-    if (project.status === "NOTSUBMITTED") return COLOR_NOT_SUBMITTED;
-    else if (project.status === "SUBMITTED") return COLOR_SUBMITTED;
-    else if (project.status === "REJECTED") return COLOR_REJECTED;
-    else return COLOR_APPROVED;
-  }
+    function handleDeleteProject(id) {
+      handledeleteProject(id);
+    }
 
-  function handleImageChange(event) {
-    const formData = new FormData();
-    formData.append("image", event.target.files[0], event.target.files[0].name);
-    formData.append("projectId", project.id);
-    handleSetProjectImage(formData);
-  }
+    function handleSubmitApproveProject(id) {
+      handlesubmitProject(id);
+    }
 
-  return (
-    <Card className={classes.root} style={{background: setBackgroundColor()}}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="status" className={classes.avatar}>
-            {project.status === "NOTSUBMITTED"
-              ? "N"
-              : project.status === "SUBMITTED"
-              ? "S"
-              : project.status === "REJECTED"
-              ? "R"
-              : "A"}
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={project.name}
-        subheader={convertTimeStampToDate(project.createdAt)}
-      />
-      <input
-        className={classes.input}
-        id="img-button-file"
-        type="file"
-        onChange={handleImageChange}
-      />
-      <label htmlFor="img-button-file">
-        <CardMedia
-          component="img"
-          height="125"
-          image={`data:image/png;base64, ${projectImage}`}
+    function handleRejectProject(id) {
+      handlerejectProject(id);
+    }
+
+    function handleDownloadProject() {
+      var doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text(20, 20, project.name);
+      doc.setFontSize(13);
+      var desc = doc.splitTextToSize(project.description, 170);
+      doc.text(20, 30, desc);
+      doc.save(project.name + ".pdf");
+    }
+
+    function convertTimeStampToDate(timestamp) {
+      var dateFormat = new Date(timestamp);
+      var year = dateFormat.getFullYear();
+      var month = dateFormat.getMonth() + 1;
+      var date = dateFormat.getDate();
+      if (date < 10) {
+        date = "0" + date;
+      }
+      if (month < 10) {
+        month = "0" + month;
+      }
+      return date + "-" + month + "-" + year;
+    }
+
+    function setBackgroundColor() {
+      if (project.status === "NOTSUBMITTED") return COLOR_NOT_SUBMITTED;
+      else if (project.status === "SUBMITTED") return COLOR_SUBMITTED;
+      else if (project.status === "REJECTED") return COLOR_REJECTED;
+      else return COLOR_APPROVED;
+    }
+
+    function handleImageChange(event) {
+      const formData = new FormData();
+      formData.append("image", event.target.files[0], event.target.files[0].name);
+      formData.append("projectId", project.id);
+      handleSetProjectImage(formData);
+    }
+
+    return (
+      <Card className={classes.root} style={{background: setBackgroundColor()}}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="status" className={classes.avatar}>
+              {project.status === "NOTSUBMITTED"
+                ? "N"
+                : project.status === "SUBMITTED"
+                ? "S"
+                : project.status === "REJECTED"
+                ? "R"
+                : "A"}
+            </Avatar>
+          }
+          action={
+            <IconButton aria-label="settings">
+              <MoreVertIcon />
+            </IconButton>
+          }
           title={project.name}
-          className={classes.cardImage}
+          subheader={convertTimeStampToDate(project.createdAt)}
         />
-      </label>
+        <input
+          className={classes.input}
+          id="img-button-file"
+          type="file"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="img-button-file">
+          <CardMedia
+            component="img"
+            height="125"
+            image={`data:image/png;base64, ${projectImage}`}
+            title={project.name}
+            className={classes.cardImage}
+          />
+        </label>
 
-      <CardContent>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          component="p"
-          className={classes.projectDescText}
-        >
-          {project.description}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Tooltip placement="top" title="View">
-          <IconButton
-            edge="end"
-            aria-label="search"
-            onClick={() => handleViewProject(project.id)}
-            className={classes.icon}
+        <CardContent>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+            className={classes.projectDescText}
           >
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip placement="top" title="Edit">
-          <IconButton
-            edge="end"
-            aria-label="edit"
-            onClick={() => handleEditProject(project.id)}
-            className={classes.icon}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip placement="top" title="Download">
-          <IconButton
-            edge="end"
-            aria-label="download"
-            onClick={() => handleDownloadProject()}
-            className={classes.icon}
-          >
-            <GetAppIcon />
-          </IconButton>
-        </Tooltip>
-        {project.userId === currentUserId || isAdmin ? (
-          <Tooltip placement="top" title="Delete">
+            {project.description}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Tooltip placement="top" title="View">
             <IconButton
               edge="end"
-              aria-label="delete"
-              onClick={() => handleDeleteProject(project.id)}
+              aria-label="search"
+              onClick={() => handleViewProject(project.id)}
               className={classes.icon}
             >
-              <DeleteIcon />
+              <SearchIcon />
             </IconButton>
           </Tooltip>
-        ) : null}
-        {project.userId === currentUserId && project.status === "NOTSUBMITTED" ? (
-          <Tooltip placement="top" title="Submit">
+          <Tooltip placement="top" title="Edit">
             <IconButton
               edge="end"
-              aria-label="submit"
-              onClick={() => handleSubmitApproveProject(project.id)}
+              aria-label="edit"
+              onClick={() => handleEditProject(project.id)}
               className={classes.icon}
             >
-              <SendIcon />
+              <EditIcon />
             </IconButton>
           </Tooltip>
-        ) : null}
-        {project.status === "SUBMITTED" && isAdmin ? (
-          <Tooltip placement="top" title="Approve">
+          <Tooltip placement="top" title="Download">
             <IconButton
               edge="end"
-              aria-label="approve"
-              onClick={() => handleSubmitApproveProject(project.id)}
+              aria-label="download"
+              onClick={() => handleDownloadProject()}
               className={classes.icon}
             >
-              <ThumbUpIcon />
+              <GetAppIcon />
             </IconButton>
           </Tooltip>
-        ) : null}
-        {project.status === "SUBMITTED" && isAdmin ? (
-          <Tooltip placement="top" title="Reject">
-            <IconButton
-              edge="end"
-              aria-label="reject"
-              onClick={() => handleRejectProject(project.id)}
-              className={classes.icon}
-            >
-              <ThumbDownIcon />
-            </IconButton>
-          </Tooltip>
-        ) : null}
-      </CardActions>
-    </Card>
-  );
+          {project.userId === currentUserId || isAdmin ? (
+            <Tooltip placement="top" title="Delete">
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => handleDeleteProject(project.id)}
+                className={classes.icon}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          {project.userId === currentUserId && project.status === "NOTSUBMITTED" ? (
+            <Tooltip placement="top" title="Submit">
+              <IconButton
+                edge="end"
+                aria-label="submit"
+                onClick={() => handleSubmitApproveProject(project.id)}
+                className={classes.icon}
+              >
+                <SendIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          {project.status === "SUBMITTED" && isAdmin ? (
+            <Tooltip placement="top" title="Approve">
+              <IconButton
+                edge="end"
+                aria-label="approve"
+                onClick={() => handleSubmitApproveProject(project.id)}
+                className={classes.icon}
+              >
+                <ThumbUpIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          {project.status === "SUBMITTED" && isAdmin ? (
+            <Tooltip placement="top" title="Reject">
+              <IconButton
+                edge="end"
+                aria-label="reject"
+                onClick={() => handleRejectProject(project.id)}
+                className={classes.icon}
+              >
+                <ThumbDownIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+        </CardActions>
+      </Card>
+    );
+  }
 }
 
 const mapStateToProps = ({mainPage: {viewProjects, projectImageId, projectImage}}) => ({
@@ -286,6 +293,7 @@ const mapDispatchToProps = {
   handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
   handleSetProjectImage: handleSetProjectImage,
+  getImageFromId: getImageFromId,
 };
 
 export default connect(
