@@ -473,7 +473,9 @@ export function handleSetProjectImage(body) {
   return fetch(imagesURL, {
     method: "POST",
     body: body,
-  }).then(response =>
-    response.status === 200 ? response.json() : console.log("Failed")
-  );
+  })
+    .then(response => (response.status === 200 ? response.json() : console.log("Failed")))
+    .then(result => {
+      return result.image;
+    });
 }

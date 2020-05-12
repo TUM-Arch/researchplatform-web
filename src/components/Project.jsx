@@ -69,15 +69,27 @@ const styles = theme => ({
 });
 
 class Project extends React.Component {
-  abc = defaultImageIcon;
+  displayImage = defaultImageIcon;
   async componentWillMount() {
-    if (this.props.project.imageId !== "") {
+    if (this.props.project.imageId !== "" && this.props.project.imageId !== null) {
       await getImageFromId(this.props.project.imageId, this.props.project.id).then(
         value => {
-          this.abc = value;
+          this.displayImage = value;
           this.props.dummyDispatch();
         }
       );
+    }
+  }
+
+  async handleImageChange(event, id) {
+    if (event.target.files && event.target.files[0].name) {
+      const formData = new FormData();
+      formData.append("image", event.target.files[0], event.target.files[0].name);
+      formData.append("projectId", id);
+      await handleSetProjectImage(formData).then(result => {
+        this.displayImage = result;
+        this.props.dummyDispatch();
+      });
     }
   }
 
@@ -149,17 +161,6 @@ class Project extends React.Component {
       else return COLOR_APPROVED;
     }
 
-    function handleImageChange(event, id) {
-      if (event.target.files) {
-        const formData = new FormData();
-        formData.append("image", event.target.files[0], event.target.files[0].name);
-        formData.append("projectId", id);
-        handleSetProjectImage(formData).then(value => {
-          window.location.reload();
-        });
-      }
-    }
-
     return (
       <Card className={classes.root} style={{background: setBackgroundColor()}}>
         <CardHeader
@@ -186,13 +187,13 @@ class Project extends React.Component {
           className={classes.input}
           id={"img-button-file" + project.id}
           type="file"
-          onChange={e => handleImageChange(e, project.id)}
+          onChange={e => this.handleImageChange(e, project.id)}
         />
         <label htmlFor={"img-button-file" + project.id}>
           <CardMedia
             component="img"
             height="125"
-            image={`data:image/png;base64, ${this.abc}`}
+            image={`data:image/png;base64, ${this.displayImage}`}
             title={project.name}
             className={classes.cardImage}
           />
