@@ -19,14 +19,13 @@ export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
 export const SETPROJECTNAME = "SETPROJECTNAME";
 export const SETPROJECTCHAIRNAME = "SETPROJECTCHAIRNAME";
 export const SETPROJECTDESCRIPTION = "SETPROJECTDESCRIPTION";
-export const SETPROJECTIMAGEID = "SETPROJECTIMAGEID";
-export const SETPROJECTIMAGE = "SETPROJECTIMAGE";
 export const SETPROJECTTAG = "SETPROJECTTAG";
 export const DELETEPROJECTTAG = "DELETEPROJECTTAG";
 export const SETPROJECTFIELDS = "SETPROJECTFIELDS";
 export const SETPROJECTFIELDENVALUE = "SETPROJECTFIELDENVALUE";
 export const SETPROJECTFIELDDEVALUE = "SETPROJECTFIELDDEVALUE";
 export const SETPROJECTLANGUAGECHOICE = "SETPROJECTLANGUAGECHOICE";
+export const DUMMY = "DUMMY";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -150,18 +149,6 @@ export const setProjectDescription = value => dispatch =>
     value,
   });
 
-export const setProjectImageId = value => dispatch =>
-  dispatch({
-    type: SETPROJECTIMAGEID,
-    value,
-  });
-
-export const setProjectImage = value => dispatch =>
-  dispatch({
-    type: SETPROJECTIMAGE,
-    value,
-  });
-
 export const setProjectTag = value => dispatch =>
   dispatch({
     type: SETPROJECTTAG,
@@ -198,4 +185,9 @@ export const setprojectLanguageChoice = value => dispatch =>
   dispatch({
     type: SETPROJECTLANGUAGECHOICE,
     value,
+  });
+
+export const dummyDispatch = () => dispatch =>
+  dispatch({
+    type: DUMMY,
   });

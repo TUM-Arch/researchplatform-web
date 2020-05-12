@@ -21,7 +21,12 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import SendIcon from "@material-ui/icons/Send";
 import {withStyles} from "@material-ui/styles";
-import {editProject, viewProject, setSelectedProject} from "../actions/mainPage";
+import {
+  editProject,
+  viewProject,
+  setSelectedProject,
+  dummyDispatch,
+} from "../actions/mainPage";
 import {
   handledeleteProject,
   handleSubmitProject,
@@ -64,25 +69,29 @@ const styles = theme => ({
 });
 
 class Project extends React.Component {
-  componentDidMount = () => {
-    if (this.props.project.imageId !== "")
-      this.props.getImageFromId(this.props.project.imageId, this.props.project.id);
-  };
+  abc = defaultImageIcon;
+  async componentWillMount() {
+    if (this.props.project.imageId !== "") {
+      await getImageFromId(this.props.project.imageId, this.props.project.id).then(
+        value => {
+          this.abc = value;
+          this.props.dummyDispatch();
+        }
+      );
+    }
+  }
 
   render() {
     const {
       classes,
       project,
-      projectImage,
       viewProject,
       editProject,
       handledeleteProject,
       handlesubmitProject,
       handlerejectProject,
       setSelectedProject,
-      handleSetProjectImage,
     } = this.props;
-
     // Get current user
     const currentUserId = "tempuser";
     const isAdmin = AuthAdmin();
@@ -140,11 +149,14 @@ class Project extends React.Component {
       else return COLOR_APPROVED;
     }
 
-    function handleImageChange(event) {
-      const formData = new FormData();
-      formData.append("image", event.target.files[0], event.target.files[0].name);
-      formData.append("projectId", project.id);
-      handleSetProjectImage(formData);
+    function handleImageChange(event, id) {
+      if (event.target.files) {
+        const formData = new FormData();
+        formData.append("image", event.target.files[0], event.target.files[0].name);
+        formData.append("projectId", id);
+        handleSetProjectImage(formData);
+        window.location.reload();
+      }
     }
 
     return (
@@ -171,15 +183,15 @@ class Project extends React.Component {
         />
         <input
           className={classes.input}
-          id="img-button-file"
+          id={"img-button-file" + project.id}
           type="file"
-          onChange={handleImageChange}
+          onChange={e => handleImageChange(e, project.id)}
         />
-        <label htmlFor="img-button-file">
+        <label htmlFor={"img-button-file" + project.id}>
           <CardMedia
             component="img"
             height="125"
-            image={`data:image/png;base64, ${projectImage}`}
+            image={`data:image/png;base64, ${this.abc}`}
             title={project.name}
             className={classes.cardImage}
           />
@@ -280,9 +292,9 @@ class Project extends React.Component {
   }
 }
 
-const mapStateToProps = ({mainPage: {viewProjects, projectImageId, projectImage}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects, dummy}}) => ({
   viewProjects,
-  projectImage,
+  dummy,
 });
 
 const mapDispatchToProps = {
@@ -292,8 +304,7 @@ const mapDispatchToProps = {
   handlesubmitProject: handleSubmitProject,
   handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
-  handleSetProjectImage: handleSetProjectImage,
-  getImageFromId: getImageFromId,
+  dummyDispatch: dummyDispatch,
 };
 
 export default connect(

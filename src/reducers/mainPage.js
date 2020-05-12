@@ -19,8 +19,6 @@ import {
   SETPROJECTNAME,
   SETPROJECTCHAIRNAME,
   SETPROJECTDESCRIPTION,
-  SETPROJECTIMAGEID,
-  SETPROJECTIMAGE,
   SETPROJECTTAG,
   DELETEPROJECTTAG,
   SETPROJECTFIELDS,
@@ -29,6 +27,7 @@ import {
   SETPROJECTFIELDENVALUE,
   SETPROJECTFIELDDEVALUE,
   SETPROJECTLANGUAGECHOICE,
+  DUMMY,
   newProjectCreated,
   updateProject,
   updateProjects,
@@ -36,10 +35,8 @@ import {
   submitProject,
   rejectProject,
   setProjectFields,
-  setProjectImageId,
-  setProjectImage,
 } from "../actions/mainPage";
-import {defaultImageIcon, projectsURL, formfieldsURL, imagesURL} from "../util/constants";
+import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
 let initialState = {
   language: "en",
@@ -60,7 +57,6 @@ let initialState = {
     name: "",
     chairName: "",
     description: "",
-    imageId: "",
     userId: "",
     tags: [],
     fields: [],
@@ -69,11 +65,10 @@ let initialState = {
   projectName: "",
   projectChairName: "",
   projectDescription: "",
-  projectImageId: "",
   projectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
-  projectImage: defaultImageIcon,
+  dummy: true,
 };
 
 export default function mainPage(state = initialState, action) {
@@ -275,26 +270,6 @@ export default function mainPage(state = initialState, action) {
         ...state,
         projectDescription: action.value,
       };
-    case SETPROJECTIMAGEID:
-      return {
-        ...state,
-        projectImage: action.value.image,
-        myProjects: state.myProjects.map(project =>
-          project.id === action.value.projectId
-            ? {...project, imageId: action.value.imageId}
-            : project
-        ),
-        allProjects: state.allProjects.map(project =>
-          project.id === action.value.projectId
-            ? {...project, imageId: action.value.imageId}
-            : project
-        ),
-      };
-    case SETPROJECTIMAGE:
-      return {
-        ...state,
-        projectImage: action.value.image,
-      };
     case SETPROJECTTAG:
       return {
         ...state,
@@ -332,6 +307,11 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectLanguageChoice: action.value,
+      };
+    case DUMMY:
+      return {
+        ...state,
+        dummy: !state.dummy,
       };
     default:
       return state;
@@ -479,39 +459,19 @@ export function getCurrentFormfields() {
   };
 }
 
-export function getImageFromId(imageId, projectId) {
-  let values = {};
-  return dispatch => {
-    return fetch(imagesURL + "/" + imageId, {
-      method: "GET",
-    })
-      .then(response => response.json())
-      .then(result => {
-        values = {
-          projectId: projectId,
-          imageId: result.imageId,
-          image: result.image,
-        };
-        dispatch(setProjectImage(values));
-      });
-  };
+export function getImageFromId(imageId) {
+  return fetch(imagesURL + "/" + imageId, {
+    method: "GET",
+  })
+    .then(response => response.json())
+    .then(result => {
+      return result.image;
+    });
 }
 
 export function handleSetProjectImage(body) {
-  let values = {};
-  return dispatch => {
-    return fetch(imagesURL, {
-      method: "POST",
-      body: body,
-    })
-      .then(response => response.json())
-      .then(result => {
-        values = {
-          projectId: body.get("projectId"),
-          imageId: result.imageId,
-          image: result.image,
-        };
-        dispatch(setProjectImageId(values));
-      });
-  };
+  return fetch(imagesURL, {
+    method: "POST",
+    body: body,
+  }).then(response => response.json());
 }
