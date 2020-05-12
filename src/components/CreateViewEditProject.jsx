@@ -337,6 +337,17 @@ function CreateViewEditProject(props) {
                     >
                       {language === "en" ? en.tags : de.tags}:
                     </Typography>
+                    {projectDialogState === "view" ? null : (
+                      <Button
+                        onClick={handleOpenAddTag}
+                        variant="contained"
+                        size="small"
+                        color="inherit"
+                        className={classes.button}
+                      >
+                        {language === "en" ? en.addTag : de.addTag}
+                      </Button>
+                    )}
                     {projectDialogState === "view"
                       ? projectTags.map((tag, i) => {
                           return (
@@ -358,17 +369,6 @@ function CreateViewEditProject(props) {
                             </li>
                           );
                         })}
-                    {projectDialogState === "view" ? null : (
-                      <Button
-                        onClick={handleOpenAddTag}
-                        variant="contained"
-                        size="small"
-                        color="inherit"
-                        className={classes.button}
-                      >
-                        {language === "en" ? en.addTag : de.addTag}
-                      </Button>
-                    )}
                     <Dialog
                       open={openAddTag}
                       onClose={handleCloseAddTag}
