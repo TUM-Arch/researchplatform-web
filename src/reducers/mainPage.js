@@ -324,9 +324,7 @@ export function getAllProjects() {
     return fetch(projectsURL, {
       method: "GET",
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         values = {
           numberOfProjects: result.numberOfProjects,
@@ -373,9 +371,7 @@ export function createNewProject(
       },
       body: JSON.stringify(body),
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         dispatch(newProjectCreated(result));
       });
@@ -409,9 +405,7 @@ export function handleEditProject(
       },
       body: JSON.stringify(body),
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         dispatch(updateProject(result));
       });
@@ -426,9 +420,7 @@ export function handleSubmitProject(id) {
         "Content-Type": "application/json",
       },
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         dispatch(submitProject(result));
       });
@@ -443,9 +435,7 @@ export function handleRejectProject(id) {
         "Content-Type": "application/json",
       },
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         dispatch(rejectProject(result));
       });
@@ -458,9 +448,7 @@ export function getCurrentFormfields() {
     return fetch(formfieldsURL, {
       method: "GET",
     })
-      .then(response =>
-        response.status === 200 ? response.json() : console.log("Failed")
-      )
+      .then(response => response.json())
       .then(result => {
         values = {
           numberOfFields: result.numberOfFields,
@@ -475,7 +463,7 @@ export function getImageFromId(imageId) {
   return fetch(imagesURL + "/" + imageId, {
     method: "GET",
   })
-    .then(response => (response.status === 200 ? response.json() : console.log("Failed")))
+    .then(response => response.json())
     .then(result => {
       return result.image;
     });
