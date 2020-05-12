@@ -165,15 +165,17 @@ class Project extends React.Component {
       <Card className={classes.root} style={{background: setBackgroundColor()}}>
         <CardHeader
           avatar={
-            <Avatar aria-label="status" className={classes.avatar}>
-              {project.status === "NOTSUBMITTED"
-                ? "N"
-                : project.status === "SUBMITTED"
-                ? "S"
-                : project.status === "REJECTED"
-                ? "R"
-                : "A"}
-            </Avatar>
+            <Tooltip placement="top" title={project.status}>
+              <Avatar aria-label="status" className={classes.avatar}>
+                {project.status === "NOTSUBMITTED"
+                  ? "N"
+                  : project.status === "SUBMITTED"
+                  ? "S"
+                  : project.status === "REJECTED"
+                  ? "R"
+                  : "A"}
+              </Avatar>
+            </Tooltip>
           }
           action={
             <IconButton aria-label="settings">
