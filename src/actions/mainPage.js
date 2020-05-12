@@ -19,6 +19,8 @@ export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
 export const SETPROJECTNAME = "SETPROJECTNAME";
 export const SETPROJECTCHAIRNAME = "SETPROJECTCHAIRNAME";
 export const SETPROJECTDESCRIPTION = "SETPROJECTDESCRIPTION";
+export const SETPROJECTIMAGEID = "SETPROJECTIMAGEID";
+export const DELETEPROJECTIMAGE = "DELETEPROJECTIMAGE";
 export const SETPROJECTTAG = "SETPROJECTTAG";
 export const DELETEPROJECTTAG = "DELETEPROJECTTAG";
 export const SETPROJECTFIELDS = "SETPROJECTFIELDS";
@@ -147,6 +149,18 @@ export const setProjectDescription = value => dispatch =>
   dispatch({
     type: SETPROJECTDESCRIPTION,
     value,
+  });
+
+export const setProjectImageId = (imageId, projectId) => dispatch =>
+  dispatch({
+    type: SETPROJECTIMAGEID,
+    imageId,
+    projectId,
+  });
+
+export const deleteProjectImage = () => dispatch =>
+  dispatch({
+    type: DELETEPROJECTIMAGE,
   });
 
 export const setProjectTag = value => dispatch =>

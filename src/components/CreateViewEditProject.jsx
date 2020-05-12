@@ -23,6 +23,7 @@ import {
   setProjectName,
   setProjectChairName,
   setProjectDescription,
+  deleteProjectImage,
   setProjectTag,
   deleteProjectTag,
   setProjectFieldEnValue,
@@ -127,6 +128,7 @@ function CreateViewEditProject(props) {
     projectDescription,
     setProjectDescription,
     projectImageId,
+    deleteProjectImage,
     setProjectTag,
     deleteProjectTag,
     setProjectFieldEnValue,
@@ -201,6 +203,7 @@ function CreateViewEditProject(props) {
           userId,
           selectedProject.id
         );
+        window.location.reload();
       }
     }
   }
@@ -238,6 +241,10 @@ function CreateViewEditProject(props) {
 
   function handleDeleteTag(value) {
     deleteProjectTag(value);
+  }
+
+  function handleDeleteImage() {
+    deleteProjectImage();
   }
 
   function handleLanguageChoice(event) {
@@ -292,8 +299,7 @@ function CreateViewEditProject(props) {
             if (
               keyName === "id" ||
               keyName === "createdAt" ||
-              keyName === "yearOfCreation" ||
-              keyName === "imageId"
+              keyName === "yearOfCreation"
             ) {
               return null;
             }
@@ -311,13 +317,48 @@ function CreateViewEditProject(props) {
                         projectDialogState === "create" ? "" : selectedProject[keyName]
                       }
                       disabled={projectDialogState === "view" ? true : false}
-                      required={keyName === "imageId" ? false : true}
+                      required={true}
                       variant="outlined"
                       fullWidth
                       onChange={event => {
                         handleOnChangeEvent(keyName, event.target.value);
                       }}
                     />
+                  </div>
+                );
+              case "imageId":
+                return (
+                  <div key={i}>
+                    {projectImageId === "" ? null : (
+                      <div
+                        component="ul"
+                        variant="outlined"
+                        className={
+                          projectDialogState === "view"
+                            ? classes.tagsDisabled
+                            : classes.tags
+                        }
+                      >
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          className={classes.tagText}
+                        >
+                          {language === "en" ? "Image" : de.tags}:
+                        </Typography>
+                        {projectDialogState === "view" ? (
+                          <Chip label={"Image.png"} className={classes.chipDisabled} />
+                        ) : (
+                          <Chip
+                            label={"Image.png"}
+                            onDelete={() => {
+                              handleDeleteImage();
+                            }}
+                            className={classes.chip}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               case "tags":
@@ -525,6 +566,7 @@ const mapDispatchToProps = {
   setProjectName: setProjectName,
   setProjectChairName: setProjectChairName,
   setProjectDescription: setProjectDescription,
+  deleteProjectImage: deleteProjectImage,
   setProjectTag: setProjectTag,
   deleteProjectTag: deleteProjectTag,
   setProjectFieldEnValue: setProjectFieldEnValue,

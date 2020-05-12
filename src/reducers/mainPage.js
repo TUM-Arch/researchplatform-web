@@ -19,6 +19,8 @@ import {
   SETPROJECTNAME,
   SETPROJECTCHAIRNAME,
   SETPROJECTDESCRIPTION,
+  SETPROJECTIMAGEID,
+  DELETEPROJECTIMAGE,
   SETPROJECTTAG,
   DELETEPROJECTTAG,
   SETPROJECTFIELDS,
@@ -35,6 +37,7 @@ import {
   submitProject,
   rejectProject,
   setProjectFields,
+  setProjectImageId,
 } from "../actions/mainPage";
 import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
@@ -57,7 +60,7 @@ let initialState = {
     name: "",
     chairName: "",
     description: "",
-    userId: "",
+    imageId: "",
     tags: [],
     fields: [],
     status: "",
@@ -65,6 +68,7 @@ let initialState = {
   projectName: "",
   projectChairName: "",
   projectDescription: "",
+  projectImageId: "",
   projectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
@@ -165,6 +169,7 @@ export default function mainPage(state = initialState, action) {
         ...state,
         projectDialogState: "view",
         isProjectDialogOpen: true,
+        projectImageId: projectInSight.imageId,
         projectTags: projectInSight.tags,
         projectFields: projectInSight.fields,
       };
@@ -269,6 +274,26 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectDescription: action.value,
+      };
+    case SETPROJECTIMAGEID:
+      return {
+        ...state,
+        myProjects: state.myProjects.map(project =>
+          project.id === action.projectId
+            ? {...project, imageId: action.imageId}
+            : project
+        ),
+        allProjects: state.allProjects.map(project =>
+          project.id === action.projectId
+            ? {...project, imageId: action.imageId}
+            : project
+        ),
+      };
+
+    case DELETEPROJECTIMAGE:
+      return {
+        ...state,
+        projectImageId: "",
       };
     case SETPROJECTTAG:
       return {
@@ -470,12 +495,17 @@ export function getImageFromId(imageId) {
 }
 
 export function handleSetProjectImage(body) {
-  return fetch(imagesURL, {
-    method: "POST",
-    body: body,
-  })
-    .then(response => (response.status === 200 ? response.json() : console.log("Failed")))
-    .then(result => {
-      return result.image;
-    });
+  return dispatch => {
+    return fetch(imagesURL, {
+      method: "POST",
+      body: body,
+    })
+      .then(response =>
+        response.status === 200 ? response.json() : console.log("Failed")
+      )
+      .then(result => {
+        dispatch(setProjectImageId(result.imageId, body.get("projectId")));
+        return result.image;
+      });
+  };
 }

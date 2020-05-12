@@ -82,11 +82,11 @@ class Project extends React.Component {
   }
 
   async handleImageChange(event, id) {
-    if (event.target.files && event.target.files[0].name) {
+    if (event.target.files && event.target.files[0]) {
       const formData = new FormData();
       formData.append("image", event.target.files[0], event.target.files[0].name);
       formData.append("projectId", id);
-      await handleSetProjectImage(formData).then(result => {
+      await this.props.handleSetProjectImage(formData).then(result => {
         this.displayImage = result;
         this.props.dummyDispatch();
       });
@@ -309,6 +309,7 @@ const mapDispatchToProps = {
   handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
   dummyDispatch: dummyDispatch,
+  handleSetProjectImage: handleSetProjectImage,
 };
 
 export default connect(
