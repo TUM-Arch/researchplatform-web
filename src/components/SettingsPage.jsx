@@ -117,8 +117,9 @@ class SettingsPage extends React.Component {
     }
 
     function handleDelete(id) {
-      handleDeleteField(id);
-      window.location.reload();
+      handleDeleteField(id).then(value => {
+        window.location.reload();
+      });
     }
 
     return (

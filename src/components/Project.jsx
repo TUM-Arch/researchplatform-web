@@ -154,8 +154,9 @@ class Project extends React.Component {
         const formData = new FormData();
         formData.append("image", event.target.files[0], event.target.files[0].name);
         formData.append("projectId", id);
-        handleSetProjectImage(formData);
-        window.location.reload();
+        handleSetProjectImage(formData).then(value => {
+          window.location.reload();
+        });
       }
     }
 
