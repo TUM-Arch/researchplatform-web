@@ -65,6 +65,7 @@ let initialState = {
     fields: [],
     status: "",
   },
+  selectedProjectImageName: "",
   projectName: "",
   projectChairName: "",
   projectDescription: "",
@@ -172,6 +173,7 @@ export default function mainPage(state = initialState, action) {
         projectImageId: projectInSight.imageId,
         projectTags: projectInSight.tags,
         projectFields: projectInSight.fields,
+        selectedProjectImageName: action.imageName,
       };
     case EDITPROJECT:
       const project = state.allProjects.find(project => project.id === action.id);
@@ -185,6 +187,7 @@ export default function mainPage(state = initialState, action) {
         projectImageId: project.imageId,
         projectTags: project.tags,
         projectFields: project.fields,
+        selectedProjectImageName: action.imageName,
       };
     case UPDATEPROJECT:
       return {
@@ -490,7 +493,7 @@ export function getImageFromId(imageId) {
   })
     .then(response => response.json())
     .then(result => {
-      return result.image;
+      return result;
     });
 }
 
@@ -505,7 +508,7 @@ export function handleSetProjectImage(body) {
       )
       .then(result => {
         dispatch(setProjectImageId(result.imageId, body.get("projectId")));
-        return result.image;
+        return result;
       });
   };
 }

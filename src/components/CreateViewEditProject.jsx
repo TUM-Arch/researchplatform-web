@@ -137,6 +137,7 @@ function CreateViewEditProject(props) {
     projectTags,
     projectFields,
     projectLanguageChoice,
+    selectedProjectImageName,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
@@ -347,10 +348,13 @@ function CreateViewEditProject(props) {
                           {language === "en" ? "Image" : de.tags}:
                         </Typography>
                         {projectDialogState === "view" ? (
-                          <Chip label={"Image.png"} className={classes.chipDisabled} />
+                          <Chip
+                            label={selectedProjectImageName}
+                            className={classes.chipDisabled}
+                          />
                         ) : (
                           <Chip
-                            label={"Image.png"}
+                            label={selectedProjectImageName}
                             onDelete={() => {
                               handleDeleteImage();
                             }}

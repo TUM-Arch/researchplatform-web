@@ -71,11 +71,13 @@ const styles = theme => ({
 
 class Project extends React.Component {
   displayImage = defaultImageIcon;
+  imageName = "";
   async componentWillMount() {
     if (this.props.project.imageId !== "" && this.props.project.imageId !== null) {
       await getImageFromId(this.props.project.imageId, this.props.project.id).then(
         value => {
-          this.displayImage = value;
+          this.displayImage = value.image;
+          this.imageName = value.imageName;
           this.props.dummyDispatch();
         }
       );
@@ -84,11 +86,13 @@ class Project extends React.Component {
 
   async handleImageChange(event, id) {
     if (event.target.files && event.target.files[0]) {
+      const fileName = event.target.files[0].name;
       const formData = new FormData();
-      formData.append("image", event.target.files[0], event.target.files[0].name);
+      formData.append("image", event.target.files[0], fileName);
       formData.append("projectId", id);
-      await this.props.handleSetProjectImage(formData).then(result => {
-        this.displayImage = result;
+      await this.props.handleSetProjectImage(formData).then(value => {
+        this.displayImage = value.image;
+        this.imageName = value.imageName;
         this.props.dummyDispatch();
       });
     }
@@ -110,13 +114,14 @@ class Project extends React.Component {
     const currentUserId = "tempuser";
     const isAdmin = AuthAdmin();
 
-    function handleViewProject(id) {
-      viewProject(id);
+    function handleViewProject(id, imageName) {
+      console.log(imageName);
+      viewProject(id, imageName);
       setSelectedProject(id);
     }
 
-    function handleEditProject(id) {
-      editProject(id);
+    function handleEditProject(id, imageName) {
+      editProject(id, imageName);
       setSelectedProject(id);
     }
 
@@ -208,7 +213,7 @@ class Project extends React.Component {
             <IconButton
               edge="end"
               aria-label="search"
-              onClick={() => handleViewProject(project.id)}
+              onClick={() => handleViewProject(project.id, this.imageName)}
               className={classes.icon}
             >
               <SearchIcon />
@@ -218,7 +223,7 @@ class Project extends React.Component {
             <IconButton
               edge="end"
               aria-label="edit"
-              onClick={() => handleEditProject(project.id)}
+              onClick={() => handleEditProject(project.id, this.imageName)}
               className={classes.icon}
             >
               <EditIcon />

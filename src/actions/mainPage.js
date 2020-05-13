@@ -80,10 +80,11 @@ export const newProjectCreated = result => dispatch =>
     result,
   });
 
-export const editProject = id => dispatch =>
+export const editProject = (id, imageName) => dispatch =>
   dispatch({
     type: EDITPROJECT,
     id,
+    imageName,
   });
 
 export const updateProject = result => dispatch =>
@@ -92,10 +93,11 @@ export const updateProject = result => dispatch =>
     result,
   });
 
-export const viewProject = id => dispatch =>
+export const viewProject = (id, imageName) => dispatch =>
   dispatch({
     type: VIEWPROJECT,
     id,
+    imageName,
   });
 
 export const deleteProject = id => dispatch =>

@@ -96,6 +96,7 @@ class UserPage extends React.Component {
       rejectedApprovedProjects,
       createProject,
       getCurrentFormfields,
+      selectedProjectImageName,
       history,
     } = this.props;
 
@@ -177,7 +178,10 @@ class UserPage extends React.Component {
             />
           </div>
         </div>
-        <CreateViewEditProject language={language} />
+        <CreateViewEditProject
+          language={language}
+          selectedProjectImageName={selectedProjectImageName}
+        />
       </div>
     );
   }
@@ -191,6 +195,7 @@ const mapStateToProps = ({
     myProjects,
     submittedProjects,
     rejectedApprovedProjects,
+    selectedProjectImageName,
   },
 }) => ({
   language,
@@ -199,6 +204,7 @@ const mapStateToProps = ({
   myProjects,
   submittedProjects,
   rejectedApprovedProjects,
+  selectedProjectImageName,
 });
 
 const mapDispatchToProps = {
