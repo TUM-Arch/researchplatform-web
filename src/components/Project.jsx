@@ -34,7 +34,6 @@ import {
   getImageFromId,
   handleSetProjectImage,
 } from "../reducers/mainPage";
-import jsPDF from "jspdf";
 import AuthAdmin from "./AuthAdmin";
 import {
   COLOR_NOT_SUBMITTED,
@@ -43,6 +42,8 @@ import {
   COLOR_APPROVED,
   defaultImageIcon,
 } from "../util/constants";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import PDFDoc from "./PDFDoc";
 
 const styles = theme => ({
   root: {
@@ -97,6 +98,7 @@ class Project extends React.Component {
     const {
       classes,
       project,
+      language,
       viewProject,
       editProject,
       handledeleteProject,
@@ -128,16 +130,6 @@ class Project extends React.Component {
 
     function handleRejectProject(id) {
       handlerejectProject(id);
-    }
-
-    function handleDownloadProject() {
-      var doc = new jsPDF();
-      doc.setFontSize(22);
-      doc.text(20, 20, project.name);
-      doc.setFontSize(13);
-      var desc = doc.splitTextToSize(project.description, 170);
-      doc.text(20, 30, desc);
-      doc.save(project.name + ".pdf");
     }
 
     function convertTimeStampToDate(timestamp) {
@@ -232,16 +224,25 @@ class Project extends React.Component {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip placement="top" title="Download">
-            <IconButton
-              edge="end"
-              aria-label="download"
-              onClick={() => handleDownloadProject()}
-              className={classes.icon}
-            >
-              <GetAppIcon />
-            </IconButton>
-          </Tooltip>
+
+          <PDFDownloadLink
+            document={
+              <PDFDoc project={project} image={this.displayImage} language={language} />
+            }
+            fileName={project.name + ".pdf"}
+          >
+            {({loading}) =>
+              loading ? (
+                "Loading document..."
+              ) : (
+                <Tooltip placement="top" title="Download">
+                  <IconButton edge="end" aria-label="delete" className={classes.icon}>
+                    <GetAppIcon />
+                  </IconButton>
+                </Tooltip>
+              )
+            }
+          </PDFDownloadLink>
           {project.userId === currentUserId || isAdmin ? (
             <Tooltip placement="top" title="Delete">
               <IconButton
@@ -296,9 +297,10 @@ class Project extends React.Component {
   }
 }
 
-const mapStateToProps = ({mainPage: {viewProjects, dummy}}) => ({
+const mapStateToProps = ({mainPage: {viewProjects, dummy, language}}) => ({
   viewProjects,
   dummy,
+  language,
 });
 
 const mapDispatchToProps = {
