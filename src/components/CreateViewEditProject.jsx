@@ -4,11 +4,13 @@ import en from "../translations/en.json";
 import de from "../translations/de.json";
 import {
   Button,
+  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
   Chip,
   Typography,
@@ -16,7 +18,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Tooltip,
 } from "@material-ui/core";
+
+import DeleteIcon from "@material-ui/icons/Delete";
 import {withStyles} from "@material-ui/styles";
 import {
   projectDialogClose,
@@ -41,6 +46,12 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+  },
+  media: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textFields: {
     margin: theme.spacing(2),
@@ -91,6 +102,9 @@ const styles = theme => ({
   button: {
     margin: theme.spacing(0.5),
   },
+  cardImage: {
+    objectFit: "scale-down",
+  },
 });
 
 const CustomTextField = withStyles({
@@ -137,7 +151,7 @@ function CreateViewEditProject(props) {
     projectTags,
     projectFields,
     projectLanguageChoice,
-    selectedProjectImageName,
+    selectedProjectImageString,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
@@ -296,6 +310,29 @@ function CreateViewEditProject(props) {
               </Select>
             </FormControl>
           </div>
+          {projectImageId === "" ? null : (
+            <div className={classes.media}>
+              {projectDialogState === "edit" || projectDialogState === "view" ? (
+                <CardMedia
+                  component="img"
+                  height="125"
+                  image={`data:image/png;base64, ${selectedProjectImageString}`}
+                  className={classes.cardImage}
+                />
+              ) : null}
+              {projectDialogState === "view" ? null : (
+                <Tooltip placement="top" title="Delete">
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDeleteImage()}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
+          )}
           {Object.keys(selectedProject).map((keyName, i) => {
             if (
               keyName === "id" ||
@@ -325,44 +362,6 @@ function CreateViewEditProject(props) {
                         handleOnChangeEvent(keyName, event.target.value);
                       }}
                     />
-                  </div>
-                );
-              case "imageId":
-                return (
-                  <div key={i}>
-                    {projectImageId === "" ? null : (
-                      <div
-                        component="ul"
-                        variant="outlined"
-                        className={
-                          projectDialogState === "view"
-                            ? classes.tagsDisabled
-                            : classes.tags
-                        }
-                      >
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          className={classes.tagText}
-                        >
-                          {language === "en" ? "Image" : de.tags}:
-                        </Typography>
-                        {projectDialogState === "view" ? (
-                          <Chip
-                            label={selectedProjectImageName}
-                            className={classes.chipDisabled}
-                          />
-                        ) : (
-                          <Chip
-                            label={selectedProjectImageName}
-                            onDelete={() => {
-                              handleDeleteImage();
-                            }}
-                            className={classes.chip}
-                          />
-                        )}
-                      </div>
-                    )}
                   </div>
                 );
               case "tags":
@@ -546,6 +545,7 @@ const mapStateToProps = ({
     projectTags,
     projectFields,
     projectLanguageChoice,
+    selectedProjectImageString,
   },
 }) => ({
   userId,
@@ -560,6 +560,7 @@ const mapStateToProps = ({
   projectTags,
   projectFields,
   projectLanguageChoice,
+  selectedProjectImageString,
 });
 
 const mapDispatchToProps = {

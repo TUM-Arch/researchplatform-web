@@ -27,6 +27,7 @@ export const SETPROJECTFIELDS = "SETPROJECTFIELDS";
 export const SETPROJECTFIELDENVALUE = "SETPROJECTFIELDENVALUE";
 export const SETPROJECTFIELDDEVALUE = "SETPROJECTFIELDDEVALUE";
 export const SETPROJECTLANGUAGECHOICE = "SETPROJECTLANGUAGECHOICE";
+export const SETSELECTEDPROJECTIMAGESTRING = "SETSELECTEDPROJECTIMAGESTRING";
 export const DUMMY = "DUMMY";
 
 export const changeToEnglish = () => dispatch =>
@@ -80,11 +81,10 @@ export const newProjectCreated = result => dispatch =>
     result,
   });
 
-export const editProject = (id, imageName) => dispatch =>
+export const editProject = id => dispatch =>
   dispatch({
     type: EDITPROJECT,
     id,
-    imageName,
   });
 
 export const updateProject = result => dispatch =>
@@ -93,11 +93,10 @@ export const updateProject = result => dispatch =>
     result,
   });
 
-export const viewProject = (id, imageName) => dispatch =>
+export const viewProject = id => dispatch =>
   dispatch({
     type: VIEWPROJECT,
     id,
-    imageName,
   });
 
 export const deleteProject = id => dispatch =>
@@ -121,6 +120,12 @@ export const rejectProject = result => dispatch =>
 export const setSelectedProject = value => dispatch =>
   dispatch({
     type: SETSELECTEDPROJECT,
+    value,
+  });
+
+export const setSelectedProjectImageString = value => dispatch =>
+  dispatch({
+    type: SETSELECTEDPROJECTIMAGESTRING,
     value,
   });
 

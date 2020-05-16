@@ -29,6 +29,7 @@ import {
   SETPROJECTFIELDENVALUE,
   SETPROJECTFIELDDEVALUE,
   SETPROJECTLANGUAGECHOICE,
+  SETSELECTEDPROJECTIMAGESTRING,
   DUMMY,
   newProjectCreated,
   updateProject,
@@ -38,6 +39,9 @@ import {
   rejectProject,
   setProjectFields,
   setProjectImageId,
+  setSelectedProjectImageString,
+  setSelectedProject,
+  viewProject,
 } from "../actions/mainPage";
 import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
 
@@ -65,7 +69,6 @@ let initialState = {
     fields: [],
     status: "",
   },
-  selectedProjectImageName: "",
   projectName: "",
   projectChairName: "",
   projectDescription: "",
@@ -73,6 +76,7 @@ let initialState = {
   projectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
+  selectedProjectImageString: "",
   dummy: true,
 };
 
@@ -173,7 +177,6 @@ export default function mainPage(state = initialState, action) {
         projectImageId: projectInSight.imageId,
         projectTags: projectInSight.tags,
         projectFields: projectInSight.fields,
-        selectedProjectImageName: action.imageName,
       };
     case EDITPROJECT:
       const project = state.allProjects.find(project => project.id === action.id);
@@ -187,7 +190,6 @@ export default function mainPage(state = initialState, action) {
         projectImageId: project.imageId,
         projectTags: project.tags,
         projectFields: project.fields,
-        selectedProjectImageName: action.imageName,
       };
     case UPDATEPROJECT:
       return {
@@ -335,6 +337,11 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         projectLanguageChoice: action.value,
+      };
+    case SETSELECTEDPROJECTIMAGESTRING:
+      return {
+        ...state,
+        selectedProjectImageString: action.value,
       };
     case DUMMY:
       return {
@@ -495,6 +502,20 @@ export function getImageFromId(imageId) {
     .then(result => {
       return result;
     });
+}
+
+export function openProjectOnSearch(id, imageId) {
+  return dispatch => {
+    return fetch(imagesURL + "/" + imageId, {
+      method: "GET",
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(setSelectedProjectImageString(result.image));
+      })
+      .then(dispatch(viewProject(id)))
+      .then(dispatch(setSelectedProject(id)));
+  };
 }
 
 export function handleSetProjectImage(body) {

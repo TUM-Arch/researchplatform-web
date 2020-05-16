@@ -8,20 +8,21 @@ import {
   AppBar,
   IconButton,
   Link,
-  MenuItem,
-  Paper,
   TextField,
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
 import SettingsIcon from "@material-ui/icons/SettingsApplications";
-import {fade} from "@material-ui/core/styles";
 import {withStyles} from "@material-ui/styles";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import {isMobile} from "react-device-detect";
-import Downshift from "downshift";
-import deburr from "lodash/deburr";
-import {changeToEnglish, changeToGerman} from "../actions/mainPage";
+import {
+  changeToEnglish,
+  changeToGerman,
+  viewProject,
+  setSelectedProject,
+} from "../actions/mainPage";
+import {openProjectOnSearch} from "../reducers/mainPage";
 import AuthAdmin from "./AuthAdmin";
 
 const styles = theme => ({
@@ -47,105 +48,38 @@ const styles = theme => ({
   image: {
     marginRight: theme.spacing(2),
   },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  search: {
-    flexGrow: 1,
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: "auto",
-    },
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-  },
-  paper: {
-    position: "absolute",
-    zIndex: 1,
-    marginTop: theme.spacing(1),
-    left: 0,
-    right: 0,
-  },
+  searchInput: {},
 });
 
 const isAdmin = AuthAdmin();
 
-//TODO: Replace this with project indexes
-const suggestions = [
-  {label: "Afghanistan"},
-  {label: "Aland Islands"},
-  {label: "Albania"},
-];
-
-function renderInput(inputProps) {
-  const {InputProps, classes, ref, ...other} = inputProps;
-  return (
-    <TextField
-      InputProps={{
-        inputRef: ref,
-        classes: {
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        },
-        ...InputProps,
-      }}
-      {...other}
-    />
-  );
-}
-
-function renderSuggestion(suggestionProps) {
-  const {suggestion, index, itemProps, highlightedIndex, selectedItem} = suggestionProps;
-  const isHighlighted = highlightedIndex === index;
-  const isSelected = (selectedItem || "").indexOf(suggestion.label) > -1;
-
-  return (
-    <MenuItem
-      {...itemProps}
-      key={suggestion.label}
-      selected={isHighlighted}
-      component="div"
-      style={{
-        fontWeight: isSelected ? 500 : 400,
-      }}
-    >
-      {suggestion.label}
-    </MenuItem>
-  );
-}
-
-function getSuggestions(value, {showEmpty = false} = {}) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0 && !showEmpty
-    ? []
-    : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-        if (keep) {
-          count += 1;
-        }
-        return keep;
-      });
-}
+const SearchTextField = withStyles({
+  root: {
+    "& label": {
+      color: "white",
+    },
+    "& label.Mui-focused": {
+      color: "white",
+    },
+    "& .MuiInputBase-input": {
+      color: "white",
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "white",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+      },
+    },
+  },
+})(TextField);
 
 function Header(props) {
   const {
@@ -156,6 +90,10 @@ function Header(props) {
     history,
     searchEnabled,
     settingsEnabled,
+    allProjects,
+    openProjectOnSearch,
+    viewProject,
+    setSelectedProject,
   } = props;
 
   function handleViewSettingsPage() {
@@ -168,6 +106,20 @@ function Header(props) {
     window.location.reload();
   }
 
+  function handleSearchSelect(e, value) {
+    const project = allProjects.find(project => {
+      return project.name === value;
+    });
+    if (project && project.name === value) {
+      if (project.imageId) {
+        openProjectOnSearch(project.id, project.imageId);
+      } else {
+        viewProject(project.id);
+        setSelectedProject(project.id);
+      }
+    }
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
@@ -178,58 +130,25 @@ function Header(props) {
               {language === "en" ? en.departmentName : de.departmentName}
             </Typography>
           ) : null}
-
-          {searchEnabled === true ? (
-            <Downshift id="downshift-simple">
-              {({
-                getInputProps,
-                getItemProps,
-                getLabelProps,
-                getMenuProps,
-                highlightedIndex,
-                inputValue,
-                isOpen,
-                selectedItem,
-              }) => {
-                const {onBlur, onFocus, ...inputProps} = getInputProps({
-                  placeholder:
-                    language === "en" ? en.searchPlaceholder : de.searchPlaceholder,
-                });
-
-                return (
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
-                    </div>
-
-                    {renderInput({
-                      fullWidth: true,
-                      classes,
-                      InputLabelProps: getLabelProps({shrink: true}),
-                      InputProps: {onBlur, onFocus},
-                      inputProps,
-                    })}
-
-                    <div {...getMenuProps()}>
-                      {isOpen ? (
-                        <Paper className={classes.paper} square>
-                          {getSuggestions(inputValue).map((suggestion, index) =>
-                            renderSuggestion({
-                              suggestion,
-                              index,
-                              itemProps: getItemProps({item: suggestion.label}),
-                              highlightedIndex,
-                              selectedItem,
-                            })
-                          )}
-                        </Paper>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              }}
-            </Downshift>
-          ) : null}
+          {searchEnabled && isAdmin && !isMobile && (
+            <Autocomplete
+              id="search-input"
+              className={classes.searchInput}
+              freeSolo
+              fullWidth
+              options={allProjects.map(project => project.name)}
+              onChange={(event, value) => handleSearchSelect(event, value)}
+              renderInput={params => (
+                <SearchTextField
+                  {...params}
+                  label="Search"
+                  margin="normal"
+                  variant="filled"
+                  color="secondary"
+                />
+              )}
+            />
+          )}
           <div className={classes.headerActions}>
             <Link component="button" onClick={() => changeToEn()}>
               <Typography>en</Typography>
@@ -270,13 +189,17 @@ Header.propTypes = {
   language: PropTypes.string,
 };
 
-const mapStateToProps = ({mainPage: {language}}) => ({
+const mapStateToProps = ({mainPage: {language, allProjects}}) => ({
   language,
+  allProjects,
 });
 
 const mapDispatchToProps = {
   changeToEn: changeToEnglish,
   changeToDe: changeToGerman,
+  openProjectOnSearch: openProjectOnSearch,
+  viewProject: viewProject,
+  setSelectedProject: setSelectedProject,
 };
 
 export default connect(

@@ -19,6 +19,7 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import SearchIcon from "@material-ui/icons/Search";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import ImageIcon from "@material-ui/icons/Image";
 import SendIcon from "@material-ui/icons/Send";
 import {withStyles} from "@material-ui/styles";
 import {
@@ -26,6 +27,7 @@ import {
   viewProject,
   setSelectedProject,
   dummyDispatch,
+  setSelectedProjectImageString,
 } from "../actions/mainPage";
 import {
   handledeleteProject,
@@ -109,19 +111,22 @@ class Project extends React.Component {
       handlesubmitProject,
       handlerejectProject,
       setSelectedProject,
+      setSelectedProjectImageString,
     } = this.props;
+    const inputFile = React.createRef(null);
     // Get current user
     const currentUserId = "tempuser";
     const isAdmin = AuthAdmin();
 
-    function handleViewProject(id, imageName) {
-      console.log(imageName);
-      viewProject(id, imageName);
+    function handleViewProject(id, imageString) {
+      setSelectedProjectImageString(imageString);
+      viewProject(id);
       setSelectedProject(id);
     }
 
-    function handleEditProject(id, imageName) {
-      editProject(id, imageName);
+    function handleEditProject(id, imageString) {
+      setSelectedProjectImageString(imageString);
+      editProject(id);
       setSelectedProject(id);
     }
 
@@ -135,6 +140,10 @@ class Project extends React.Component {
 
     function handleRejectProject(id) {
       handlerejectProject(id);
+    }
+
+    function onImageUpload() {
+      inputFile.current.click();
     }
 
     function convertTimeStampToDate(timestamp) {
@@ -184,7 +193,7 @@ class Project extends React.Component {
         />
         <input
           className={classes.input}
-          id={"img-button-file" + project.id}
+          ref={inputFile}
           type="file"
           onChange={e => this.handleImageChange(e, project.id)}
         />
@@ -213,8 +222,7 @@ class Project extends React.Component {
             <IconButton
               edge="end"
               aria-label="search"
-              onClick={() => handleViewProject(project.id, this.imageName)}
-              className={classes.icon}
+              onClick={() => handleViewProject(project.id, this.displayImage)}
             >
               <SearchIcon />
             </IconButton>
@@ -223,13 +231,16 @@ class Project extends React.Component {
             <IconButton
               edge="end"
               aria-label="edit"
-              onClick={() => handleEditProject(project.id, this.imageName)}
-              className={classes.icon}
+              onClick={() => handleEditProject(project.id, this.displayImage)}
             >
               <EditIcon />
             </IconButton>
           </Tooltip>
-
+          <Tooltip placement="top" title="Update Image">
+            <IconButton edge="end" aria-label="update image" onClick={onImageUpload}>
+              <ImageIcon />
+            </IconButton>
+          </Tooltip>
           <PDFDownloadLink
             document={
               <PDFDoc project={project} image={this.displayImage} language={language} />
@@ -254,7 +265,6 @@ class Project extends React.Component {
                 edge="end"
                 aria-label="delete"
                 onClick={() => handleDeleteProject(project.id)}
-                className={classes.icon}
               >
                 <DeleteIcon />
               </IconButton>
@@ -266,7 +276,6 @@ class Project extends React.Component {
                 edge="end"
                 aria-label="submit"
                 onClick={() => handleSubmitApproveProject(project.id)}
-                className={classes.icon}
               >
                 <SendIcon />
               </IconButton>
@@ -278,7 +287,6 @@ class Project extends React.Component {
                 edge="end"
                 aria-label="approve"
                 onClick={() => handleSubmitApproveProject(project.id)}
-                className={classes.icon}
               >
                 <ThumbUpIcon />
               </IconButton>
@@ -290,7 +298,6 @@ class Project extends React.Component {
                 edge="end"
                 aria-label="reject"
                 onClick={() => handleRejectProject(project.id)}
-                className={classes.icon}
               >
                 <ThumbDownIcon />
               </IconButton>
@@ -317,6 +324,7 @@ const mapDispatchToProps = {
   setSelectedProject: setSelectedProject,
   dummyDispatch: dummyDispatch,
   handleSetProjectImage: handleSetProjectImage,
+  setSelectedProjectImageString: setSelectedProjectImageString,
 };
 
 export default connect(
