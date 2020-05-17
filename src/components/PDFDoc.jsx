@@ -47,13 +47,14 @@ const styles = {
 };
 
 export default function PDFDoc(props) {
-  const {project, image, language} = props;
+  const {project, image, imageName, language} = props;
+  const imageType = imageName ? imageName.match(/.*\.(.*)$/)[1] : "png";
   return (
     <Document>
       <Page style={styles.root}>
         <Text style={styles.title}>{project.name}</Text>
         <Text style={styles.chairName}>Chair Name: {project.chairName}</Text>
-        <Image style={styles.image} src={`data:image/png;base64, ${image}`} />
+        <Image style={styles.image} src={`data:image/${imageType};base64, ${image}`} />
         <Text style={styles.fieldName}>Description:</Text>
         <Text style={styles.text}>{project.description}</Text>
         {project.tags.length !== 0 ? (

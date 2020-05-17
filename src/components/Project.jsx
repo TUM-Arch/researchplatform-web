@@ -243,7 +243,12 @@ class Project extends React.Component {
           </Tooltip>
           <PDFDownloadLink
             document={
-              <PDFDoc project={project} image={this.displayImage} language={language} />
+              <PDFDoc
+                project={project}
+                image={this.displayImage}
+                imageName={this.imageName}
+                language={language}
+              />
             }
             fileName={project.name + ".pdf"}
           >
