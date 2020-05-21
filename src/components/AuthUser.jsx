@@ -1,7 +1,13 @@
-function AuthUser() {
-  let isAdmin = sessionStorage.getItem("isAdmin");
-  if (isAdmin !== null && isAdmin !== undefined) {
-    return isAdmin === "false" ? true : false;
+function AuthUser(store) {
+  const state = store && store.getState();
+  console.log(state);
+  if (
+    state &&
+    !state.loginPage.isAdmin &&
+    state.loginPage.userId &&
+    state.loginPage.jwt
+  ) {
+    return true;
   }
   return false;
 }

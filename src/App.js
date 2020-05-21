@@ -12,7 +12,6 @@ import AuthAdmin from "./components/AuthAdmin";
 
 function App() {
   const history = createBrowserHistory();
-
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -22,7 +21,7 @@ function App() {
             path="/"
             render={() =>
               AuthAdmin() ? (
-                <UserPage history={history} /> // Replace with AdminPage
+                <UserPage history={history} />
               ) : AuthUser() ? (
                 <UserPage history={history} />
               ) : (
