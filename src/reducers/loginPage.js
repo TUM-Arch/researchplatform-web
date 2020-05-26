@@ -5,11 +5,13 @@ import {
   SETUSERID,
   SETJWT,
   SETADMIN,
+  SETLOGINALERT,
   setUserId,
   setJwt,
   setAdmin,
   changeUserId,
   changePassword,
+  setLoginAlert,
 } from "../actions/loginPage";
 
 let initialState = {
@@ -18,6 +20,7 @@ let initialState = {
   jwt: "",
   selectedUserId: "",
   selectedPassword: "",
+  showAlert: false,
 };
 
 export default function loginPage(state = initialState, action) {
@@ -47,6 +50,11 @@ export default function loginPage(state = initialState, action) {
         ...state,
         isAdmin: action.value,
       };
+    case SETLOGINALERT:
+      return {
+        ...state,
+        showAlert: action.value,
+      };
     default:
       return state;
   }
@@ -72,6 +80,9 @@ export function attemptLogin(userId, password) {
           dispatch(setAdmin(isAdmin));
           dispatch(setUserId(userId));
           dispatch(changeUserId(""));
+          dispatch(changePassword(""));
+        } else {
+          dispatch(setLoginAlert(true));
           dispatch(changePassword(""));
         }
       })

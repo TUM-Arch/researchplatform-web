@@ -355,9 +355,9 @@ export default function mainPage(state = initialState, action) {
 
 export function getAllProjects(isAdmin, jwt, userId) {
   let values = {};
-  let projectUrl = isAdmin ? projectsURL : projectsURL + "/my";
+  let projectsUrl = isAdmin ? projectsURL : projectsURL + "/my";
   return dispatch => {
-    return fetch(projectUrl, {
+    return fetch(projectsUrl, {
       method: "GET",
       headers: {
         Authorization: jwt,
