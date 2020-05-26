@@ -36,7 +36,6 @@ import {
   getImageFromId,
   handleSetProjectImage,
 } from "../reducers/mainPage";
-import AuthAdmin from "./AuthAdmin";
 import {
   COLOR_NOT_SUBMITTED,
   COLOR_SUBMITTED,
@@ -76,13 +75,11 @@ class Project extends React.Component {
   imageName = "";
   async componentWillMount() {
     if (this.props.project.imageId !== "" && this.props.project.imageId !== null) {
-      await getImageFromId(this.props.project.imageId, this.props.project.id).then(
-        value => {
-          this.displayImage = value.image;
-          this.imageName = value.imageName;
-          this.props.dummyDispatch();
-        }
-      );
+      await getImageFromId(this.props.project.imageId, this.props.jwt).then(value => {
+        this.displayImage = value.image;
+        this.imageName = value.imageName;
+        this.props.dummyDispatch();
+      });
     }
   }
 
@@ -92,7 +89,7 @@ class Project extends React.Component {
       const formData = new FormData();
       formData.append("image", event.target.files[0], fileName);
       formData.append("projectId", id);
-      await this.props.handleSetProjectImage(formData).then(value => {
+      await this.props.handleSetProjectImage(formData, this.props.jwt).then(value => {
         this.displayImage = value.image;
         this.imageName = value.imageName;
         this.props.dummyDispatch();
@@ -105,6 +102,8 @@ class Project extends React.Component {
       classes,
       project,
       language,
+      isAdmin,
+      jwt,
       viewProject,
       editProject,
       handledeleteProject,
@@ -116,7 +115,6 @@ class Project extends React.Component {
     const inputFile = React.createRef(null);
     // Get current user
     const currentUserId = "tempuser";
-    const isAdmin = AuthAdmin();
 
     function handleViewProject(id, imageString) {
       setSelectedProjectImageString(imageString);
@@ -131,15 +129,15 @@ class Project extends React.Component {
     }
 
     function handleDeleteProject(id) {
-      handledeleteProject(id);
+      handledeleteProject(id, jwt);
     }
 
     function handleSubmitApproveProject(id) {
-      handlesubmitProject(id);
+      handlesubmitProject(id, jwt);
     }
 
     function handleRejectProject(id) {
-      handlerejectProject(id);
+      handlerejectProject(id, jwt);
     }
 
     function onImageUpload() {
@@ -314,7 +312,12 @@ class Project extends React.Component {
   }
 }
 
-const mapStateToProps = ({mainPage: {viewProjects, dummy, language}}) => ({
+const mapStateToProps = ({
+  loginPage: {isAdmin, jwt},
+  mainPage: {viewProjects, dummy, language},
+}) => ({
+  isAdmin,
+  jwt,
   viewProjects,
   dummy,
   language,

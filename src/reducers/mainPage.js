@@ -353,11 +353,16 @@ export default function mainPage(state = initialState, action) {
   }
 }
 
-export function getAllProjects() {
+export function getAllProjects(isAdmin, jwt, userId) {
   let values = {};
+  let projectUrl = isAdmin ? projectsURL : projectsURL + "/my";
   return dispatch => {
-    return fetch(projectsURL, {
+    return fetch(projectUrl, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+        userId: userId,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -370,10 +375,13 @@ export function getAllProjects() {
   };
 }
 
-export function handledeleteProject(id) {
+export function handledeleteProject(id, jwt) {
   return dispatch => {
     return fetch(projectsURL + "/" + id, {
       method: "DELETE",
+      headers: {
+        Authorization: jwt,
+      },
     }).then(response =>
       response.status === 200 ? dispatch(deleteProject(id)) : console.log("Failed")
     );
@@ -387,7 +395,8 @@ export function createNewProject(
   projectImageId,
   projectTags,
   projectFields,
-  userId
+  userId,
+  jwt
 ) {
   const body = {
     name: projectName,
@@ -403,6 +412,7 @@ export function createNewProject(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
       body: JSON.stringify(body),
     })
@@ -421,7 +431,8 @@ export function handleEditProject(
   projectTags,
   projectFields,
   userId,
-  id
+  id,
+  jwt
 ) {
   const body = {
     name: projectName,
@@ -437,6 +448,7 @@ export function handleEditProject(
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
       body: JSON.stringify(body),
     })
@@ -447,12 +459,13 @@ export function handleEditProject(
   };
 }
 
-export function handleSubmitProject(id) {
+export function handleSubmitProject(id, jwt) {
   return dispatch => {
     return fetch(projectsURL + "/submit/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
     })
       .then(response => response.json())
@@ -462,12 +475,13 @@ export function handleSubmitProject(id) {
   };
 }
 
-export function handleRejectProject(id) {
+export function handleRejectProject(id, jwt) {
   return dispatch => {
     return fetch(projectsURL + "/reject/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
     })
       .then(response => response.json())
@@ -477,11 +491,14 @@ export function handleRejectProject(id) {
   };
 }
 
-export function getCurrentFormfields() {
+export function getCurrentFormfields(jwt) {
   let values = {};
   return dispatch => {
     return fetch(formfieldsURL, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -494,9 +511,12 @@ export function getCurrentFormfields() {
   };
 }
 
-export function getImageFromId(imageId) {
+export function getImageFromId(imageId, jwt) {
   return fetch(imagesURL + "/" + imageId, {
     method: "GET",
+    headers: {
+      Authorization: jwt,
+    },
   })
     .then(response => response.json())
     .then(result => {
@@ -504,10 +524,13 @@ export function getImageFromId(imageId) {
     });
 }
 
-export function openProjectOnSearch(id, imageId) {
+export function openProjectOnSearch(id, imageId, jwt) {
   return dispatch => {
     return fetch(imagesURL + "/" + imageId, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -518,10 +541,13 @@ export function openProjectOnSearch(id, imageId) {
   };
 }
 
-export function handleSetProjectImage(body) {
+export function handleSetProjectImage(body, jwt) {
   return dispatch => {
     return fetch(imagesURL, {
       method: "POST",
+      headers: {
+        Authorization: jwt,
+      },
       body: body,
     })
       .then(response =>

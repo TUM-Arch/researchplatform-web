@@ -25,7 +25,6 @@ import {
   setWindowDimensions,
 } from "../actions/mainPage";
 import {getAllProjects, getCurrentFormfields} from "../reducers/mainPage";
-import AuthAdmin from "./AuthAdmin";
 
 const styles = theme => ({
   root: {
@@ -57,11 +56,9 @@ const styles = theme => ({
   },
 });
 
-const isAdmin = AuthAdmin();
-
 class UserPage extends React.Component {
   componentWillMount = () => {
-    this.props.getAllProjects();
+    this.props.getAllProjects(this.props.isAdmin, this.props.jwt, this.props.userId);
     this.updateDimensions();
   };
   componentDidMount = () => {
@@ -84,6 +81,8 @@ class UserPage extends React.Component {
     const {
       classes,
       language,
+      isAdmin,
+      jwt,
       viewProjects,
       viewAllProj,
       viewMyProj,
@@ -108,7 +107,7 @@ class UserPage extends React.Component {
     }
 
     function handleCreateProject() {
-      getCurrentFormfields();
+      getCurrentFormfields(jwt);
       createProject();
     }
 
@@ -184,6 +183,7 @@ class UserPage extends React.Component {
 }
 
 const mapStateToProps = ({
+  loginPage: {isAdmin, jwt, userId},
   mainPage: {
     language,
     viewProjects,
@@ -193,6 +193,9 @@ const mapStateToProps = ({
     rejectedApprovedProjects,
   },
 }) => ({
+  isAdmin,
+  jwt,
+  userId,
   language,
   viewProjects,
   allProjects,

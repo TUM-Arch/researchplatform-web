@@ -75,7 +75,7 @@ const CustomTextField = withStyles({
 
 class SettingsPage extends React.Component {
   componentWillMount = () => {
-    this.props.getCurrentFormfields();
+    this.props.getCurrentFormfields(this.props.jwt);
     this.updateDimensions();
   };
   componentDidMount = () => {
@@ -97,6 +97,7 @@ class SettingsPage extends React.Component {
     const {
       classes,
       language,
+      jwt,
       formFields,
       isFormDialogOpen,
       history,
@@ -117,7 +118,7 @@ class SettingsPage extends React.Component {
     }
 
     function handleDelete(id) {
-      handleDeleteField(id).then(value => {
+      handleDeleteField(id, jwt).then(() => {
         window.location.reload();
       });
     }
@@ -196,9 +197,11 @@ class SettingsPage extends React.Component {
 }
 
 const mapStateToProps = ({
+  loginPage: {jwt},
   mainPage: {language},
   settingsPage: {formFields, isFormDialogOpen},
 }) => ({
+  jwt,
   language,
   formFields,
   isFormDialogOpen,

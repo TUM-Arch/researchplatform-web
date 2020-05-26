@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/styles";
 import {Button, TextField} from "@material-ui/core";
@@ -20,7 +19,6 @@ class LoginPage extends React.Component {
   render() {
     const {
       classes,
-      history,
       selectedUserId,
       selectedPassword,
       attemptLogin,
@@ -35,8 +33,6 @@ class LoginPage extends React.Component {
     }
     function attemptLoginHandler(userId, password) {
       attemptLogin(userId, password);
-      //   .then(history.push("/"))
-      //   .then(window.location.reload());
     }
     return (
       <div className={classes.root}>
@@ -73,10 +69,6 @@ class LoginPage extends React.Component {
     );
   }
 }
-
-LoginPage.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 const mapStateToProps = ({loginPage: {selectedUserId, selectedPassword}}) => ({
   selectedUserId,

@@ -1,4 +1,4 @@
-import {loginURL} from "../util/constants";
+import {loginURL, logoutURL} from "../util/constants";
 import {
   CHANGEUSERID,
   CHANGEPASSWORD,
@@ -62,14 +62,38 @@ export function attemptLogin(userId, password) {
         userId: userId,
         password: password,
       },
-    }).then(response => {
-      jwt = response.headers.get("Authorization");
-      isAdmin = response.headers.get("Admin");
-      dispatch(setJwt(jwt));
-      dispatch(setAdmin(isAdmin));
-      dispatch(setUserId(userId));
-      dispatch(changeUserId(""));
-      dispatch(changePassword(""));
-    });
+    })
+      .then(response => {
+        if (response.status === 200) {
+          jwt = response.headers.get("Authorization");
+          isAdmin = response.headers.get("Admin") === "true" ? true : false;
+          window.localStorage["isAdmin"] = isAdmin;
+          dispatch(setJwt(jwt));
+          dispatch(setAdmin(isAdmin));
+          dispatch(setUserId(userId));
+          dispatch(changeUserId(""));
+          dispatch(changePassword(""));
+        }
+      })
+      .then(() => window.location.reload());
+  };
+}
+
+export function attemptLogout(userId, jwt) {
+  return dispatch => {
+    return fetch(logoutURL, {
+      method: "GET",
+      headers: {
+        Authorization: jwt,
+        userId: userId,
+      },
+    })
+      .then(() => {
+        window.localStorage.removeItem("isAdmin");
+        dispatch(setJwt(""));
+        dispatch(setAdmin(null));
+        dispatch(setUserId(""));
+      })
+      .then(() => window.location.reload());
   };
 }

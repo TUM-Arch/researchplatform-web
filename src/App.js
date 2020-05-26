@@ -25,7 +25,7 @@ function App() {
               ) : AuthUser() ? (
                 <UserPage history={history} />
               ) : (
-                <LoginPage history={history} />
+                <LoginPage />
               )
             }
           />
@@ -33,11 +33,7 @@ function App() {
             exact
             path="/manage"
             render={() =>
-              AuthAdmin() ? (
-                <SettingsPage history={history} />
-              ) : (
-                <LoginPage history={history} />
-              )
+              AuthAdmin() ? <SettingsPage history={history} /> : <LoginPage />
             }
           />
           <Route exact path="/error" render={() => <ErrorPage history={history} />} />

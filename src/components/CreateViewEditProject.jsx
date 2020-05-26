@@ -127,6 +127,7 @@ function CreateViewEditProject(props) {
   const {
     classes,
     language,
+    jwt,
     userId,
     dialogClose,
     isProjectDialogOpen,
@@ -205,7 +206,8 @@ function CreateViewEditProject(props) {
           projectImageId,
           projectTags,
           projectFields,
-          userId
+          userId,
+          jwt
         );
       } else {
         handleEditProject(
@@ -216,7 +218,8 @@ function CreateViewEditProject(props) {
           projectTags,
           projectFields,
           userId,
-          selectedProject.id
+          selectedProject.id,
+          jwt
         );
         window.location.reload();
       }
@@ -224,7 +227,7 @@ function CreateViewEditProject(props) {
   }
 
   function handleSubmit() {
-    handlesubmitProject(selectedProject.id);
+    handlesubmitProject(selectedProject.id, jwt);
     dialogClose();
   }
 
@@ -532,6 +535,7 @@ function CreateViewEditProject(props) {
 }
 
 const mapStateToProps = ({
+  loginPage: {jwt},
   mainPage: {
     userId,
     isProjectDialogOpen,
@@ -548,6 +552,7 @@ const mapStateToProps = ({
     selectedProjectImageString,
   },
 }) => ({
+  jwt,
   userId,
   isProjectDialogOpen,
   projectDialogState,

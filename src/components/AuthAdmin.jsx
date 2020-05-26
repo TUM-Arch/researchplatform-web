@@ -1,10 +1,8 @@
-function AuthAdmin(store) {
-  const state = store && store.getState();
-  console.log(state);
-  if (state && state.loginPage.isAdmin && state.loginPage.userId && state.loginPage.jwt) {
-    return true;
+function AuthAdmin() {
+  let isAdmin = localStorage.getItem("isAdmin");
+  if (isAdmin !== null && isAdmin !== undefined) {
+    return isAdmin === "true" ? true : false;
   }
-  return false;
 }
 
 export default AuthAdmin;

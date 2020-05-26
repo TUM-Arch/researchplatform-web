@@ -62,6 +62,7 @@ class CreateEditField extends React.Component {
       classes,
       isFormDialogOpen,
       language,
+      jwt,
       createEditField,
       saveField,
       selectedField,
@@ -108,7 +109,8 @@ class CreateEditField extends React.Component {
         fieldRequired,
         fieldLength,
         isNewField,
-        id
+        id,
+        jwt
       );
       resetFieldsState();
       window.location.reload();
@@ -269,6 +271,7 @@ class CreateEditField extends React.Component {
 }
 
 const mapStateToProps = ({
+  loginPage: {jwt},
   settingsPage: {
     selectedField,
     isNewField,
@@ -281,6 +284,7 @@ const mapStateToProps = ({
     fieldLength,
   },
 }) => ({
+  jwt,
   selectedField,
   isNewField,
   fieldNameEn,
