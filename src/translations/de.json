@@ -5,6 +5,7 @@
   "createProject": "Neu Projekt",
   "editProject": "Projekt bearbeiten",
   "viewProject": "Projekt ansehen",
+  "deleteProject": "Projekt löschen",
   "allProjects": "Alle Projekte",
   "myProjects": "Meine Projekte",
   "submittedProjects": "Eingereichte Projekte",
@@ -29,5 +30,7 @@
   "tagName": "Stichworte Name",
   "addTag": "Stichworte hinzufügen",
   "addTagText": "Fügen Sie Ihrem Projekt ein Stichworte zur Indizierung hinzu",
-  "inputLanguage": "Eingabesprache"
+  "inputLanguage": "Eingabesprache",
+  "download": "Herunterladen",
+  "updateImage": "Bild aktualisieren"
 }

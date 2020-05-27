@@ -10,17 +10,18 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  Menu,
+  MenuItem,
+  Button,
 } from "@material-ui/core";
 import {red} from "@material-ui/core/colors";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import GetAppIcon from "@material-ui/icons/GetApp";
 import SearchIcon from "@material-ui/icons/Search";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ImageIcon from "@material-ui/icons/Image";
-import SendIcon from "@material-ui/icons/Send";
 import {withStyles} from "@material-ui/styles";
 import {
   editProject,
@@ -45,6 +46,9 @@ import {
 } from "../util/constants";
 import {PDFDownloadLink} from "@react-pdf/renderer";
 import PDFDoc from "./PDFDoc";
+import en from "../translations/en.json";
+import de from "../translations/de.json";
+import PopupState, {bindTrigger, bindMenu} from "material-ui-popup-state";
 
 const styles = theme => ({
   root: {
@@ -67,6 +71,19 @@ const styles = theme => ({
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
+  },
+  cardActions: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  adminTools: {
+    marginRight: theme.spacing(1.5),
+  },
+  generalTools: {
+    padding: theme.spacing(1.5),
+  },
+  leftPadding: {
+    paddingLeft: theme.spacing(1.2),
   },
 });
 
@@ -181,9 +198,84 @@ class Project extends React.Component {
             </Tooltip>
           }
           action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
+            <div>
+              <PopupState variant="popover" popupId="demo-popup-menu">
+                {popupState => (
+                  <React.Fragment>
+                    <IconButton aria-label="settings" {...bindTrigger(popupState)}>
+                      <MoreVertIcon></MoreVertIcon>
+                    </IconButton>
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem
+                        onClick={() => {
+                          handleViewProject(project.id, this.displayImage);
+                          popupState.close();
+                        }}
+                      >
+                        <SearchIcon />
+                        <Typography
+                          variant="inherit"
+                          noWrap
+                          className={classes.leftPadding}
+                        >
+                          {language === "en" ? en.viewProject : de.viewProject}
+                        </Typography>
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          handleEditProject(project.id, this.displayImage);
+                          popupState.close();
+                        }}
+                      >
+                        <EditIcon />
+                        <Typography
+                          variant="inherit"
+                          noWrap
+                          className={classes.leftPadding}
+                        >
+                          {language === "en" ? en.editProject : de.editProject}
+                        </Typography>
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          onImageUpload();
+                          popupState.close();
+                        }}
+                      >
+                        <ImageIcon />
+                        <Typography
+                          variant="inherit"
+                          noWrap
+                          className={classes.leftPadding}
+                        >
+                          {language === "en" ? en.updateImage : de.updateImage}
+                        </Typography>
+                      </MenuItem>
+
+                      {project.userId === userId || isAdmin ? (
+                        <MenuItem
+                          onClick={() => {
+                            handleDeleteProject(project.id);
+                            popupState.close();
+                          }}
+                        >
+                          <DeleteIcon />
+                          <Typography
+                            variant="inherit"
+                            noWrap
+                            className={classes.leftPadding}
+                          >
+                            {language === "en" ? en.deleteProject : de.deleteProject}
+                          </Typography>
+                        </MenuItem>
+                      ) : null}
+                    </Menu>
+                  </React.Fragment>
+                )}
+              </PopupState>
+            </div>
           }
           title={project.name}
           subheader={convertTimeStampToDate(project.createdAt)}
@@ -214,97 +306,70 @@ class Project extends React.Component {
             {project.description}
           </Typography>
         </CardContent>
-        <CardActions>
-          <Tooltip placement="top" title="View">
-            <IconButton
-              edge="end"
-              aria-label="search"
-              onClick={() => handleViewProject(project.id, this.displayImage)}
+        <CardActions className={classes.cardActions}>
+          <div className={classes.generalTools}>
+            <PDFDownloadLink
+              style={{textDecoration: "none"}}
+              document={
+                <PDFDoc
+                  project={project}
+                  image={this.displayImage}
+                  imageName={this.imageName}
+                  language={language}
+                />
+              }
+              fileName={project.name + ".pdf"}
             >
-              <SearchIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip placement="top" title="Edit">
-            <IconButton
-              edge="end"
-              aria-label="edit"
-              onClick={() => handleEditProject(project.id, this.displayImage)}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip placement="top" title="Update Image">
-            <IconButton edge="end" aria-label="update image" onClick={onImageUpload}>
-              <ImageIcon />
-            </IconButton>
-          </Tooltip>
-          <PDFDownloadLink
-            document={
-              <PDFDoc
-                project={project}
-                image={this.displayImage}
-                imageName={this.imageName}
-                language={language}
-              />
-            }
-            fileName={project.name + ".pdf"}
-          >
-            {({loading}) =>
-              loading ? (
-                "Loading document..."
-              ) : (
-                <Tooltip placement="top" title="Download">
-                  <IconButton edge="end" aria-label="delete" className={classes.icon}>
-                    <GetAppIcon />
-                  </IconButton>
-                </Tooltip>
-              )
-            }
-          </PDFDownloadLink>
-          {project.userId === userId || isAdmin ? (
-            <Tooltip placement="top" title="Delete">
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                onClick={() => handleDeleteProject(project.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          {project.userId === userId && project.status === "NOTSUBMITTED" ? (
-            <Tooltip placement="top" title="Submit">
-              <IconButton
-                edge="end"
-                aria-label="submit"
+              {({loading}) =>
+                loading ? (
+                  "Loading document..."
+                ) : (
+                  <Button
+                    size="small"
+                    color="secondary"
+                    className={classes.icon}
+                    onClick={() => handleSubmitApproveProject(project.id)}
+                  >
+                    {language === "en" ? en.download : de.download}
+                  </Button>
+                )
+              }
+            </PDFDownloadLink>
+
+            {project.userId === userId && project.status === "NOTSUBMITTED" ? (
+              <Button
+                size="small"
+                color="secondary"
                 onClick={() => handleSubmitApproveProject(project.id)}
               >
-                <SendIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          {project.status === "SUBMITTED" && isAdmin ? (
-            <Tooltip placement="top" title="Approve">
-              <IconButton
-                edge="end"
-                aria-label="approve"
-                onClick={() => handleSubmitApproveProject(project.id)}
-              >
-                <ThumbUpIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          {project.status === "SUBMITTED" && isAdmin ? (
-            <Tooltip placement="top" title="Reject">
-              <IconButton
-                edge="end"
-                aria-label="reject"
-                onClick={() => handleRejectProject(project.id)}
-              >
-                <ThumbDownIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
+                {language === "en" ? en.submit : de.submit}
+              </Button>
+            ) : null}
+          </div>
+          <div className={classes.adminTools}>
+            {project.status === "SUBMITTED" && isAdmin ? (
+              <Tooltip placement="top" title="Approve">
+                <IconButton
+                  edge="end"
+                  aria-label="approve"
+                  onClick={() => handleSubmitApproveProject(project.id)}
+                >
+                  <ThumbUpIcon />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+            {project.status === "SUBMITTED" && isAdmin ? (
+              <Tooltip placement="top" title="Reject">
+                <IconButton
+                  edge="end"
+                  aria-label="reject"
+                  onClick={() => handleRejectProject(project.id)}
+                >
+                  <ThumbDownIcon />
+                </IconButton>
+              </Tooltip>
+            ) : null}
+          </div>
         </CardActions>
       </Card>
     );

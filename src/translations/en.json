@@ -5,6 +5,7 @@
   "createProject": "New Project",
   "editProject": "Edit Project",
   "viewProject": "View Project",
+  "deleteProject": "Delete Project",
   "allProjects": "All Projects",
   "myProjects": "My Projects",
   "submittedProjects": "Submitted Projects",
@@ -29,5 +30,7 @@
   "tagName": "Tag Name",
   "addTag": "Add Tag",
   "addTagText": "Add a tag to your project for indexing",
-  "inputLanguage": "Input Language"
+  "inputLanguage": "Input Language",
+  "download": "Download",
+  "updateImage": "Update Image"
 }

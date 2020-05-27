@@ -45,6 +45,7 @@ import {
   viewProject,
 } from "../actions/mainPage";
 import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
+import {setAdmin, setJwt, setUserId} from "../actions/loginPage";
 
 let initialState = {
   language: "en",
@@ -362,6 +363,13 @@ export default function mainPage(state = initialState, action) {
 export function getAllProjects(isAdmin, jwt, userId) {
   let values = {};
   let projectsUrl = isAdmin ? projectsURL : projectsURL + "/my";
+
+  let invalidJwt = () => {
+    let error = new Error();
+    error.name = "InvalidJWT";
+    return error;
+  };
+
   return dispatch => {
     return fetch(projectsUrl, {
       method: "GET",
@@ -370,13 +378,25 @@ export function getAllProjects(isAdmin, jwt, userId) {
         userId: userId,
       },
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 200) return response.json();
+        else throw invalidJwt();
+      })
       .then(result => {
         values = {
           numberOfProjects: result.numberOfProjects,
           projectsList: result.projectsList,
         };
         dispatch(updateProjects(values));
+      })
+      .catch(error => {
+        if (error.name === "InvalidJWT") {
+          window.localStorage.removeItem("isAdmin");
+          dispatch(setJwt(""));
+          dispatch(setAdmin(null));
+          dispatch(setUserId(""));
+          window.location.reload();
+        }
       });
   };
 }

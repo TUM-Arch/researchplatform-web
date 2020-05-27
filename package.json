@@ -8,6 +8,7 @@
     "@material-ui/lab": "^4.0.0-alpha.54",
     "@react-pdf/renderer": "^1.6.8",
     "isomorphic-fetch": "^2.2.1",
+    "material-ui-popup-state": "^1.5.4",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-device-detect": "^1.9.9",
