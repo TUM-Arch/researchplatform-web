@@ -13,6 +13,7 @@ import {
   changePassword,
   setLoginAlert,
 } from "../actions/loginPage";
+import {setUserID} from "../actions/mainPage";
 
 let initialState = {
   userId: "",
@@ -79,6 +80,7 @@ export function attemptLogin(userId, password) {
           dispatch(setJwt(jwt));
           dispatch(setAdmin(isAdmin));
           dispatch(setUserId(userId));
+          dispatch(setUserID(userId));
           dispatch(changeUserId(""));
           dispatch(changePassword(""));
         } else {

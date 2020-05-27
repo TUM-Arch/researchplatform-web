@@ -221,7 +221,6 @@ function CreateViewEditProject(props) {
           selectedProject.id,
           jwt
         );
-        window.location.reload();
       }
     }
   }

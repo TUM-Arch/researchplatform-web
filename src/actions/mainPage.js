@@ -29,6 +29,7 @@ export const SETPROJECTFIELDDEVALUE = "SETPROJECTFIELDDEVALUE";
 export const SETPROJECTLANGUAGECHOICE = "SETPROJECTLANGUAGECHOICE";
 export const SETSELECTEDPROJECTIMAGESTRING = "SETSELECTEDPROJECTIMAGESTRING";
 export const DUMMY = "DUMMY";
+export const SETUSERID = "SETUSERID";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -211,4 +212,10 @@ export const setprojectLanguageChoice = value => dispatch =>
 export const dummyDispatch = () => dispatch =>
   dispatch({
     type: DUMMY,
+  });
+
+export const setUserID = value => dispatch =>
+  dispatch({
+    type: SETUSERID,
+    value,
   });

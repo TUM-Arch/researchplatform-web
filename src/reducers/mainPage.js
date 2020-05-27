@@ -30,6 +30,7 @@ import {
   SETPROJECTFIELDDEVALUE,
   SETPROJECTLANGUAGECHOICE,
   SETSELECTEDPROJECTIMAGESTRING,
+  SETUSERID,
   DUMMY,
   newProjectCreated,
   updateProject,
@@ -52,7 +53,7 @@ let initialState = {
   myProjects: [],
   submittedProjects: [],
   rejectedApprovedProjects: [],
-  userId: "tempuser",
+  userId: "",
   isProjectDialogOpen: false,
   projectDialogState: "",
   windowDims: {
@@ -342,6 +343,11 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         selectedProjectImageString: action.value,
+      };
+    case SETUSERID:
+      return {
+        ...state,
+        userId: action.value,
       };
     case DUMMY:
       return {

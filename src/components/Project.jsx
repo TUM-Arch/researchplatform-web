@@ -104,6 +104,7 @@ class Project extends React.Component {
       language,
       isAdmin,
       jwt,
+      userId,
       viewProject,
       editProject,
       handledeleteProject,
@@ -113,8 +114,6 @@ class Project extends React.Component {
       setSelectedProjectImageString,
     } = this.props;
     const inputFile = React.createRef(null);
-    // Get current user
-    const currentUserId = "tempuser";
 
     function handleViewProject(id, imageString) {
       setSelectedProjectImageString(imageString);
@@ -262,7 +261,7 @@ class Project extends React.Component {
               )
             }
           </PDFDownloadLink>
-          {project.userId === currentUserId || isAdmin ? (
+          {project.userId === userId || isAdmin ? (
             <Tooltip placement="top" title="Delete">
               <IconButton
                 edge="end"
@@ -273,7 +272,7 @@ class Project extends React.Component {
               </IconButton>
             </Tooltip>
           ) : null}
-          {project.userId === currentUserId && project.status === "NOTSUBMITTED" ? (
+          {project.userId === userId && project.status === "NOTSUBMITTED" ? (
             <Tooltip placement="top" title="Submit">
               <IconButton
                 edge="end"
@@ -313,11 +312,12 @@ class Project extends React.Component {
 }
 
 const mapStateToProps = ({
-  loginPage: {isAdmin, jwt},
+  loginPage: {isAdmin, jwt, userId},
   mainPage: {viewProjects, dummy, language},
 }) => ({
   isAdmin,
   jwt,
+  userId,
   viewProjects,
   dummy,
   language,
