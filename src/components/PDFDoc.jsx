@@ -64,7 +64,7 @@ export default function PDFDoc(props) {
           </View>
         ) : null}
         {project.fields.map(field => (
-          <View>
+          <View key={field.id}>
             <Text style={styles.fieldName}>
               {language === "en" ? field.nameEn : field.nameDe}:
             </Text>

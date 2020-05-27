@@ -92,7 +92,8 @@ class UserPage extends React.Component {
       allProjects,
       myProjects,
       submittedProjects,
-      rejectedApprovedProjects,
+      rejectedProjects,
+      approvedProjects,
       createProject,
       getCurrentFormfields,
       history,
@@ -107,6 +108,7 @@ class UserPage extends React.Component {
     }
 
     function handleCreateProject() {
+      console.log("Whyyyyyyyyyyy");
       getCurrentFormfields(jwt);
       createProject();
     }
@@ -171,7 +173,9 @@ class UserPage extends React.Component {
                   ? myProjects
                   : viewProjects === "submitted"
                   ? submittedProjects
-                  : rejectedApprovedProjects
+                  : viewProjects === "approved"
+                  ? approvedProjects
+                  : rejectedProjects
               }
             />
           </div>
@@ -190,7 +194,8 @@ const mapStateToProps = ({
     allProjects,
     myProjects,
     submittedProjects,
-    rejectedApprovedProjects,
+    rejectedProjects,
+    approvedProjects,
   },
 }) => ({
   isAdmin,
@@ -201,7 +206,8 @@ const mapStateToProps = ({
   allProjects,
   myProjects,
   submittedProjects,
-  rejectedApprovedProjects,
+  rejectedProjects,
+  approvedProjects,
 });
 
 const mapDispatchToProps = {

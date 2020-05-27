@@ -53,7 +53,8 @@ let initialState = {
   allProjects: [],
   myProjects: [],
   submittedProjects: [],
-  rejectedApprovedProjects: [],
+  rejectedProjects: [],
+  approvedProjects: [],
   userId: "",
   isProjectDialogOpen: false,
   projectDialogState: "",
@@ -111,33 +112,16 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "submitted",
-        submittedProjects: state.allProjects
-          .filter(function(project) {
-            return project.status === "SUBMITTED";
-          })
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case VIEWAPPROVED:
       return {
         ...state,
         viewProjects: "approved",
-        rejectedApprovedProjects: state.allProjects
-          .filter(project => project.status === "APPROVED")
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case VIEWREJECTED:
       return {
         ...state,
         viewProjects: "rejected",
-        rejectedApprovedProjects: state.allProjects
-          .filter(project => project.status === "REJECTED")
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case PROJECTDIALOGCLOSE:
       return {
@@ -219,7 +203,10 @@ export default function mainPage(state = initialState, action) {
         submittedProjects: state.submittedProjects.filter(
           project => project.id !== action.id
         ),
-        rejectedApprovedProjects: state.rejectedApprovedProjects.filter(
+        rejectedProjects: state.rejectedProjects.filter(
+          project => project.id !== action.id
+        ),
+        approvedProjects: state.approvedProjects.filter(
           project => project.id !== action.id
         ),
       };
@@ -263,6 +250,23 @@ export default function mainPage(state = initialState, action) {
           .filter(function(project) {
             return project.userId === state.userId;
           })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        submittedProjects: action.values.projectsList
+          .filter(function(project) {
+            return project.status === "SUBMITTED";
+          })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        rejectedProjects: action.values.projectsList
+          .filter(project => project.status === "REJECTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        approvedProjects: action.values.projectsList
+          .filter(project => project.status === "APPROVED")
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
           }),
