@@ -324,12 +324,7 @@ class Project extends React.Component {
                 loading ? (
                   "Loading document..."
                 ) : (
-                  <Button
-                    size="small"
-                    color="secondary"
-                    className={classes.icon}
-                    onClick={() => handleSubmitApproveProject(project.id)}
-                  >
+                  <Button size="small" color="secondary" className={classes.icon}>
                     {language === "en" ? en.download : de.download}
                   </Button>
                 )

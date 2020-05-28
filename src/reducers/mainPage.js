@@ -223,9 +223,36 @@ export default function mainPage(state = initialState, action) {
             ? {...project, status: action.result.status}
             : project
         ),
-        submittedProjects: state.submittedProjects.filter(
-          project => project.id !== action.result.id
-        ),
+        submittedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "SUBMITTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        rejectedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "REJECTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        approvedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "APPROVED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
       };
     case SETSELECTEDPROJECT:
       return {
