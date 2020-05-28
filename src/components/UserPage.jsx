@@ -108,7 +108,6 @@ class UserPage extends React.Component {
     }
 
     function handleCreateProject() {
-      console.log("Whyyyyyyyyyyy");
       getCurrentFormfields(jwt);
       createProject();
     }
