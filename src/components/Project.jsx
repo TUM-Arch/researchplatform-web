@@ -29,11 +29,11 @@ import {
   setSelectedProject,
   dummyDispatch,
   setSelectedProjectImageString,
+  openRejectionDialog,
 } from "../actions/mainPage";
 import {
   handledeleteProject,
   handleSubmitProject,
-  handleRejectProject,
   getImageFromId,
   handleSetProjectImage,
 } from "../reducers/mainPage";
@@ -126,9 +126,9 @@ class Project extends React.Component {
       editProject,
       handledeleteProject,
       handlesubmitProject,
-      handlerejectProject,
       setSelectedProject,
       setSelectedProjectImageString,
+      openRejectionDialog,
     } = this.props;
     const inputFile = React.createRef(null);
 
@@ -153,11 +153,17 @@ class Project extends React.Component {
     }
 
     function handleRejectProject(id) {
-      handlerejectProject(id, jwt);
+      setSelectedProject(id);
+      openRejectionDialog(true, "edit");
     }
 
     function onImageUpload() {
       inputFile.current.click();
+    }
+
+    function showRejectionReason(id) {
+      setSelectedProject(id);
+      openRejectionDialog(true, "view");
     }
 
     function convertTimeStampToDate(timestamp) {
@@ -340,6 +346,16 @@ class Project extends React.Component {
                 {language === "en" ? en.submit : de.submit}
               </Button>
             ) : null}
+
+            {project.userId === userId && project.status === "REJECTED" ? (
+              <Button
+                size="small"
+                color="secondary"
+                onClick={() => showRejectionReason(project.id)}
+              >
+                {language === "en" ? en.rejectReason : de.rejectReason}
+              </Button>
+            ) : null}
           </div>
           <div className={classes.adminTools}>
             {project.status === "SUBMITTED" && isAdmin ? (
@@ -388,11 +404,11 @@ const mapDispatchToProps = {
   viewProject: viewProject,
   handledeleteProject: handledeleteProject,
   handlesubmitProject: handleSubmitProject,
-  handlerejectProject: handleRejectProject,
   setSelectedProject: setSelectedProject,
   dummyDispatch: dummyDispatch,
   handleSetProjectImage: handleSetProjectImage,
   setSelectedProjectImageString: setSelectedProjectImageString,
+  openRejectionDialog: openRejectionDialog,
 };
 
 export default connect(

@@ -31,6 +31,7 @@ import {
   SETPROJECTLANGUAGECHOICE,
   SETSELECTEDPROJECTIMAGESTRING,
   SETUSERID,
+  OPENREJECTIONDIALOG,
   DUMMY,
   newProjectCreated,
   updateProject,
@@ -71,6 +72,7 @@ let initialState = {
     tags: [],
     fields: [],
     status: "",
+    rejectionText: "",
   },
   projectName: "",
   projectChairName: "",
@@ -80,6 +82,8 @@ let initialState = {
   projectFields: [],
   projectLanguageChoice: "en",
   selectedProjectImageString: "",
+  isRejectionDialogOpen: false,
+  rejectDialogState: "view",
   dummy: true,
 };
 
@@ -215,12 +219,20 @@ export default function mainPage(state = initialState, action) {
         ...state,
         myProjects: state.myProjects.map(project =>
           project.id === action.result.id
-            ? {...project, status: action.result.status}
+            ? {
+                ...project,
+                status: action.result.status,
+                rejectionText: action.rejectionText,
+              }
             : project
         ),
         allProjects: state.allProjects.map(project =>
           project.id === action.result.id
-            ? {...project, status: action.result.status}
+            ? {
+                ...project,
+                status: action.result.status,
+                rejectionText: action.rejectionText,
+              }
             : project
         ),
         submittedProjects: state.allProjects
@@ -253,6 +265,7 @@ export default function mainPage(state = initialState, action) {
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
           }),
+        isRejectionDialogOpen: false,
       };
     case SETSELECTEDPROJECT:
       return {
@@ -385,6 +398,12 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         dummy: !state.dummy,
+      };
+    case OPENREJECTIONDIALOG:
+      return {
+        ...state,
+        isRejectionDialogOpen: action.value,
+        rejectDialogState: action.state,
       };
     default:
       return state;
@@ -532,9 +551,9 @@ export function handleSubmitProject(id, jwt) {
   };
 }
 
-export function handleRejectProject(id, jwt) {
+export function handleRejectProject(id, jwt, rejectionText) {
   return dispatch => {
-    return fetch(projectsURL + "/reject/" + id, {
+    return fetch(projectsURL + "/reject/" + id + `/?rejectionText=${rejectionText}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -543,7 +562,7 @@ export function handleRejectProject(id, jwt) {
     })
       .then(response => response.json())
       .then(result => {
-        dispatch(rejectProject(result));
+        dispatch(rejectProject(result, rejectionText));
       });
   };
 }

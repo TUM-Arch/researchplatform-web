@@ -14,6 +14,7 @@ import {withStyles} from "@material-ui/styles";
 import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewEditProject from "./CreateViewEditProject";
+import RejectProjectDialog from "./RejectProjectDialog";
 import DisplayProjects from "./DisplayProjects";
 import {
   viewAllProjects,
@@ -180,6 +181,7 @@ class UserPage extends React.Component {
           </div>
         </div>
         <CreateViewEditProject language={language} />
+        <RejectProjectDialog language={language} />
       </div>
     );
   }

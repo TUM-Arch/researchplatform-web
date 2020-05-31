@@ -32,5 +32,7 @@
   "addTagText": "Fügen Sie Ihrem Projekt ein Stichworte zur Indizierung hinzu",
   "inputLanguage": "Eingabesprache",
   "download": "Herunterladen",
-  "updateImage": "Bild aktualisieren"
+  "updateImage": "Bild aktualisieren",
+  "rejectProject": "Projekt ablehnen",
+  "rejectReason": "Ablehnungsgrund"
 }

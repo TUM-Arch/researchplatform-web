@@ -32,5 +32,7 @@
   "addTagText": "Add a tag to your project for indexing",
   "inputLanguage": "Input Language",
   "download": "Download",
-  "updateImage": "Update Image"
+  "updateImage": "Update Image",
+  "rejectProject": "Reject Project",
+  "rejectReason": "RejectionReason"
 }
