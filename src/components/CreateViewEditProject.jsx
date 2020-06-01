@@ -20,6 +20,7 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
+import {Autocomplete} from "@material-ui/lab";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import {withStyles} from "@material-ui/styles";
@@ -39,6 +40,7 @@ import {
   createNewProject,
   handleEditProject,
   handleSubmitProject,
+  createOrUpdateTags,
 } from "../reducers/mainPage";
 
 const styles = theme => ({
@@ -153,6 +155,7 @@ function CreateViewEditProject(props) {
     projectFields,
     projectLanguageChoice,
     selectedProjectImageString,
+    allAvailableProjectTags,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
@@ -194,33 +197,37 @@ function CreateViewEditProject(props) {
     );
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (isRequiredFieldsNotFilled()) {
       alert("The required fields are empty!!");
     } else {
       if (projectDialogState === "create") {
-        createNewProject(
-          projectName,
-          projectChairName,
-          projectDescription,
-          projectImageId,
-          projectTags,
-          projectFields,
-          userId,
-          jwt
-        );
+        await createOrUpdateTags(projectTags, jwt).then(resultTags => {
+          createNewProject(
+            projectName,
+            projectChairName,
+            projectDescription,
+            projectImageId,
+            resultTags,
+            projectFields,
+            userId,
+            jwt
+          );
+        });
       } else {
-        handleEditProject(
-          projectName,
-          projectChairName,
-          projectDescription,
-          projectImageId,
-          projectTags,
-          projectFields,
-          userId,
-          selectedProject.id,
-          jwt
-        );
+        await createOrUpdateTags(projectTags, jwt).then(resultTags => {
+          handleEditProject(
+            projectName,
+            projectChairName,
+            projectDescription,
+            projectImageId,
+            projectTags,
+            projectFields,
+            userId,
+            selectedProject.id,
+            jwt
+          );
+        });
       }
     }
   }
@@ -427,13 +434,23 @@ function CreateViewEditProject(props) {
                         <DialogContentText>
                           {language === "en" ? en.addTagText : de.addTagText}
                         </DialogContentText>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="tag"
-                          label={language === "en" ? en.tagName : de.tagName}
+                        <Autocomplete
+                          id="search-input-tag"
+                          freeSolo
                           fullWidth
-                          onChange={event => handlesetNewTagValue(event.target.value)}
+                          options={allAvailableProjectTags.map(tag => tag.name)}
+                          onInputChange={(event, newTagValue) =>
+                            handlesetNewTagValue(newTagValue)
+                          }
+                          renderInput={params => (
+                            <CustomTextField
+                              {...params}
+                              label={language === "en" ? en.tagName : de.tagName}
+                              margin="dense"
+                              variant="filled"
+                              color="secondary"
+                            />
+                          )}
                         />
                       </DialogContent>
                       <DialogActions>
@@ -549,6 +566,7 @@ const mapStateToProps = ({
     projectFields,
     projectLanguageChoice,
     selectedProjectImageString,
+    allAvailableProjectTags,
   },
 }) => ({
   jwt,
@@ -565,6 +583,7 @@ const mapStateToProps = ({
   projectFields,
   projectLanguageChoice,
   selectedProjectImageString,
+  allAvailableProjectTags,
 });
 
 const mapDispatchToProps = {

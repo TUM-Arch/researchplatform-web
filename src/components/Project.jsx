@@ -36,6 +36,7 @@ import {
   handleSubmitProject,
   getImageFromId,
   handleSetProjectImage,
+  getAllTags,
 } from "../reducers/mainPage";
 import {
   COLOR_NOT_SUBMITTED,
@@ -129,6 +130,7 @@ class Project extends React.Component {
       setSelectedProject,
       setSelectedProjectImageString,
       openRejectionDialog,
+      getAllTags,
     } = this.props;
     const inputFile = React.createRef(null);
 
@@ -140,6 +142,7 @@ class Project extends React.Component {
 
     function handleEditProject(id, imageString) {
       setSelectedProjectImageString(imageString);
+      getAllTags(jwt);
       editProject(id);
       setSelectedProject(id);
     }
@@ -409,6 +412,7 @@ const mapDispatchToProps = {
   handleSetProjectImage: handleSetProjectImage,
   setSelectedProjectImageString: setSelectedProjectImageString,
   openRejectionDialog: openRejectionDialog,
+  getAllTags: getAllTags,
 };
 
 export default connect(

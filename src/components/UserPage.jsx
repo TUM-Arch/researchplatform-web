@@ -25,7 +25,7 @@ import {
   createProject,
   setWindowDimensions,
 } from "../actions/mainPage";
-import {getAllProjects, getCurrentFormfields} from "../reducers/mainPage";
+import {getAllProjects, getCurrentFormfields, getAllTags} from "../reducers/mainPage";
 
 const styles = theme => ({
   root: {
@@ -97,6 +97,7 @@ class UserPage extends React.Component {
       approvedProjects,
       createProject,
       getCurrentFormfields,
+      getAllTags,
       history,
     } = this.props;
 
@@ -109,6 +110,7 @@ class UserPage extends React.Component {
     }
 
     function handleCreateProject() {
+      getAllTags(jwt);
       getCurrentFormfields(jwt);
       createProject();
     }
@@ -221,6 +223,7 @@ const mapDispatchToProps = {
   setWindowDimensions: setWindowDimensions,
   getAllProjects: getAllProjects,
   getCurrentFormfields: getCurrentFormfields,
+  getAllTags: getAllTags,
 };
 
 export default connect(

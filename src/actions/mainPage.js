@@ -31,6 +31,7 @@ export const SETSELECTEDPROJECTIMAGESTRING = "SETSELECTEDPROJECTIMAGESTRING";
 export const DUMMY = "DUMMY";
 export const SETUSERID = "SETUSERID";
 export const OPENREJECTIONDIALOG = "OPENREJECTIONDIALOG";
+export const SETALLAVAILABLEPROJECTTAGS = "SETALLAVAILABLEPROJECTTAGS";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -227,4 +228,10 @@ export const openRejectionDialog = (value, state) => dispatch =>
     type: OPENREJECTIONDIALOG,
     value,
     state,
+  });
+
+export const setAllAvailableProjectTags = result => dispatch =>
+  dispatch({
+    type: SETALLAVAILABLEPROJECTTAGS,
+    result,
   });

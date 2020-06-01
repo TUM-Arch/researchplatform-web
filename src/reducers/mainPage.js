@@ -32,6 +32,7 @@ import {
   SETSELECTEDPROJECTIMAGESTRING,
   SETUSERID,
   OPENREJECTIONDIALOG,
+  SETALLAVAILABLEPROJECTTAGS,
   DUMMY,
   newProjectCreated,
   updateProject,
@@ -44,8 +45,9 @@ import {
   setSelectedProjectImageString,
   setSelectedProject,
   viewProject,
+  setAllAvailableProjectTags,
 } from "../actions/mainPage";
-import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
+import {projectsURL, formfieldsURL, imagesURL, tagsURL} from "../util/constants";
 import {setAdmin, setJwt, setUserId} from "../actions/loginPage";
 
 let initialState = {
@@ -79,6 +81,7 @@ let initialState = {
   projectDescription: "",
   projectImageId: "",
   projectTags: [],
+  allAvailableProjectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
   selectedProjectImageString: "",
@@ -165,7 +168,7 @@ export default function mainPage(state = initialState, action) {
         projectDialogState: "view",
         isProjectDialogOpen: true,
         projectImageId: projectInSight.imageId,
-        projectTags: projectInSight.tags,
+        projectTags: projectInSight.tags.map(tag => tag.name),
         projectFields: projectInSight.fields,
       };
     case EDITPROJECT:
@@ -178,7 +181,7 @@ export default function mainPage(state = initialState, action) {
         projectChairName: project.chairName,
         projectDescription: project.description,
         projectImageId: project.imageId,
-        projectTags: project.tags,
+        projectTags: project.tags.map(tag => tag.name),
         projectFields: project.fields,
       };
     case UPDATEPROJECT:
@@ -404,6 +407,11 @@ export default function mainPage(state = initialState, action) {
         ...state,
         isRejectionDialogOpen: action.value,
         rejectDialogState: action.state,
+      };
+    case SETALLAVAILABLEPROJECTTAGS:
+      return {
+        ...state,
+        allAvailableProjectTags: action.result,
       };
     default:
       return state;
@@ -632,6 +640,41 @@ export function handleSetProjectImage(body, jwt) {
       .then(result => {
         dispatch(setProjectImageId(result.imageId, body.get("projectId")));
         return result;
+      });
+  };
+}
+
+export function createOrUpdateTags(tagNames, jwt) {
+  const body = {
+    tags: tagNames,
+  };
+
+  return fetch(tagsURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: jwt,
+    },
+    body: JSON.stringify(body),
+  })
+    .then(response => response.json())
+    .then(result => {
+      return result.tagsList;
+    });
+}
+
+export function getAllTags(jwt) {
+  return dispatch => {
+    return fetch(tagsURL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: jwt,
+      },
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(setAllAvailableProjectTags(result.tagsList));
       });
   };
 }
