@@ -503,6 +503,7 @@ export function createNewProject(
       .then(response => response.json())
       .then(result => {
         dispatch(newProjectCreated(result));
+        return result;
       });
   };
 }

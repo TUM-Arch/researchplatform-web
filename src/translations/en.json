@@ -34,5 +34,7 @@
   "download": "Download",
   "updateImage": "Update Image",
   "rejectProject": "Reject Project",
-  "rejectReason": "RejectionReason"
+  "rejectReason": "RejectionReason",
+  "selectImage": "Select Image",
+  "addImage": "Add Image"
 }

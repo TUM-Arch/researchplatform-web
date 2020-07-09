@@ -41,6 +41,7 @@ import {
   handleEditProject,
   handleSubmitProject,
   createOrUpdateTags,
+  handleSetProjectImage,
 } from "../reducers/mainPage";
 
 const styles = theme => ({
@@ -107,6 +108,10 @@ const styles = theme => ({
   cardImage: {
     objectFit: "scale-down",
   },
+  input: {
+    paddingTop: theme.spacing(0.5),
+    paddingLeft: theme.spacing(0.5),
+  },
 });
 
 const CustomTextField = withStyles({
@@ -156,10 +161,13 @@ function CreateViewEditProject(props) {
     projectLanguageChoice,
     selectedProjectImageString,
     allAvailableProjectTags,
+    handleSetProjectImage,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
   const [newTagValue, setNewTagValue] = React.useState("");
+  const inputFile = React.createRef(null);
+  let imageRef = null;
 
   const handleOpenAddTag = () => {
     setOpenAddTag(true);
@@ -202,8 +210,8 @@ function CreateViewEditProject(props) {
       alert("The required fields are empty!!");
     } else {
       if (projectDialogState === "create") {
-        await createOrUpdateTags(projectTags, jwt).then(resultTags => {
-          createNewProject(
+        await createOrUpdateTags(projectTags, jwt).then(async resultTags => {
+          await createNewProject(
             projectName,
             projectChairName,
             projectDescription,
@@ -212,7 +220,15 @@ function CreateViewEditProject(props) {
             projectFields,
             userId,
             jwt
-          );
+          ).then(async project => {
+            if (imageRef) {
+              console.log("Hello");
+              const formData = new FormData();
+              formData.append("image", imageRef, imageRef.name);
+              formData.append("projectId", project.id);
+              await handleSetProjectImage(formData, jwt).then(window.location.reload());
+            }
+          });
         });
       } else {
         await createOrUpdateTags(projectTags, jwt).then(resultTags => {
@@ -235,6 +251,10 @@ function CreateViewEditProject(props) {
   function handleSubmit() {
     handlesubmitProject(selectedProject.id, jwt);
     dialogClose();
+  }
+
+  function handleImageUpload(e) {
+    imageRef = e.target.files[0];
   }
 
   function handleOnChangeEvent(keyName, value) {
@@ -372,6 +392,32 @@ function CreateViewEditProject(props) {
                       }}
                     />
                   </div>
+                );
+              case "imageId":
+                return (
+                  projectDialogState === "create" && (
+                    <div
+                      key={i}
+                      component="ul"
+                      variant="outlined"
+                      className={classes.tags}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        className={classes.tagText}
+                      >
+                        {language === "en" ? en.selectImage : de.selectImage}:
+                      </Typography>
+
+                      <input
+                        className={classes.input}
+                        ref={inputFile}
+                        type="file"
+                        onChange={e => handleImageUpload(e)}
+                      />
+                    </div>
+                  )
                 );
               case "tags":
                 return (
@@ -600,6 +646,7 @@ const mapDispatchToProps = {
   setProjectFieldEnValue: setProjectFieldEnValue,
   setProjectFieldDeValue: setProjectFieldDeValue,
   setprojectLanguageChoice: setprojectLanguageChoice,
+  handleSetProjectImage: handleSetProjectImage,
 };
 
 export default connect(

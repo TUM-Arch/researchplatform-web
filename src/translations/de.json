@@ -34,5 +34,7 @@
   "download": "Herunterladen",
   "updateImage": "Bild aktualisieren",
   "rejectProject": "Projekt ablehnen",
-  "rejectReason": "Ablehnungsgrund"
+  "rejectReason": "Ablehnungsgrund",
+  "selectImage": "Bild auswählen",
+  "addImage": "Bild hinzufügen"
 }
