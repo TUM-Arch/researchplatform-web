@@ -20,6 +20,7 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
+import {Autocomplete} from "@material-ui/lab";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import {withStyles} from "@material-ui/styles";
@@ -39,6 +40,8 @@ import {
   createNewProject,
   handleEditProject,
   handleSubmitProject,
+  createOrUpdateTags,
+  handleSetProjectImage,
 } from "../reducers/mainPage";
 
 const styles = theme => ({
@@ -105,6 +108,10 @@ const styles = theme => ({
   cardImage: {
     objectFit: "scale-down",
   },
+  input: {
+    paddingTop: theme.spacing(0.5),
+    paddingLeft: theme.spacing(0.5),
+  },
 });
 
 const CustomTextField = withStyles({
@@ -127,6 +134,7 @@ function CreateViewEditProject(props) {
   const {
     classes,
     language,
+    jwt,
     userId,
     dialogClose,
     isProjectDialogOpen,
@@ -152,10 +160,14 @@ function CreateViewEditProject(props) {
     projectFields,
     projectLanguageChoice,
     selectedProjectImageString,
+    allAvailableProjectTags,
+    handleSetProjectImage,
   } = props;
 
   const [openAddTag, setOpenAddTag] = React.useState(false);
   const [newTagValue, setNewTagValue] = React.useState("");
+  const inputFile = React.createRef(null);
+  let imageRef = null;
 
   const handleOpenAddTag = () => {
     setOpenAddTag(true);
@@ -193,39 +205,56 @@ function CreateViewEditProject(props) {
     );
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (isRequiredFieldsNotFilled()) {
       alert("The required fields are empty!!");
     } else {
       if (projectDialogState === "create") {
-        createNewProject(
-          projectName,
-          projectChairName,
-          projectDescription,
-          projectImageId,
-          projectTags,
-          projectFields,
-          userId
-        );
+        await createOrUpdateTags(projectTags, jwt).then(async resultTags => {
+          await createNewProject(
+            projectName,
+            projectChairName,
+            projectDescription,
+            projectImageId,
+            resultTags,
+            projectFields,
+            userId,
+            jwt
+          ).then(async project => {
+            if (imageRef) {
+              console.log("Hello");
+              const formData = new FormData();
+              formData.append("image", imageRef, imageRef.name);
+              formData.append("projectId", project.id);
+              await handleSetProjectImage(formData, jwt).then(window.location.reload());
+            }
+          });
+        });
       } else {
-        handleEditProject(
-          projectName,
-          projectChairName,
-          projectDescription,
-          projectImageId,
-          projectTags,
-          projectFields,
-          userId,
-          selectedProject.id
-        );
-        window.location.reload();
+        await createOrUpdateTags(projectTags, jwt).then(resultTags => {
+          handleEditProject(
+            projectName,
+            projectChairName,
+            projectDescription,
+            projectImageId,
+            projectTags,
+            projectFields,
+            userId,
+            selectedProject.id,
+            jwt
+          );
+        });
       }
     }
   }
 
   function handleSubmit() {
-    handlesubmitProject(selectedProject.id);
+    handlesubmitProject(selectedProject.id, jwt);
     dialogClose();
+  }
+
+  function handleImageUpload(e) {
+    imageRef = e.target.files[0];
   }
 
   function handleOnChangeEvent(keyName, value) {
@@ -364,6 +393,32 @@ function CreateViewEditProject(props) {
                     />
                   </div>
                 );
+              case "imageId":
+                return (
+                  projectDialogState === "create" && (
+                    <div
+                      key={i}
+                      component="ul"
+                      variant="outlined"
+                      className={classes.tags}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        className={classes.tagText}
+                      >
+                        {language === "en" ? en.selectImage : de.selectImage}:
+                      </Typography>
+
+                      <input
+                        className={classes.input}
+                        ref={inputFile}
+                        type="file"
+                        onChange={e => handleImageUpload(e)}
+                      />
+                    </div>
+                  )
+                );
               case "tags":
                 return (
                   <div
@@ -425,13 +480,23 @@ function CreateViewEditProject(props) {
                         <DialogContentText>
                           {language === "en" ? en.addTagText : de.addTagText}
                         </DialogContentText>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="tag"
-                          label={language === "en" ? en.tagName : de.tagName}
+                        <Autocomplete
+                          id="search-input-tag"
+                          freeSolo
                           fullWidth
-                          onChange={event => handlesetNewTagValue(event.target.value)}
+                          options={allAvailableProjectTags.map(tag => tag.name)}
+                          onInputChange={(event, newTagValue) =>
+                            handlesetNewTagValue(newTagValue)
+                          }
+                          renderInput={params => (
+                            <CustomTextField
+                              {...params}
+                              label={language === "en" ? en.tagName : de.tagName}
+                              margin="dense"
+                              variant="filled"
+                              color="secondary"
+                            />
+                          )}
                         />
                       </DialogContent>
                       <DialogActions>
@@ -532,6 +597,7 @@ function CreateViewEditProject(props) {
 }
 
 const mapStateToProps = ({
+  loginPage: {jwt},
   mainPage: {
     userId,
     isProjectDialogOpen,
@@ -546,8 +612,10 @@ const mapStateToProps = ({
     projectFields,
     projectLanguageChoice,
     selectedProjectImageString,
+    allAvailableProjectTags,
   },
 }) => ({
+  jwt,
   userId,
   isProjectDialogOpen,
   projectDialogState,
@@ -561,6 +629,7 @@ const mapStateToProps = ({
   projectFields,
   projectLanguageChoice,
   selectedProjectImageString,
+  allAvailableProjectTags,
 });
 
 const mapDispatchToProps = {
@@ -577,6 +646,7 @@ const mapDispatchToProps = {
   setProjectFieldEnValue: setProjectFieldEnValue,
   setProjectFieldDeValue: setProjectFieldDeValue,
   setprojectLanguageChoice: setprojectLanguageChoice,
+  handleSetProjectImage: handleSetProjectImage,
 };
 
 export default connect(

@@ -14,6 +14,7 @@ import {withStyles} from "@material-ui/styles";
 import {isMobile} from "react-device-detect";
 import Header from "./Header";
 import CreateViewEditProject from "./CreateViewEditProject";
+import RejectProjectDialog from "./RejectProjectDialog";
 import DisplayProjects from "./DisplayProjects";
 import {
   viewAllProjects,
@@ -24,8 +25,7 @@ import {
   createProject,
   setWindowDimensions,
 } from "../actions/mainPage";
-import {getAllProjects, getCurrentFormfields} from "../reducers/mainPage";
-import AuthAdmin from "./AuthAdmin";
+import {getAllProjects, getCurrentFormfields, getAllTags} from "../reducers/mainPage";
 
 const styles = theme => ({
   root: {
@@ -57,11 +57,9 @@ const styles = theme => ({
   },
 });
 
-const isAdmin = AuthAdmin();
-
 class UserPage extends React.Component {
   componentWillMount = () => {
-    this.props.getAllProjects();
+    this.props.getAllProjects(this.props.isAdmin, this.props.jwt, this.props.userId);
     this.updateDimensions();
   };
   componentDidMount = () => {
@@ -84,6 +82,8 @@ class UserPage extends React.Component {
     const {
       classes,
       language,
+      isAdmin,
+      jwt,
       viewProjects,
       viewAllProj,
       viewMyProj,
@@ -93,9 +93,11 @@ class UserPage extends React.Component {
       allProjects,
       myProjects,
       submittedProjects,
-      rejectedApprovedProjects,
+      rejectedProjects,
+      approvedProjects,
       createProject,
       getCurrentFormfields,
+      getAllTags,
       history,
     } = this.props;
 
@@ -108,7 +110,8 @@ class UserPage extends React.Component {
     }
 
     function handleCreateProject() {
-      getCurrentFormfields();
+      getAllTags(jwt);
+      getCurrentFormfields(jwt);
       createProject();
     }
 
@@ -172,33 +175,42 @@ class UserPage extends React.Component {
                   ? myProjects
                   : viewProjects === "submitted"
                   ? submittedProjects
-                  : rejectedApprovedProjects
+                  : viewProjects === "approved"
+                  ? approvedProjects
+                  : rejectedProjects
               }
             />
           </div>
         </div>
         <CreateViewEditProject language={language} />
+        <RejectProjectDialog language={language} />
       </div>
     );
   }
 }
 
 const mapStateToProps = ({
+  loginPage: {isAdmin, jwt, userId},
   mainPage: {
     language,
     viewProjects,
     allProjects,
     myProjects,
     submittedProjects,
-    rejectedApprovedProjects,
+    rejectedProjects,
+    approvedProjects,
   },
 }) => ({
+  isAdmin,
+  jwt,
+  userId,
   language,
   viewProjects,
   allProjects,
   myProjects,
   submittedProjects,
-  rejectedApprovedProjects,
+  rejectedProjects,
+  approvedProjects,
 });
 
 const mapDispatchToProps = {
@@ -211,6 +223,7 @@ const mapDispatchToProps = {
   setWindowDimensions: setWindowDimensions,
   getAllProjects: getAllProjects,
   getCurrentFormfields: getCurrentFormfields,
+  getAllTags: getAllTags,
 };
 
 export default connect(

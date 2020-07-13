@@ -23,7 +23,7 @@ import {
   setSelectedProject,
 } from "../actions/mainPage";
 import {openProjectOnSearch} from "../reducers/mainPage";
-import AuthAdmin from "./AuthAdmin";
+import {attemptLogout} from "../reducers/loginPage";
 
 const styles = theme => ({
   root: {
@@ -50,8 +50,6 @@ const styles = theme => ({
   },
   searchInput: {},
 });
-
-const isAdmin = AuthAdmin();
 
 const SearchTextField = withStyles({
   root: {
@@ -88,12 +86,16 @@ function Header(props) {
     changeToDe,
     language,
     history,
+    isAdmin,
+    jwt,
+    userId,
     searchEnabled,
     settingsEnabled,
     allProjects,
     openProjectOnSearch,
     viewProject,
     setSelectedProject,
+    attemptLogout,
   } = props;
 
   function handleViewSettingsPage() {
@@ -102,8 +104,7 @@ function Header(props) {
   }
 
   function logout() {
-    sessionStorage.removeItem("isAdmin");
-    window.location.reload();
+    attemptLogout(userId, jwt);
   }
 
   function handleSearchSelect(e, value) {
@@ -112,7 +113,7 @@ function Header(props) {
     });
     if (project && project.name === value) {
       if (project.imageId) {
-        openProjectOnSearch(project.id, project.imageId);
+        openProjectOnSearch(project.id, project.imageId, jwt);
       } else {
         viewProject(project.id);
         setSelectedProject(project.id);
@@ -130,7 +131,7 @@ function Header(props) {
               {language === "en" ? en.departmentName : de.departmentName}
             </Typography>
           ) : null}
-          {searchEnabled && isAdmin && !isMobile && (
+          {searchEnabled && isAdmin && (
             <Autocomplete
               id="search-input"
               className={classes.searchInput}
@@ -189,7 +190,13 @@ Header.propTypes = {
   language: PropTypes.string,
 };
 
-const mapStateToProps = ({mainPage: {language, allProjects}}) => ({
+const mapStateToProps = ({
+  loginPage: {isAdmin, jwt, userId},
+  mainPage: {language, allProjects},
+}) => ({
+  isAdmin,
+  jwt,
+  userId,
   language,
   allProjects,
 });
@@ -200,6 +207,7 @@ const mapDispatchToProps = {
   openProjectOnSearch: openProjectOnSearch,
   viewProject: viewProject,
   setSelectedProject: setSelectedProject,
+  attemptLogout: attemptLogout,
 };
 
 export default connect(

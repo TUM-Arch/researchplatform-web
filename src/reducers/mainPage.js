@@ -30,6 +30,9 @@ import {
   SETPROJECTFIELDDEVALUE,
   SETPROJECTLANGUAGECHOICE,
   SETSELECTEDPROJECTIMAGESTRING,
+  SETUSERID,
+  OPENREJECTIONDIALOG,
+  SETALLAVAILABLEPROJECTTAGS,
   DUMMY,
   newProjectCreated,
   updateProject,
@@ -42,8 +45,10 @@ import {
   setSelectedProjectImageString,
   setSelectedProject,
   viewProject,
+  setAllAvailableProjectTags,
 } from "../actions/mainPage";
-import {projectsURL, formfieldsURL, imagesURL} from "../util/constants";
+import {projectsURL, formfieldsURL, imagesURL, tagsURL} from "../util/constants";
+import {setAdmin, setJwt, setUserId} from "../actions/loginPage";
 
 let initialState = {
   language: "en",
@@ -51,8 +56,9 @@ let initialState = {
   allProjects: [],
   myProjects: [],
   submittedProjects: [],
-  rejectedApprovedProjects: [],
-  userId: "tempuser",
+  rejectedProjects: [],
+  approvedProjects: [],
+  userId: "",
   isProjectDialogOpen: false,
   projectDialogState: "",
   windowDims: {
@@ -68,15 +74,19 @@ let initialState = {
     tags: [],
     fields: [],
     status: "",
+    rejectionText: "",
   },
   projectName: "",
   projectChairName: "",
   projectDescription: "",
   projectImageId: "",
   projectTags: [],
+  allAvailableProjectTags: [],
   projectFields: [],
   projectLanguageChoice: "en",
   selectedProjectImageString: "",
+  isRejectionDialogOpen: false,
+  rejectDialogState: "view",
   dummy: true,
 };
 
@@ -109,33 +119,16 @@ export default function mainPage(state = initialState, action) {
       return {
         ...state,
         viewProjects: "submitted",
-        submittedProjects: state.allProjects
-          .filter(function(project) {
-            return project.status === "SUBMITTED";
-          })
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case VIEWAPPROVED:
       return {
         ...state,
         viewProjects: "approved",
-        rejectedApprovedProjects: state.allProjects
-          .filter(project => project.status === "APPROVED")
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case VIEWREJECTED:
       return {
         ...state,
         viewProjects: "rejected",
-        rejectedApprovedProjects: state.allProjects
-          .filter(project => project.status === "REJECTED")
-          .sort(function(a, b) {
-            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
-          }),
       };
     case PROJECTDIALOGCLOSE:
       return {
@@ -175,7 +168,7 @@ export default function mainPage(state = initialState, action) {
         projectDialogState: "view",
         isProjectDialogOpen: true,
         projectImageId: projectInSight.imageId,
-        projectTags: projectInSight.tags,
+        projectTags: projectInSight.tags.map(tag => tag.name),
         projectFields: projectInSight.fields,
       };
     case EDITPROJECT:
@@ -188,7 +181,7 @@ export default function mainPage(state = initialState, action) {
         projectChairName: project.chairName,
         projectDescription: project.description,
         projectImageId: project.imageId,
-        projectTags: project.tags,
+        projectTags: project.tags.map(tag => tag.name),
         projectFields: project.fields,
       };
     case UPDATEPROJECT:
@@ -217,7 +210,10 @@ export default function mainPage(state = initialState, action) {
         submittedProjects: state.submittedProjects.filter(
           project => project.id !== action.id
         ),
-        rejectedApprovedProjects: state.rejectedApprovedProjects.filter(
+        rejectedProjects: state.rejectedProjects.filter(
+          project => project.id !== action.id
+        ),
+        approvedProjects: state.approvedProjects.filter(
           project => project.id !== action.id
         ),
       };
@@ -226,17 +222,53 @@ export default function mainPage(state = initialState, action) {
         ...state,
         myProjects: state.myProjects.map(project =>
           project.id === action.result.id
-            ? {...project, status: action.result.status}
+            ? {
+                ...project,
+                status: action.result.status,
+                rejectionText: action.rejectionText,
+              }
             : project
         ),
         allProjects: state.allProjects.map(project =>
           project.id === action.result.id
-            ? {...project, status: action.result.status}
+            ? {
+                ...project,
+                status: action.result.status,
+                rejectionText: action.rejectionText,
+              }
             : project
         ),
-        submittedProjects: state.submittedProjects.filter(
-          project => project.id !== action.result.id
-        ),
+        submittedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "SUBMITTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        rejectedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "REJECTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        approvedProjects: state.allProjects
+          .map(project =>
+            project.id === action.result.id
+              ? {...project, status: action.result.status}
+              : project
+          )
+          .filter(project => project.status === "APPROVED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        isRejectionDialogOpen: false,
       };
     case SETSELECTEDPROJECT:
       return {
@@ -261,6 +293,23 @@ export default function mainPage(state = initialState, action) {
           .filter(function(project) {
             return project.userId === state.userId;
           })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        submittedProjects: action.values.projectsList
+          .filter(function(project) {
+            return project.status === "SUBMITTED";
+          })
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        rejectedProjects: action.values.projectsList
+          .filter(project => project.status === "REJECTED")
+          .sort(function(a, b) {
+            return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
+          }),
+        approvedProjects: action.values.projectsList
+          .filter(project => project.status === "APPROVED")
           .sort(function(a, b) {
             return a.yearOfCreation < b.yearOfCreation ? 1 : -1;
           }),
@@ -343,37 +392,80 @@ export default function mainPage(state = initialState, action) {
         ...state,
         selectedProjectImageString: action.value,
       };
+    case SETUSERID:
+      return {
+        ...state,
+        userId: action.value,
+      };
     case DUMMY:
       return {
         ...state,
         dummy: !state.dummy,
+      };
+    case OPENREJECTIONDIALOG:
+      return {
+        ...state,
+        isRejectionDialogOpen: action.value,
+        rejectDialogState: action.state,
+      };
+    case SETALLAVAILABLEPROJECTTAGS:
+      return {
+        ...state,
+        allAvailableProjectTags: action.result,
       };
     default:
       return state;
   }
 }
 
-export function getAllProjects() {
+export function getAllProjects(isAdmin, jwt, userId) {
   let values = {};
+  let projectsUrl = isAdmin ? projectsURL : projectsURL + "/my";
+
+  let invalidJwt = () => {
+    let error = new Error();
+    error.name = "InvalidJWT";
+    return error;
+  };
+
   return dispatch => {
-    return fetch(projectsURL, {
+    return fetch(projectsUrl, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+        userId: userId,
+      },
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 200) return response.json();
+        else throw invalidJwt();
+      })
       .then(result => {
         values = {
           numberOfProjects: result.numberOfProjects,
           projectsList: result.projectsList,
         };
         dispatch(updateProjects(values));
+      })
+      .catch(error => {
+        if (error.name === "InvalidJWT") {
+          window.localStorage.removeItem("isAdmin");
+          dispatch(setJwt(""));
+          dispatch(setAdmin(null));
+          dispatch(setUserId(""));
+          window.location.reload();
+        }
       });
   };
 }
 
-export function handledeleteProject(id) {
+export function handledeleteProject(id, jwt) {
   return dispatch => {
     return fetch(projectsURL + "/" + id, {
       method: "DELETE",
+      headers: {
+        Authorization: jwt,
+      },
     }).then(response =>
       response.status === 200 ? dispatch(deleteProject(id)) : console.log("Failed")
     );
@@ -387,7 +479,8 @@ export function createNewProject(
   projectImageId,
   projectTags,
   projectFields,
-  userId
+  userId,
+  jwt
 ) {
   const body = {
     name: projectName,
@@ -403,12 +496,14 @@ export function createNewProject(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
       body: JSON.stringify(body),
     })
       .then(response => response.json())
       .then(result => {
         dispatch(newProjectCreated(result));
+        return result;
       });
   };
 }
@@ -421,7 +516,8 @@ export function handleEditProject(
   projectTags,
   projectFields,
   userId,
-  id
+  id,
+  jwt
 ) {
   const body = {
     name: projectName,
@@ -437,6 +533,7 @@ export function handleEditProject(
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
       body: JSON.stringify(body),
     })
@@ -447,12 +544,13 @@ export function handleEditProject(
   };
 }
 
-export function handleSubmitProject(id) {
+export function handleSubmitProject(id, jwt) {
   return dispatch => {
     return fetch(projectsURL + "/submit/" + id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
     })
       .then(response => response.json())
@@ -462,26 +560,30 @@ export function handleSubmitProject(id) {
   };
 }
 
-export function handleRejectProject(id) {
+export function handleRejectProject(id, jwt, rejectionText) {
   return dispatch => {
-    return fetch(projectsURL + "/reject/" + id, {
+    return fetch(projectsURL + "/reject/" + id + `/?rejectionText=${rejectionText}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
     })
       .then(response => response.json())
       .then(result => {
-        dispatch(rejectProject(result));
+        dispatch(rejectProject(result, rejectionText));
       });
   };
 }
 
-export function getCurrentFormfields() {
+export function getCurrentFormfields(jwt) {
   let values = {};
   return dispatch => {
     return fetch(formfieldsURL, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -494,9 +596,12 @@ export function getCurrentFormfields() {
   };
 }
 
-export function getImageFromId(imageId) {
+export function getImageFromId(imageId, jwt) {
   return fetch(imagesURL + "/" + imageId, {
     method: "GET",
+    headers: {
+      Authorization: jwt,
+    },
   })
     .then(response => response.json())
     .then(result => {
@@ -504,10 +609,13 @@ export function getImageFromId(imageId) {
     });
 }
 
-export function openProjectOnSearch(id, imageId) {
+export function openProjectOnSearch(id, imageId, jwt) {
   return dispatch => {
     return fetch(imagesURL + "/" + imageId, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -518,10 +626,13 @@ export function openProjectOnSearch(id, imageId) {
   };
 }
 
-export function handleSetProjectImage(body) {
+export function handleSetProjectImage(body, jwt) {
   return dispatch => {
     return fetch(imagesURL, {
       method: "POST",
+      headers: {
+        Authorization: jwt,
+      },
       body: body,
     })
       .then(response =>
@@ -530,6 +641,41 @@ export function handleSetProjectImage(body) {
       .then(result => {
         dispatch(setProjectImageId(result.imageId, body.get("projectId")));
         return result;
+      });
+  };
+}
+
+export function createOrUpdateTags(tagNames, jwt) {
+  const body = {
+    tags: tagNames,
+  };
+
+  return fetch(tagsURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: jwt,
+    },
+    body: JSON.stringify(body),
+  })
+    .then(response => response.json())
+    .then(result => {
+      return result.tagsList;
+    });
+}
+
+export function getAllTags(jwt) {
+  return dispatch => {
+    return fetch(tagsURL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: jwt,
+      },
+    })
+      .then(response => response.json())
+      .then(result => {
+        dispatch(setAllAvailableProjectTags(result.tagsList));
       });
   };
 }

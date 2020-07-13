@@ -141,11 +141,14 @@ export default function mainPage(state = initialState, action) {
   }
 }
 
-export function getCurrentFormfields() {
+export function getCurrentFormfields(jwt) {
   let values = {};
   return dispatch => {
     return fetch(formfieldsURL, {
       method: "GET",
+      headers: {
+        Authorization: jwt,
+      },
     })
       .then(response => response.json())
       .then(result => {
@@ -158,10 +161,13 @@ export function getCurrentFormfields() {
   };
 }
 
-export function handleDeleteField(id) {
+export function handleDeleteField(id, jwt) {
   return dispatch => {
     return fetch(formfieldsURL + "/" + id, {
       method: "DELETE",
+      headers: {
+        Authorization: jwt,
+      },
     }).then(response =>
       response.status === 200 ? dispatch(deleteField(id)) : console.log("Failed")
     );
@@ -177,7 +183,8 @@ export function saveField(
   fieldRequired,
   fieldLength,
   isNewField,
-  id
+  id,
+  jwt
 ) {
   const url = isNewField === true ? formfieldsURL : formfieldsURL + "/" + id;
   const body = {
@@ -194,6 +201,7 @@ export function saveField(
       method: isNewField === true ? "POST" : "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: jwt,
       },
       body: JSON.stringify(body),
     })

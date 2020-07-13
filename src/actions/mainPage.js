@@ -29,6 +29,9 @@ export const SETPROJECTFIELDDEVALUE = "SETPROJECTFIELDDEVALUE";
 export const SETPROJECTLANGUAGECHOICE = "SETPROJECTLANGUAGECHOICE";
 export const SETSELECTEDPROJECTIMAGESTRING = "SETSELECTEDPROJECTIMAGESTRING";
 export const DUMMY = "DUMMY";
+export const SETUSERID = "SETUSERID";
+export const OPENREJECTIONDIALOG = "OPENREJECTIONDIALOG";
+export const SETALLAVAILABLEPROJECTTAGS = "SETALLAVAILABLEPROJECTTAGS";
 
 export const changeToEnglish = () => dispatch =>
   dispatch({
@@ -111,10 +114,11 @@ export const submitProject = result => dispatch =>
     result,
   });
 
-export const rejectProject = result => dispatch =>
+export const rejectProject = (result, rejectionText) => dispatch =>
   dispatch({
     type: SUBMITREJECTPROJECT,
     result,
+    rejectionText,
   });
 
 export const setSelectedProject = value => dispatch =>
@@ -211,4 +215,23 @@ export const setprojectLanguageChoice = value => dispatch =>
 export const dummyDispatch = () => dispatch =>
   dispatch({
     type: DUMMY,
+  });
+
+export const setUserID = value => dispatch =>
+  dispatch({
+    type: SETUSERID,
+    value,
+  });
+
+export const openRejectionDialog = (value, state) => dispatch =>
+  dispatch({
+    type: OPENREJECTIONDIALOG,
+    value,
+    state,
+  });
+
+export const setAllAvailableProjectTags = result => dispatch =>
+  dispatch({
+    type: SETALLAVAILABLEPROJECTTAGS,
+    result,
   });

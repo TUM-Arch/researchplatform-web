@@ -1,9 +1,8 @@
-function AuthUser() {
-  let isAdmin = sessionStorage.getItem("isAdmin");
+function AuthUser(store) {
+  let isAdmin = localStorage.getItem("isAdmin");
   if (isAdmin !== null && isAdmin !== undefined) {
     return isAdmin === "false" ? true : false;
   }
-  return false;
 }
 
 export default AuthUser;

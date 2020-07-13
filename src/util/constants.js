@@ -6,6 +6,9 @@ export const serverURL = "http://localhost:5000/api";
 export const projectsURL = `${serverURL}/projects`;
 export const formfieldsURL = `${serverURL}/fields`;
 export const imagesURL = `${serverURL}/images`;
+export const tagsURL = `${serverURL}/tags`;
+export const loginURL = `${serverURL}/login`;
+export const logoutURL = `${serverURL}/logout`;
 
 // COLORS
 export const grey50 = "#fafafa";
