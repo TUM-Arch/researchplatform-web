@@ -484,7 +484,11 @@ function CreateViewEditProject(props) {
                           id="search-input-tag"
                           freeSolo
                           fullWidth
-                          options={allAvailableProjectTags.map(tag => tag.name)}
+                          options={
+                            allAvailableProjectTags
+                              ? allAvailableProjectTags.map(tag => tag.name)
+                              : null
+                          }
                           onInputChange={(event, newTagValue) =>
                             handlesetNewTagValue(newTagValue)
                           }
