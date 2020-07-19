@@ -22,7 +22,6 @@ import {
   setFieldDescription,
   setFieldRequired,
   setFieldLength,
-  resetFieldsState,
 } from "../actions/settingsPage";
 import {saveField} from "../reducers/settingsPage";
 
@@ -73,7 +72,6 @@ class CreateEditField extends React.Component {
       setFieldDescription,
       setFieldRequired,
       setFieldLength,
-      resetFieldsState,
       fieldNameEn,
       fieldNameDe,
       fieldDescription,
@@ -99,7 +97,6 @@ class CreateEditField extends React.Component {
       isNewField,
       id
     ) {
-      createEditField();
       saveField(
         fieldNameEn,
         fieldNameDe,
@@ -111,9 +108,9 @@ class CreateEditField extends React.Component {
         isNewField,
         id,
         jwt
-      );
-      resetFieldsState();
-      window.location.reload();
+      ).then(() => {
+        window.location.reload();
+      });
     }
 
     const nameMap = {
@@ -306,7 +303,6 @@ const mapDispatchToProps = {
   setFieldDescription: setFieldDescription,
   setFieldRequired: setFieldRequired,
   setFieldLength: setFieldLength,
-  resetFieldsState: resetFieldsState,
 };
 
 export default connect(

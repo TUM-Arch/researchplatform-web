@@ -14,7 +14,7 @@ import {
   SETNEWFIELD,
   setFields,
   deleteField,
-  createEditField,
+  resetFieldsState,
 } from "../actions/settingsPage";
 import {formfieldsURL} from "../util/constants";
 
@@ -135,6 +135,7 @@ export default function mainPage(state = initialState, action) {
         fieldValueDe: "",
         fieldRequired: false,
         fieldLength: 128,
+        isFormDialogOpen: false,
       };
     default:
       return state;
@@ -207,7 +208,7 @@ export function saveField(
     })
       .then(response => response.json())
       .then(result => {
-        dispatch(createEditField());
+        dispatch(resetFieldsState());
       });
   };
 }
