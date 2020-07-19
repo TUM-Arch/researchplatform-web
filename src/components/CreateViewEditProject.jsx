@@ -379,7 +379,19 @@ function CreateViewEditProject(props) {
                     <CustomTextField
                       multiline
                       rows={keyName === "description" ? "4" : "1"}
-                      label={keyName}
+                      label={
+                        keyName === "name"
+                          ? language === "en"
+                            ? en.fieldProjectName
+                            : de.fieldProjectName
+                          : keyName === "description"
+                          ? language === "en"
+                            ? en.fieldDescription
+                            : de.fieldDescription
+                          : language === "en"
+                          ? en.fieldChairName
+                          : de.fieldChairName
+                      }
                       defaultValue={
                         projectDialogState === "create" ? "" : selectedProject[keyName]
                       }

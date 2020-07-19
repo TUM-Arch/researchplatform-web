@@ -21,6 +21,8 @@
   "save": "Speichern",
   "add": "Hinzufügen",
   "fieldProjectName": "Projektname",
+  "fieldChairName": "Lehrstuhl/Professur",
+  "fieldDescription": "Kurzbeschreibung",
   "done": "Erledigt",
   "settingsTitle": "Aktuelle Form",
   "logout": "Ausloggen",

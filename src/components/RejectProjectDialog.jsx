@@ -44,8 +44,8 @@ function RejectProjectDialog(props) {
       <DialogTitle id="form-dialog-title">
         {rejectDialogState === "view"
           ? language === "en"
-            ? en.view + en.rejectReason
-            : de.view + de.rejectReason
+            ? en.view + " " + en.rejectReason
+            : de.view + " " + de.rejectReason
           : language === "en"
           ? en.rejectProject
           : de.rejectProject}

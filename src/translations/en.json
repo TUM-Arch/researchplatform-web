@@ -21,6 +21,8 @@
   "save": "Save",
   "add": "Add",
   "fieldProjectName": "Project Name",
+  "fieldChairName": "Chair/Professorship",
+  "fieldDescription": "Short Description",
   "done": "Done",
   "settingsTitle": "Current Form",
   "logout": "Logout",
@@ -34,7 +36,7 @@
   "download": "Download",
   "updateImage": "Update Image",
   "rejectProject": "Reject Project",
-  "rejectReason": "RejectionReason",
+  "rejectReason": "Rejection Reason",
   "selectImage": "Select Image",
   "addImage": "Add Image"
 }
