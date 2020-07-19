@@ -38,8 +38,6 @@ Users can create and export their projects and the entire workflow would be take
 
 # System Design
 
-## Technology Stack
-
 <img style="float: center;" src="techStack.png" width="30%">
 
 **Frontend (UI)**
