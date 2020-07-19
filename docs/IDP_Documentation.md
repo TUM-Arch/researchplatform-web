@@ -315,16 +315,31 @@ Swagger can be used to test APIs on the browser. You can view the available endp
 The list of admins is available in the file name `Admins.java` which can be found under the following path:
 
 ```
-researchplatform-service/src/main/java/de/tum/ar/researchplatform/util/Admins.java
+src/main/java/de/tum/ar/researchplatform/util/Admins.java
 ```
 
 Just add the `tum guid` to the `admin` array in the following code-block:
 
 ```
 public static final String[] admins = new String[]{
-            "ge29***",
-            "ge73***"
+            "ge79***",
     };
+```
+
+##### Security: How to modify JSON Web Token details:
+
+The JWT details are stored in the Constants class found in the path:
+
+```
+src/main/java/de/tum/ar/researchplatform/util/Constants.java
+```
+
+##### Database: How to modify production database connection string:
+
+The production database string property _spring.data.mongodb.uri_ can be modified in this file:
+
+```
+src/main/resources/application-prod.properties
 ```
 
 # Future Enhancements
