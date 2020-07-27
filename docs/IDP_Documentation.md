@@ -264,13 +264,10 @@ The steps to change the pdf styles are as below:
    	marginBottom: 2,
    	fontFamily: "Times-Roman",
    }
-
    text: {
-    margin: 12,
-    marginTop: 0,
-    fontSize: 14,
-    textAlign: "justify",
-    fontFamily: "Times-Roman",
+    	margin: 12,
+    	fontSize: 14,
+    	fontFamily: "Times-Roman",
    }
    ```
 
@@ -298,7 +295,7 @@ The steps to change the pdf styles are as below:
 
 4. You can also modify the styles for the fields like name, department, and others in the same file. To know the styling options and valid properties available, you can check [here](https://react-pdf.org/styling#valid-css-properties).
 
-5. All off the above is possible assuming these custom fields have been created.
+5. All of the above is possible assuming these custom fields have been created.
 
 ### Backend Application:
 
@@ -366,3 +363,5 @@ We think the following additions could enhance this platform:
 - Using LDAP for TUM login: This would in turn enable mapping of faculties and projects and help in better visualization of the projects created.
 - Creating a notification system notifying administrators when a new project has been submitted.
 - Enhancing the custom field capabilities with options to create Date/Time handlers, radio buttons, etc.
+- Adding user groups and user management features accessed directly on the UI.
+- Filtering options for projects based on time, chair, etc.
