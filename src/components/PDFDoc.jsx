@@ -28,7 +28,13 @@ export default function PDFDoc(props) {
             >
               {language === "en" ? field.nameEn : field.nameDe}:
             </Text>
-            <Text style={styles.text}>
+            <Text
+              style={
+                styles[`${field.nameEn}`] && styles[`${field.nameEn}`].text
+                  ? styles[`${field.nameEn}`].text
+                  : styles.text
+              }
+            >
               {language === "en" ? field.valueEn : field.valueDe}
             </Text>
           </View>

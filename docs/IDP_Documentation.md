@@ -255,7 +255,7 @@ These are the following components available on the Frontend Application:
 
 The steps to change the pdf styles are as below:
 
-1. The default styles are in the file `src/theme/pdfDocCSS.js`. Currently the styles are as follows:
+1. The default styles are in the file `src/theme/pdfDocCSS.js`. Currently the styles for the header and the text are as follows:
 
    ```
    fieldName: {
@@ -264,20 +264,37 @@ The steps to change the pdf styles are as below:
    	marginBottom: 2,
    	fontFamily: "Times-Roman",
    }
+
+   text: {
+    margin: 12,
+    marginTop: 0,
+    fontSize: 14,
+    textAlign: "justify",
+    fontFamily: "Times-Roman",
+   }
    ```
 
 2. The above styles will be applied to all the custom fields by default.
 
-3. In order to design the custom fields, you need to add the styles as above to the same file `src/theme/pdfDocCSS.js` with the English-name of the field. For eg: If you want to style the field with the English name mentioned as "department" then you would have to add the following code to the file:
+3. In order to design the custom fields, you need to add the styles as above to the same file `src/theme/pdfDocCSS.js` with the English-name of the field. For eg: If you want to style the field with the English name mentioned as "Language" then you would have to add the following code to the file:
 
    ```
-   department: {
-   	fontSize: 12,
-   	margin: 12,
-   	marginBottom: 2,
-   	fontFamily: "Helvetica Neue",
-   }
+   Language: {
+    fontSize: 10,
+    margin: 12,
+    marginBottom: 2,
+    fontFamily: "Helvetica",
+    text: {
+      margin: 12,
+      marginTop: 0,
+      fontSize: 50,
+      textAlign: "justify",
+      fontFamily: "Times-Roman",
+    },
+   },
    ```
+
+   The text object within the Language field as seen above is optional. If not specified, the generic style "text" will be applied to that field.
 
 4. You can also modify the styles for the fields like name, department, and others in the same file. To know the styling options and valid properties available, you can check [here](https://react-pdf.org/styling#valid-css-properties).
 

@@ -167,7 +167,7 @@ function CreateViewEditProject(props) {
   const [openAddTag, setOpenAddTag] = React.useState(false);
   const [newTagValue, setNewTagValue] = React.useState("");
   const inputFile = React.createRef(null);
-  let imageRef = null;
+  const [imageRef, setImageRef] = React.useState(null);
 
   const handleOpenAddTag = () => {
     setOpenAddTag(true);
@@ -222,11 +222,13 @@ function CreateViewEditProject(props) {
             jwt
           ).then(async project => {
             if (imageRef) {
-              console.log("Hello");
               const formData = new FormData();
               formData.append("image", imageRef, imageRef.name);
               formData.append("projectId", project.id);
-              await handleSetProjectImage(formData, jwt).then(window.location.reload());
+              await handleSetProjectImage(formData, jwt).then(() => {
+                setImageRef(null);
+                window.location.reload();
+              });
             }
           });
         });
@@ -254,7 +256,7 @@ function CreateViewEditProject(props) {
   }
 
   function handleImageUpload(e) {
-    imageRef = e.target.files[0];
+    setImageRef(e.target.files[0]);
   }
 
   function handleOnChangeEvent(keyName, value) {
